@@ -10,9 +10,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Card
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -22,25 +24,40 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import it.walmann.adhdcompanion.CommonUI.MyScaffolding
+import it.walmann.adhdcompanion.CupcakeScreen
 import it.walmann.adhdcompanion.R
 
 @Composable
-fun RemindersScreen(modifier: Modifier) {
-    Column(
-        modifier = Modifier
-//            .padding(it)
-            .fillMaxSize()
-//            .verticalScroll(rememberScrollState())
-            .background(Color(0xff8d6e63)),
-
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Column(
-//            modifier = Modifier
-//            .verticalScroll(rememberScrollState()
-//            )
+fun RemindersScreen(modifier: Modifier, navController: NavController) {
+        MyScaffolding(
+            floatingActionButton = {
+                FloatingActionButton(
+                    onClick = { /*TODO*/
+                        navController.navigate(CupcakeScreen.NewReminder.name)
+                    },
+//                Modifier.background = Color.Red,
+                    content = {
+                        Icon(
+                            Icons.Filled.Add,
+                            contentDescription = null,
+//                        tint = Color.White
+                        )
+                    }
+                )
+            }
         ) {
+            Column(
+                modifier = Modifier
+//            .padding(it)
+                    .fillMaxSize()
+//            .verticalScroll(rememberScrollState())
+                    .background(Color(0xff8d6e63)),
+
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
             ReminderCard(
                 ReminderTime = "10:45",
                 ReminderDate = "03.02.2024",
@@ -78,9 +95,9 @@ fun RemindersScreen(modifier: Modifier) {
                 modifier = Modifier
             )
         }
-
     }
 }
+
 
 
 @Composable
