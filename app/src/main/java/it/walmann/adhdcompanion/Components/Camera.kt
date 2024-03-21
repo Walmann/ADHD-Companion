@@ -2,61 +2,69 @@ package it.walmann.adhdcompanion.Components
 
 import android.Manifest
 import android.content.Context
-import android.content.pm.PackageManager
-import android.util.Log
+import android.content.Intent
+import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+import android.net.Uri
+import android.provider.ContactsContract.Directory.PACKAGE_NAME
+import android.provider.Settings
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.LinearLayout
-import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.camera.camera2.internal.compat.workaround.TargetAspectRatio.RATIO_16_9
-import androidx.camera.core.AspectRatio
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.Preview
+import androidx.camera.core.resolutionselector.ResolutionSelector
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Button
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.LifecycleOwner
 import com.google.common.util.concurrent.ListenableFuture
-import it.walmann.adhdcompanion.MainActivity
+import it.walmann.adhdcompanion.R
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
-
-@Composable
-fun CameraWidget() {
-    val lensFacing = CameraSelector.LENS_FACING_BACK
-    val lifecycleOwner = LocalLifecycleOwner.current
-    val context = LocalContext.current
-    val preview = Preview.Builder().build()
-    val previewView = remember {
-        PreviewView(context)
-    }
-    val cameraxSelector = CameraSelector.Builder().requireLensFacing(lensFacing).build()
-    LaunchedEffect(lensFacing) {
-        val cameraProvider = context.getCameraProvider()
-        cameraProvider.unbindAll()
-        cameraProvider.bindToLifecycle(lifecycleOwner, cameraxSelector, preview)
-        preview.setSurfaceProvider(previewView.surfaceProvider)
-    }
-    AndroidView(factory = { previewView }, modifier = Modifier.fillMaxSize())
-}
+//@Composable
+//fun CameraWidget() {
+//    val lensFacing = CameraSelector.LENS_FACING_BACK
+//    val lifecycleOwner = LocalLifecycleOwner.current
+//    val context = LocalContext.current
+//    val preview = Preview.Builder().build()
+//    val previewView = remember {
+//        PreviewView(context)
+//    }
+//    val cameraxSelector = CameraSelector.Builder().requireLensFacing(lensFacing).build()
+//    LaunchedEffect(lensFacing) {
+//        val cameraProvider = context.getCameraProvider()
+//        cameraProvider.unbindAll()
+//        cameraProvider.bindToLifecycle(lifecycleOwner, cameraxSelector, preview)
+//        preview.setSurfaceProvider(previewView.surfaceProvider)
+//    }
+//    AndroidView(factory = { previewView }, modifier = Modifier.fillMaxSize())
+//}
 
 private suspend fun Context.getCameraProvider(): ProcessCameraProvider =
     suspendCoroutine { continuation ->
@@ -68,9 +76,11 @@ private suspend fun Context.getCameraProvider(): ProcessCameraProvider =
     }
 
 
-
 @Composable
-fun MyCamera() {
+fun MyCameraPreview(modifier: Modifier = Modifier) {
+
+
+
     val context = LocalContext.current
 
     val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
@@ -85,44 +95,48 @@ fun MyCamera() {
         isPermissionGranted = isGranted
     }
     when (isPermissionGranted) {
-//        TODO NEXT GOT THE CAMERA WORKING. NOW FIX STUFF.
-        true -> CameraPreview(cameraProviderFuture)
-        false -> Text("permission pls")
-        null -> Button(onClick = { launcher.launch(Manifest.permission.CAMERA) }) {
-            Text(text = "Start!")
+        // TODO NEXT GOT THE CAMERA WORKING. NOW FIX STUFF.
+        true -> CameraPreview(cameraProviderFuture, modifier)
+        false -> Column(
+            modifier = modifier
+                .background(Color.White)
+                .fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Text(text = stringResource(R.string.re_request_Camera_Permission), color = Color.Black)
+            Button(onClick = { openAppSettings(context = context) }) { Text(text = "Open App Settings") }
         }
 
+        null -> {
+            SideEffect {
+                launcher.launch(Manifest.permission.CAMERA)
+            }
+        }
     }
 }
-    fun bindPreview(
-        cameraProvider: ProcessCameraProvider,
-        lifecycleOwner: LifecycleOwner,
-        previewView: PreviewView,
-    ) {
-        val preview: Preview = Preview.Builder()
-            .setTargetAspectRatio(AspectRatio.RATIO_16_9)
-            .build()
 
-        val cameraSelector: CameraSelector = CameraSelector.Builder()
-            .requireLensFacing(CameraSelector.LENS_FACING_BACK)
-            .build()
 
-        preview.setSurfaceProvider(previewView.surfaceProvider)
 
-        var camera = cameraProvider.bindToLifecycle(lifecycleOwner, cameraSelector, preview)
-    }
 
-    @Composable
-    fun CameraPreview(cameraProviderFuture: ListenableFuture<ProcessCameraProvider>) {
 
-        val lifecycleOwner = LocalLifecycleOwner.current
+
+@Composable
+fun CameraPreview(cameraProviderFuture: ListenableFuture<ProcessCameraProvider>, modifier: Modifier) {
+
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    Box(modifier = modifier.fillMaxSize().background(Color.Red)) {
         AndroidView(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Yellow),
             factory = { context ->
                 PreviewView(context).apply {
-//                    setBackgroundColor(Color.Green)
+                    //                    setBackgroundColor(Color.Green)
+
                     layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
-                    scaleType = PreviewView.ScaleType.FILL_START
-                    implementationMode = PreviewView.ImplementationMode.COMPATIBLE
+                    scaleType = PreviewView.ScaleType.FILL_CENTER
+                    implementationMode = PreviewView.ImplementationMode.PERFORMANCE
                     post {
                         cameraProviderFuture.addListener(Runnable {
                             val cameraProvider = cameraProviderFuture.get()
@@ -137,3 +151,31 @@ fun MyCamera() {
             }
         )
     }
+}
+fun bindPreview(
+    cameraProvider: ProcessCameraProvider,
+    lifecycleOwner: LifecycleOwner,
+    previewView: PreviewView,
+) {
+    val preview: Preview = Preview.Builder()
+//            .setTargetAspectRatio(AspectRatio.RATIO_16_9)
+        .build()
+
+    val cameraSelector: CameraSelector = CameraSelector.Builder()
+        .requireLensFacing(CameraSelector.LENS_FACING_BACK)
+        .build()
+
+    preview.setSurfaceProvider(previewView.surfaceProvider)
+
+    var camera = cameraProvider.bindToLifecycle(lifecycleOwner, cameraSelector, preview)
+}
+
+fun openAppSettings(context: Context) {
+    val packageName = PACKAGE_NAME
+    val uri = Uri.fromParts("package", context.packageName, null)
+    val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+    intent.addFlags(FLAG_ACTIVITY_NEW_TASK)
+    intent.setData(uri)
+
+    startActivity(context, intent, null)
+}

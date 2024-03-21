@@ -44,4 +44,5 @@
         vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
     </string>
     <string name="NewReminder">New Reminder</string>
+    <string name="re_request_Camera_Permission">This app requires Camera permission to work. Please click the button bellow to enable Camera permission</string>
 </resources>

@@ -72,10 +72,9 @@ enum class CupcakeScreen(@StringRes val title: Int) {
 }
 
 class MainActivity : ComponentActivity() {
-
+    public lateinit var PACKAGE_NAME: String;
     override fun onCreate(savedInstanceState: Bundle?) {
-        // Request camera permissions
-
+        PACKAGE_NAME = applicationContext.packageName;
         super.onCreate(savedInstanceState)
         setContent {
             ADHDCompanionTheme {
@@ -89,11 +88,12 @@ class MainActivity : ComponentActivity() {
         }
 
     }
+
     companion object {
         private const val TAG = "CameraXApp"
         private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
         public val REQUIRED_PERMISSIONS =
-            mutableListOf (
+            mutableListOf(
                 Manifest.permission.CAMERA,
                 Manifest.permission.RECORD_AUDIO
             ).apply {
@@ -109,65 +109,100 @@ class MainActivity : ComponentActivity() {
 fun ADHDCompanionApp(
     navController: NavHostController = rememberNavController()
 ) {
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(text = stringResource(R.string.ToppAppBarTitle))
-                },
-                navigationIcon = {
-                    Icon(Icons.Filled.Menu, "backIcon")
-//                    IconButton(onClick = { /*TODO*/ }) { // TODO
-//                        Icon(Icons.Filled.Menu, "backIcon")
-//                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    titleContentColor = Color.White,
-                ),
-            )
-
-        },
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = { /*TODO*/
-                    navController.navigate(CupcakeScreen.NewReminder.name)
-                          },
-//                Modifier.background = Color.Red,
-                content = {
-                    Icon(
-                        Icons.Filled.Add,
-                        contentDescription = null,
-//                        tint = Color.White
-                    )
-                }
+    NavHost(
+        navController = navController,
+        startDestination = CupcakeScreen.Start.name,
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+//                .padding(innerPadding)
+    ) {
+        composable(route = CupcakeScreen.Start.name) {
+            RemindersScreen(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState()),
+                navController
             )
         }
-    ) { innerPadding ->
-        NavHost(
-            navController = navController,
-            startDestination = CupcakeScreen.Start.name,
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(innerPadding)
-        ) {
-            composable(route = CupcakeScreen.Start.name) {
-                RemindersScreen(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .verticalScroll(rememberScrollState())
-                )
-            }
-            composable(route = CupcakeScreen.NewReminder.name) {
-                NewReminder(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .verticalScroll(rememberScrollState())
-                )
-            }
+        composable(route = CupcakeScreen.NewReminder.name) {
+            NewReminder(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+            )
         }
-
-
     }
+
+
 }
+
+
+//@OptIn(ExperimentalMaterial3Api::class)
+//@Composable
+//fun ADHDCompanionApp(
+//    navController: NavHostController = rememberNavController()
+//) {
+////    Scaffold(
+////        topBar = {
+////            TopAppBar(
+////                title = {
+////                    Text(text = stringResource(R.string.ToppAppBarTitle))
+////                },
+////                navigationIcon = {
+////                    Icon(Icons.Filled.Menu, "backIcon")
+//////                    IconButton(onClick = { /*TODO*/ }) { // TODO
+//////                        Icon(Icons.Filled.Menu, "backIcon")
+//////                    }
+////                },
+////                colors = TopAppBarDefaults.topAppBarColors(
+////                    containerColor = MaterialTheme.colorScheme.primary,
+////                    titleContentColor = Color.White,
+////                ),
+////            )
+////
+////        },
+////        floatingActionButton = {
+////            FloatingActionButton(
+////                onClick = { /*TODO*/
+////                    navController.navigate(CupcakeScreen.NewReminder.name)
+////                          },
+//////                Modifier.background = Color.Red,
+////                content = {
+////                    Icon(
+////                        Icons.Filled.Add,
+////                        contentDescription = null,
+//////                        tint = Color.White
+////                    )
+////                }
+////            )
+////        }
+////    )
+////    { innerPadding ->
+//        NavHost(
+//            navController = navController,
+//            startDestination = CupcakeScreen.Start.name,
+//            modifier = Modifier
+//                .fillMaxSize()
+//                .verticalScroll(rememberScrollState())
+////                .padding(innerPadding)
+//        ) {
+//            composable(route = CupcakeScreen.Start.name) {
+//                RemindersScreen(
+//                    modifier = Modifier
+//                        .fillMaxSize()
+//                        .verticalScroll(rememberScrollState())
+//                )
+//            }
+//            composable(route = CupcakeScreen.NewReminder.name) {
+//                NewReminder(
+//                    modifier = Modifier
+//                        .fillMaxSize()
+//                        .verticalScroll(rememberScrollState())
+//                )
+//            }
+//        }
+//
+//
+//    }
+//}

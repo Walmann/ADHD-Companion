@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -21,22 +22,22 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import it.walmann.adhdcompanion.Components.MyCamera
+import it.walmann.adhdcompanion.Components.MyCameraPreview
+
 import it.walmann.adhdcompanion.R
 
 @Composable
 fun NewReminder(modifier: Modifier) {
     Column(
         modifier = Modifier
-//            .padding(it)
             .fillMaxSize()
-//            .verticalScroll(rememberScrollState())
-            .background(Color(0xff8d6e63)),
+            .background(Color(0xff8d6e63))
+        ,
 
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        MyCamera()
+
+        MyCameraPreview(Modifier.weight(1f))
+//
 //        Column(
 //        ) {
 //            ReminderCard(
