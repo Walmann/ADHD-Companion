@@ -4,6 +4,7 @@
     <style name="Theme.ADHDCompanion" parent="android:Theme.Material.Light.NoActionBar" />
     <!-- Base application theme. -->
     <style name="Base.Theme.ADHDCompanion" parent="Theme.Material3.DayNight.NoActionBar">
+<!--        <item name="android:navigationBarColor">@color/material_dynamic_primary0</item>-->
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
     </style>

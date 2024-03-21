@@ -2,6 +2,7 @@ package it.walmann.adhdcompanion.CommonUI
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -16,43 +17,29 @@ import it.walmann.adhdcompanion.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyScaffolding(
-    floatingActionButton: @Composable () -> Unit,
-    function: @Composable () -> Unit) {
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(text = stringResource(R.string.ToppAppBarTitle))
-                },
-                navigationIcon = {
-                    Icon(Icons.Filled.Menu, "backIcon")
-//                    IconButton(onClick = { /*TODO*/ }) { // TODO
+fun MyTopAppBar() {
+    TopAppBar(
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.primary,
+            titleContentColor = Color.White
+        ),
+        title = {
+            Text(text = stringResource(R.string.ToppAppBarTitle))
+        },
+        navigationIcon = {
+            Icon(Icons.Filled.Menu, "backIcon")
+//                    IconButton(onClick = { /*TODO*/ }) {
 //                        Icon(Icons.Filled.Menu, "backIcon")
 //                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    titleContentColor = Color.White,
-                ),
-            )
-        floatingActionButton()
         },
-    ) {}
+    )
 }
 
+@Composable
+fun MyBottomAppBar() {
+    BottomAppBar(
+        containerColor = Color.Black
+    ) {
 
-//        floatingActionButton = {
-//            FloatingActionButton(
-//                onClick = { /*TODO*/
-//                    navController.navigate(CupcakeScreen.NewReminder.name)
-//                },
-////                Modifier.background = Color.Red,
-//                content = {
-//                    Icon(
-//                        Icons.Filled.Add,
-//                        contentDescription = null,
-////                        tint = Color.White
-//                    )
-//                }
-//            )
+    }
+}
