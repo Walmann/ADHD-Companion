@@ -90,6 +90,7 @@ fun ADHDCompanionApp(
         }
         composable(route = CupcakeScreen.NewReminder.name) {
             NewReminder(
+                context= context,
                 modifier = Modifier
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState())

@@ -66,6 +66,7 @@ dependencies {
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.androidx.navigation.compose)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -83,4 +84,6 @@ dependencies {
 
     implementation ("androidx.camera:camera-view:${camerax_version}")
     implementation ("androidx.camera:camera-extensions:${camerax_version}")
+
+    implementation("io.coil-kt:coil-compose:1.4.0")
 }
