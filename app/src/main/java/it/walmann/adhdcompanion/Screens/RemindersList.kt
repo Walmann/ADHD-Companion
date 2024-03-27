@@ -30,6 +30,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import it.walmann.adhdcompanion.CommonUI.MyTopAppBar
+import it.walmann.adhdcompanion.Components.RotaryDialDialog
+import it.walmann.adhdcompanion.Components.RotaryDialWidget
 import it.walmann.adhdcompanion.Components.getReminders
 import it.walmann.adhdcompanion.CupcakeScreen
 import it.walmann.adhdcompanion.MyObjects.Reminders
@@ -68,12 +70,7 @@ fun RemindersScreen(modifier: Modifier, navController: NavController, context: C
         ) {
             val temp = getReminders(context = context) //Reminders()
 
-//            ReminderCard(
-//                ReminderTime = "${temp.ReminderTime}",
-//                ReminderDate = "${temp.ReminderDate}",
-//                ReminderText = "${temp.ReminderNote}",
-//                modifier = Modifier
-//            )
+            RotaryDialDialog()
             ReminderCard(
                 ReminderTime = "10:45",
                 ReminderDate = "03.02.2024",

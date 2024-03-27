@@ -10,6 +10,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,9 +18,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Card
+import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -31,17 +35,20 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.rotary.RotaryInputModifierNode
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import androidx.core.net.toUri
 import coil.compose.rememberImagePainter
 import it.walmann.adhdcompanion.CommonUI.MyTopAppBar
 import it.walmann.adhdcompanion.Components.CameraView
 import it.walmann.adhdcompanion.Components.MyCameraPreview
+
 import it.walmann.adhdcompanion.CupcakeScreen
 
 import it.walmann.adhdcompanion.R
@@ -141,37 +148,68 @@ fun NewReminder(context: Context, modifier: Modifier) {
 
 @Composable
 fun CreateReminderForm(photoUri: Uri, modifier: Modifier) {
-
+    val Reminder_time = 0
 
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier.background(Color(0xff8d6e63))
     ) {
         Image(
             painter = rememberImagePainter(photoUri),
             contentDescription = null,
             modifier = Modifier.weight(5f)
         )
-        Column(modifier.weight(5f)) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+            modifier = modifier
+                .weight(5f)
 
+        ) {
+//            RotaryDialWidget()
 
-            Text(
-                text = "10:45",
-                textAlign = TextAlign.Center,
-                fontSize = 70.sp,
-                modifier = modifier.weight(2f)
-            )
-            Text(
-                text = "24.12.2024",
-                textAlign = TextAlign.Center,
-                fontSize = 60.sp,
-                modifier = modifier.weight(2f)
-            )
-            Text(
-                text = "Notes goes here!",
-                textAlign = TextAlign.Center,
-                fontSize = 30.sp,
-                modifier = modifier.weight(1f)
-            ) // TODO NEXT Continue here!
+            TimerButtons(text = "🕰️ Remind me in...") // Create timer dial
+            TimerButtons(text = "📅 Remind at...") // Make a clock and calendar choices
+            TimerButtons(text = "⏱️ Remind me in 10 minutes") // TODO Make this configurable in settings
+            Row(modifier = modifier
+                .fillMaxWidth()
+                .padding(top = 50.dp)
+                ,
+
+                horizontalArrangement = Arrangement.Center
+            ) {
+                NavigationButtons(text = "Cancel")
+
+                NavigationButtons(text = "Save")
+            }
         }
     }
 }
+
+@Composable
+fun TimerButtons(modifier: Modifier = Modifier, text: String = "Button Text", onClick: () -> Unit = { /*TODO*/ }) {
+    ElevatedButton(
+        onClick = onClick,
+        modifier
+            .width(300.dp)
+            .height(75.dp)
+            .padding(vertical = 10.dp)
+    ) {
+        Text(text = text)
+    }
+}
+
+@Composable
+fun NavigationButtons(modifier: Modifier = Modifier, text: String = "Text",  onClick: () -> Unit = { /*TODO*/ }) {
+    ElevatedButton(
+        onClick = onClick,
+        Modifier.padding(
+            horizontal = 50.dp
+        )
+
+    ) {
+        Text(text = text)
+    }
+}
+
+

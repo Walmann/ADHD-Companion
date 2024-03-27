@@ -47,6 +47,10 @@ class MainActivity : ComponentActivity() {
 
     }
 
+    // TODO Create "ask for alarm permission" section
+
+
+
     companion object {
         private const val TAG = "CameraXApp"
         private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
