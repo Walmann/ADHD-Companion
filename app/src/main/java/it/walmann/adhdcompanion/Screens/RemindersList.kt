@@ -32,6 +32,7 @@ import androidx.navigation.NavController
 import it.walmann.adhdcompanion.CommonUI.MyTopAppBar
 import it.walmann.adhdcompanion.Components.RotaryDialDialog
 import it.walmann.adhdcompanion.Components.RotaryDialWidget
+import it.walmann.adhdcompanion.Components.TimeSelectorDialog
 import it.walmann.adhdcompanion.Components.getReminders
 import it.walmann.adhdcompanion.CupcakeScreen
 import it.walmann.adhdcompanion.MyObjects.Reminders
@@ -70,7 +71,7 @@ fun RemindersScreen(modifier: Modifier, navController: NavController, context: C
         ) {
             val temp = getReminders(context = context) //Reminders()
 
-            RotaryDialDialog()
+            TimeSelectorDialog()
             ReminderCard(
                 ReminderTime = "10:45",
                 ReminderDate = "03.02.2024",
