@@ -77,9 +77,7 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 
 
-
-    implementation ("com.github.StephenVinouze:MaterialNumberPicker:1.1.0")
-
+    implementation ("com.chargemap.compose:numberpicker:${rootProject.extra["numberpickerVersion"]}")
 
     val camerax_version = "1.3.2"
     implementation ("androidx.camera:camera-core:${camerax_version}")

@@ -101,7 +101,7 @@ private const val BankCardAspectRatio = 1.5819f
 
 
 @Composable
-fun RotaryDialDialog(modifier: Modifier = Modifier) {
+fun RotaryDialDialog(modifier: Modifier = Modifier, context: Context) {
     Dialog(
         onDismissRequest = { /*TODO*/ },
     ) {

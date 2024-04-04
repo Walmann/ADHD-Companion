@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredHeightIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -30,6 +31,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -48,6 +50,8 @@ import coil.compose.rememberImagePainter
 import it.walmann.adhdcompanion.CommonUI.MyTopAppBar
 import it.walmann.adhdcompanion.Components.CameraView
 import it.walmann.adhdcompanion.Components.MyCameraPreview
+import it.walmann.adhdcompanion.Components.TimeSelectBox
+//import it.walmann.adhdcompanion.Components.TimeSelectDialogBox
 
 import it.walmann.adhdcompanion.CupcakeScreen
 
@@ -75,17 +79,9 @@ fun NewReminder(context: Context, modifier: Modifier) {
     fun getOutputDirectory(): File {
         val files = context.filesDir
         return files
-//        val mediaDir = externalMediaDirs.firstOrNull()?.let {
-//            File(it, resources.getString(R.string.app_name)).apply { mkdirs() }
-//        }
-//
-//        return if (mediaDir != null && mediaDir.exists()) mediaDir else filesDir
     }
 
-//    override fun onDestroy() {
-//        super.onDestroy()
-//        cameraExecutor.shutdown()
-//    }
+
 
 
     outputDirectory = getOutputDirectory()
@@ -93,23 +89,6 @@ fun NewReminder(context: Context, modifier: Modifier) {
 
     Scaffold(
         topBar = { MyTopAppBar() },
-//        floatingActionButton = {
-//            FloatingActionButton(
-////                containerColor = Color.Black,
-//                onClick = { /*TODO*/
-//
-//
-//                },
-////                Modifier.background = Color.Red,
-//                content = {
-//                    Icon(
-//                        Icons.Filled.Add,
-//                        contentDescription = null,
-////                        tint = Color.White
-//                    )
-//                }
-//            )
-//        }
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -136,19 +115,20 @@ fun NewReminder(context: Context, modifier: Modifier) {
                 )
             }
         }
-//            MyCameraPreview(
-//                context = context,
-////            modifier= Modifier.weight(1f)
-//            )
-
-
     }
 }
 
 
 @Composable
 fun CreateReminderForm(photoUri: Uri, modifier: Modifier) {
-    val Reminder_time = 0
+    val Reminder_time = remember { mutableStateOf(0)    }
+    val showTimerDialog = remember { mutableStateOf(false) }
+    val showDateDialog = remember { mutableStateOf(false) }
+
+    val showButtons = remember { mutableStateOf(true) }
+
+    val buttonBackOrCancel = remember { mutableStateOf("Cancel") }
+
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -161,25 +141,49 @@ fun CreateReminderForm(photoUri: Uri, modifier: Modifier) {
         )
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
+            verticalArrangement = Arrangement.SpaceBetween,
             modifier = modifier
                 .weight(5f)
+                .fillMaxWidth()
 
         ) {
-//            RotaryDialWidget()
+            if (showButtons.value) {
+                buttonBackOrCancel.value = "Cancel"
+                TimerButtons(
+                    text = "🕰️ Remind me in...",
+                    onClick = {
+                        showButtons.value = !showButtons.value
+                    }
+                )
 
-            TimerButtons(text = "🕰️ Remind me in...") // Create timer dial
-            TimerButtons(text = "📅 Remind at...") // Make a clock and calendar choices
-            TimerButtons(text = "⏱️ Remind me in 10 minutes") // TODO Make this configurable in settings
-            Row(modifier = modifier
-                .fillMaxWidth()
-                .padding(top = 50.dp)
-                ,
+//                TimerButtons(
+//                    text = "📅 Remind at...",
+//                ) // Make a clock and calendar choices
+//
+//                TimerButtons(
+//                    text = "⏱️ Remind me in 10 minutes",
+////                onClick = {} // TODO Make this configurable in settings
+//                )
+
+            }
+            if (!showButtons.value) {
+                buttonBackOrCancel.value = "Back"
+                TimeSelectBox(
+                    dialogTitle = "Select time until next reminder",
+//                    onValueChange = // TODO NEXT Continue here!
+                )
+            }
+            Row(
+                verticalAlignment = Alignment.Bottom,
+                modifier = modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 50.dp),
 
                 horizontalArrangement = Arrangement.Center
             ) {
-                NavigationButtons(text = "Cancel")
-
+                NavigationButtons(
+                    text = buttonBackOrCancel.value,
+                    onClick = { showButtons.value = !showButtons.value })
                 NavigationButtons(text = "Save")
             }
         }
@@ -187,20 +191,45 @@ fun CreateReminderForm(photoUri: Uri, modifier: Modifier) {
 }
 
 @Composable
-fun TimerButtons(modifier: Modifier = Modifier, text: String = "Button Text", onClick: () -> Unit = { /*TODO*/ }) {
+fun TimerButtons(
+    modifier: Modifier = Modifier,
+    text: String = "Button Text",
+    onClick: () -> Unit = {}
+) {
+    val showSubWidget = remember { mutableStateOf(false) }
     ElevatedButton(
-        onClick = onClick,
+        onClick = {
+            showSubWidget.value = true
+            onClick()
+        },
         modifier
             .width(300.dp)
-            .height(75.dp)
-            .padding(vertical = 10.dp)
+            .requiredHeightIn(min = 75.dp)
+            .padding(vertical = 10.dp),
     ) {
-        Text(text = text)
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+
+            Text(text = text)
+//            if (showSubWidget.value) {
+//                TimeSelectBox(
+//                    onDismissRequest = { /*TODO*/ },
+//                    onConfirmation = {},
+//                    dialogTitle = "Select time until next reminder"
+//                )
+//            }
+        }
     }
 }
 
+
 @Composable
-fun NavigationButtons(modifier: Modifier = Modifier, text: String = "Text",  onClick: () -> Unit = { /*TODO*/ }) {
+fun NavigationButtons(
+    modifier: Modifier = Modifier,
+    text: String = "Text",
+    onClick: () -> Unit = { /*TODO*/ }
+) {
     ElevatedButton(
         onClick = onClick,
         Modifier.padding(

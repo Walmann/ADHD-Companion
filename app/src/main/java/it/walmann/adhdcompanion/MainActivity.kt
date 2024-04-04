@@ -75,7 +75,8 @@ fun ADHDCompanionApp(
 ) {
     NavHost(
         navController = navController,
-        startDestination = CupcakeScreen.Start.name,
+        startDestination = CupcakeScreen.NewReminder.name,
+//        startDestination = CupcakeScreen.Start.name,
         modifier = modifier
             .fillMaxSize()
 //            .verticalScroll(rememberScrollState())
