@@ -77,7 +77,7 @@ import java.util.concurrent.Executors
 fun NewReminder(context: Context, modifier: Modifier, navController: NavController) {
     lateinit var outputDirectory: File
     lateinit var cameraExecutor: ExecutorService
-    lateinit var photoUri: Uri
+    var photoUri: Uri = Uri.EMPTY
     val shouldShowPhoto: MutableState<Boolean> = remember { mutableStateOf(false) }
     val shouldShowCamera: MutableState<Boolean> = remember { mutableStateOf(true) }
 
@@ -214,7 +214,7 @@ fun CreateReminderForm(
                 )
                 NavigationButtons(text = "Save", onClick = {
 
-                    newReminder.saveNewReminder(context = context) // TODO NXT I think this crashes the app. Maybe it loads the next screen before saving.
+                    newReminder.saveNewReminder(context = context)
                     navController.navigate(CupcakeScreen.Start.name)
                 })
             }

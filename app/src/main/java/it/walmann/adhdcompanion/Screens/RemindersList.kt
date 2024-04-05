@@ -26,6 +26,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -42,10 +46,12 @@ import it.walmann.adhdcompanion.Components.RotaryDialWidget
 //import it.walmann.adhdcompanion.Components.TimeSelectDialogBox
 import it.walmann.adhdcompanion.Components.getReminders
 import it.walmann.adhdcompanion.CupcakeScreen
+import it.walmann.adhdcompanion.MyObjects.Reminder
 import it.walmann.adhdcompanion.R
 
 @Composable
 fun RemindersScreen(modifier: Modifier, navController: NavController, context: Context) {
+    var newReminder by remember { mutableStateOf(Reminder()) }
     Scaffold(
         topBar = { MyTopAppBar() },
         floatingActionButton = {
@@ -75,44 +81,45 @@ fun RemindersScreen(modifier: Modifier, navController: NavController, context: C
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-//            val temp = getReminders(context = context) //Reminders()
+            var reminderArray = newReminder.loadReminders(context)
+            print("")
 
-            ReminderCard(
-                ReminderTime = "10:45",
-                ReminderDate = "03.02.2024",
-                ReminderText = "Lorem Ipsum is simply dummy ",
-                modifier = Modifier
-            )
-            ReminderCard(
-                ReminderTime = "10:45",
-                ReminderDate = "03.02.2024",
-                ReminderText = "Lorem Ipsum is simply dummy ",
-                modifier = Modifier
-            )
-            ReminderCard(
-                ReminderTime = "10:45",
-                ReminderDate = "03.02.2024",
-                ReminderText = "Lorem Ipsum is simply dummy ",
-                modifier = Modifier
-            )
-            ReminderCard(
-                ReminderTime = "10:45",
-                ReminderDate = "03.02.2024",
-                ReminderText = "Lorem Ipsum is simply dummy ",
-                modifier = Modifier
-            )
-            ReminderCard(
-                ReminderTime = "10:45",
-                ReminderDate = "03.02.2024",
-                ReminderText = "Lorem Ipsum is simply dummy ",
-                modifier = Modifier
-            )
-            ReminderCard(
-                ReminderTime = "10:45",
-                ReminderDate = "03.02.2024",
-                ReminderText = "Lorem Ipsum is simply dummy ",
-                modifier = Modifier
-            )
+//            ReminderCard(
+//                ReminderTime = "10:45",
+//                ReminderDate = "03.02.2024",
+//                ReminderText = "Lorem Ipsum is simply dummy ",
+//                modifier = Modifier
+//            )
+//            ReminderCard(
+//                ReminderTime = "10:45",
+//                ReminderDate = "03.02.2024",
+//                ReminderText = "Lorem Ipsum is simply dummy ",
+//                modifier = Modifier
+//            )
+//            ReminderCard(
+//                ReminderTime = "10:45",
+//                ReminderDate = "03.02.2024",
+//                ReminderText = "Lorem Ipsum is simply dummy ",
+//                modifier = Modifier
+//            )
+//            ReminderCard(
+//                ReminderTime = "10:45",
+//                ReminderDate = "03.02.2024",
+//                ReminderText = "Lorem Ipsum is simply dummy ",
+//                modifier = Modifier
+//            )
+//            ReminderCard(
+//                ReminderTime = "10:45",
+//                ReminderDate = "03.02.2024",
+//                ReminderText = "Lorem Ipsum is simply dummy ",
+//                modifier = Modifier
+//            )
+//            ReminderCard(
+//                ReminderTime = "10:45",
+//                ReminderDate = "03.02.2024",
+//                ReminderText = "Lorem Ipsum is simply dummy ",
+//                modifier = Modifier
+//            )
         }
     }
 }
