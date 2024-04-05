@@ -20,7 +20,7 @@ import java.io.FileInputStream
 //}
 
 fun getReminders(context: Context): List<String> {
-// TODO NEXT Create system for saving, creating, and loading Reminders.
+// TODO Create system for saving, creating, and loading Reminders.
     val filename = "db_reminders"
     val file = File(context.filesDir, filename)
 

@@ -26,6 +26,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TextButton
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.currentCompositionLocalContext
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
@@ -39,30 +40,16 @@ import com.chargemap.compose.numberpicker.Hours
 import com.chargemap.compose.numberpicker.HoursNumberPicker
 import com.chargemap.compose.numberpicker.NumberPicker
 import it.walmann.adhdcompanion.CommonUI.MyButtonsAccept
+import it.walmann.adhdcompanion.MyObjects.ReminderViewModel
+import java.time.LocalDateTime
+import java.time.LocalTime
 
-//@OptIn(ExperimentalMaterial3Api::class)
-//@Composable
-//fun TimeSelectDialogBox(
-//    onDismissRequest: () -> Unit,
-//    onConfirmation: () -> Unit,
-//    dialogTitle: String,
-//) {
-//    Dialog(
-//        onDismissRequest = { onDismissRequest() }
-//    ) {
-//        TimeSelectBox(
-//            onDismissRequest = onDismissRequest,
-//            onConfirmation = onConfirmation,
-//            dialogTitle = dialogTitle
-//        )
-//
-//
-//    }
-//}
+
 
 @Composable
 fun TimeSelectBox(
     dialogTitle: String,
+    onValueChange: (String) -> Unit
 ) {
     Card(
         modifier = Modifier
@@ -76,9 +63,22 @@ fun TimeSelectBox(
         var selectedMinutes by remember { mutableStateOf(0) }
 
 
+        fun calculateTimerTime(): Int {
+            val seconds = (86400*selectedDays)+(60*selectedHours)+selectedMinutes
+            return seconds
+        }
+        fun calculateNewTimerTime(): String {
+            val localtime = LocalDateTime.now().plusDays(selectedDays.toLong()).plusHours(
+                selectedHours.toLong()).plusMinutes(selectedMinutes.toLong())
+
+            return localtime.toString()
+        }
+
+        onValueChange(calculateNewTimerTime())
+
         Column(
             modifier = Modifier
-//                .fillMaxSize()
+                .fillMaxWidth()
                 ,
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -88,12 +88,17 @@ fun TimeSelectBox(
                 text = dialogTitle,
                 modifier = Modifier.padding(16.dp),
             )
-            Text( // TODO Add text, "Next reminder in: XX days XX hours xx Minutes.
-                text = "$selectedDays, $selectedHours, $selectedMinutes",
-                modifier = Modifier
-//                    .padding(16.dp)
-                ,
-            )
+//            Text( // TODO Add text, "Next reminder in: XX days XX hours xx Minutes.
+//                text = "$selectedDays, $selectedHours, $selectedMinutes",
+//                modifier = Modifier
+////                    .padding(16.dp)
+//                ,
+//            )
+//            Column {
+//                Text(text = "Calculated: ${calculateTimerTime()}")
+//                Text(text = "LocalTime: ${LocalTime.now()}")
+//                Text(text = "New Time: ${calculateNewTimerTime()}")
+//            }
             Row {// TODO Create box around each section. Maybe mark by text.
                 NumberPicker(
                     value = selectedDays,
@@ -110,9 +115,8 @@ fun TimeSelectBox(
                     onValueChange = { selectedMinutes = it },
                     range = 0..100
                 )
-
-
             }
         }
     }
 }
+

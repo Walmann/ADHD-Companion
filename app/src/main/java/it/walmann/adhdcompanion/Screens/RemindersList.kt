@@ -42,7 +42,6 @@ import it.walmann.adhdcompanion.Components.RotaryDialWidget
 //import it.walmann.adhdcompanion.Components.TimeSelectDialogBox
 import it.walmann.adhdcompanion.Components.getReminders
 import it.walmann.adhdcompanion.CupcakeScreen
-import it.walmann.adhdcompanion.MyObjects.Reminders
 import it.walmann.adhdcompanion.R
 
 @Composable
@@ -52,7 +51,7 @@ fun RemindersScreen(modifier: Modifier, navController: NavController, context: C
         floatingActionButton = {
             FloatingActionButton(
 //                containerColor = Color.Black,
-                onClick = { /*TODO*/
+                onClick = {
                     navController.navigate(CupcakeScreen.NewReminder.name)
                 },
 //                Modifier.background = Color.Red,

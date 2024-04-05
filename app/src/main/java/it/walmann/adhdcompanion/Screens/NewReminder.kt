@@ -1,8 +1,12 @@
 package it.walmann.adhdcompanion.Screens
 
+import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.util.Log
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
 import androidx.compose.foundation.Image
@@ -21,6 +25,7 @@ import androidx.compose.foundation.layout.requiredHeightIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Card
@@ -34,6 +39,8 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -45,23 +52,29 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.*
 import androidx.core.net.toUri
+import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import it.walmann.adhdcompanion.CommonUI.MyTopAppBar
 import it.walmann.adhdcompanion.Components.CameraView
-import it.walmann.adhdcompanion.Components.MyCameraPreview
+//import it.walmann.adhdcompanion.Components.MyCameraPreview
 import it.walmann.adhdcompanion.Components.TimeSelectBox
 //import it.walmann.adhdcompanion.Components.TimeSelectDialogBox
 
 import it.walmann.adhdcompanion.CupcakeScreen
+import it.walmann.adhdcompanion.MyObjects.Reminder
+import it.walmann.adhdcompanion.MyObjects.ReminderViewModel
 
-import it.walmann.adhdcompanion.R
 import java.io.File
+import java.time.LocalDateTime
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 @Composable
-fun NewReminder(context: Context, modifier: Modifier) {
+fun NewReminder(context: Context, modifier: Modifier, navController: NavController) {
     lateinit var outputDirectory: File
     lateinit var cameraExecutor: ExecutorService
     lateinit var photoUri: Uri
@@ -99,37 +112,47 @@ fun NewReminder(context: Context, modifier: Modifier) {
 
         ) {
             if (shouldShowCamera.value) {
-                CameraView(
-                    outputDirectory = outputDirectory,
-                    executor = cameraExecutor,
-                    onImageCaptured = ::handleImageCapture,
-                    onError = {
-                        Log.e("kilo", "View error:", it)
-                    }
-                )
+                    CameraView(
+                        outputDirectory = outputDirectory,
+                        executor = cameraExecutor,
+                        onImageCaptured = ::handleImageCapture,
+                        onError = {
+                            Log.e("kilo", "View error:", it)
+                        }
+                    )
+
             }
-            if (shouldShowPhoto.value) {
-                CreateReminderForm(
-                    photoUri = photoUri,
-                    modifier = Modifier.fillMaxSize()
-                )
-            }
+        }
+        if (shouldShowPhoto.value) {
+            CreateReminderForm(
+                context = context,
+                photoUri = photoUri,
+                navController = navController,
+                modifier = Modifier.fillMaxSize(),
+
+            )
         }
     }
 }
 
 
+
 @Composable
-fun CreateReminderForm(photoUri: Uri, modifier: Modifier) {
-    val Reminder_time = remember { mutableStateOf(0)    }
-    val showTimerDialog = remember { mutableStateOf(false) }
-    val showDateDialog = remember { mutableStateOf(false) }
-
+fun CreateReminderForm(
+    context: Context,
+    photoUri: Uri,
+    modifier: Modifier,
+    navController: NavController,
+    viewModel: ReminderViewModel = ReminderViewModel()
+) {
+    var reminderTime by remember { mutableStateOf( "StringPlaceholder") }
     val showButtons = remember { mutableStateOf(true) }
-
     val buttonBackOrCancel = remember { mutableStateOf("Cancel") }
 
-
+    var newReminder by remember {mutableStateOf(Reminder())}
+    newReminder.reminderTime = reminderTime
+    newReminder.reminderImage = photoUri
+//    newReminder.reminderNote =
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier.background(Color(0xff8d6e63))
@@ -170,8 +193,11 @@ fun CreateReminderForm(photoUri: Uri, modifier: Modifier) {
                 buttonBackOrCancel.value = "Back"
                 TimeSelectBox(
                     dialogTitle = "Select time until next reminder",
-//                    onValueChange = // TODO NEXT Continue here!
+//                    viewModel = viewModel
+                    onValueChange = { reminderTime = it}
                 )
+                Text(text = reminderTime)
+
             }
             Row(
                 verticalAlignment = Alignment.Bottom,
@@ -183,8 +209,14 @@ fun CreateReminderForm(photoUri: Uri, modifier: Modifier) {
             ) {
                 NavigationButtons(
                     text = buttonBackOrCancel.value,
-                    onClick = { showButtons.value = !showButtons.value })
-                NavigationButtons(text = "Save")
+                    onClick = {
+                        showButtons.value = !showButtons.value },
+                )
+                NavigationButtons(text = "Save", onClick = {
+
+                    newReminder.saveNewReminder(context = context) // TODO NXT I think this crashes the app. Maybe it loads the next screen before saving.
+                    navController.navigate(CupcakeScreen.Start.name)
+                })
             }
         }
     }
