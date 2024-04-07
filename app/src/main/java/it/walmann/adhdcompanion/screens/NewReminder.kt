@@ -1,37 +1,19 @@
-package it.walmann.adhdcompanion.Screens
+package it.walmann.adhdcompanion.screens
 
-import android.Manifest
 import android.content.Context
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.util.Log
-import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.camera.core.ImageCapture
-import androidx.camera.core.ImageCaptureException
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeightIn
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.Card
 import androidx.compose.material3.ElevatedButton
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -39,44 +21,25 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.rotary.RotaryInputModifierNode
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.*
-import androidx.core.net.toUri
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
-import it.walmann.adhdcompanion.CommonUI.MyTopAppBar
-import it.walmann.adhdcompanion.Components.CameraView
-//import it.walmann.adhdcompanion.Components.MyCameraPreview
-import it.walmann.adhdcompanion.Components.TimeSelectBox
-//import it.walmann.adhdcompanion.Components.TimeSelectDialogBox
-
 import it.walmann.adhdcompanion.CupcakeScreen
-import it.walmann.adhdcompanion.MyObjects.Reminder
-import it.walmann.adhdcompanion.MyObjects.ReminderViewModel
-
+import it.walmann.adhdcompanion.commonUI.MyTopAppBar
+import it.walmann.adhdcompanion.components.CameraView
+import it.walmann.adhdcompanion.components.TimeSelectBox
+import it.walmann.adhdcompanion.myObjects.myReminder
 import java.io.File
-import java.time.LocalDateTime
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 @Composable
 fun NewReminder(context: Context, modifier: Modifier, navController: NavController) {
     lateinit var outputDirectory: File
-    lateinit var cameraExecutor: ExecutorService
     var photoUri: Uri = Uri.EMPTY
     val shouldShowPhoto: MutableState<Boolean> = remember { mutableStateOf(false) }
     val shouldShowCamera: MutableState<Boolean> = remember { mutableStateOf(true) }
@@ -98,13 +61,13 @@ fun NewReminder(context: Context, modifier: Modifier, navController: NavControll
 
 
     outputDirectory = getOutputDirectory()
-    cameraExecutor = Executors.newSingleThreadExecutor()
+    var cameraExecutor: ExecutorService = Executors.newSingleThreadExecutor()
 
     Scaffold(
         topBar = { MyTopAppBar() },
     ) { innerPadding ->
         Column(
-            modifier = Modifier
+            modifier = modifier
                 .padding(innerPadding)
 //            .fillMaxSize()
 //            .background(Color(0xff8d6e63))
@@ -143,13 +106,13 @@ fun CreateReminderForm(
     photoUri: Uri,
     modifier: Modifier,
     navController: NavController,
-    viewModel: ReminderViewModel = ReminderViewModel()
+//    viewModel: ReminderViewModel = ReminderViewModel()
 ) {
     var reminderTime by remember { mutableStateOf( "StringPlaceholder") }
     val showButtons = remember { mutableStateOf(true) }
     val buttonBackOrCancel = remember { mutableStateOf("Cancel") }
 
-    var newReminder by remember {mutableStateOf(Reminder())}
+    val newReminder by remember {mutableStateOf(myReminder())}
     newReminder.reminderTime = reminderTime
     newReminder.reminderImage = photoUri
 //    newReminder.reminderNote =
@@ -264,7 +227,7 @@ fun NavigationButtons(
 ) {
     ElevatedButton(
         onClick = onClick,
-        Modifier.padding(
+        modifier.padding(
             horizontal = 50.dp
         )
 
