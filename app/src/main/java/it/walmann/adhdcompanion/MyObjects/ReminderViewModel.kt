@@ -1,4 +1,4 @@
-package it.walmann.adhdcompanion.myObjects
+package it.walmann.adhdcompanion.MyObjects
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel

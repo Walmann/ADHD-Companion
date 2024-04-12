@@ -1,4 +1,4 @@
-package it.walmann.adhdcompanion.myObjects
+package it.walmann.adhdcompanion.MyObjects
 
 import android.content.Context
 import java.io.File

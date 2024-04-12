@@ -1,8 +1,6 @@
 package it.walmann.adhdcompanion
 
-import android.Manifest
 import android.content.Context
-import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -10,15 +8,14 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import it.walmann.adhdcompanion.screens.NewReminder
-import it.walmann.adhdcompanion.screens.RemindersScreen
+import it.walmann.adhdcompanion.Screens.NewReminder
+import it.walmann.adhdcompanion.Screens.RemindersScreen
 import it.walmann.adhdcompanion.ui.theme.ADHDCompanionTheme
 
 

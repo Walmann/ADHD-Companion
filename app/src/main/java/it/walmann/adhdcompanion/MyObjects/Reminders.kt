@@ -1,4 +1,4 @@
-package it.walmann.adhdcompanion.myObjects
+package it.walmann.adhdcompanion.MyObjects
 
 import android.content.Context
 import android.net.Uri
@@ -27,7 +27,7 @@ class myReminder(
     private val reminderStorageFile: String = "reminder_db.txt",
 
 
-    var reminderTime: String = "00:00", // TODO NEXT Create the needed code to save Reminder time.
+    var reminderTime: String = "", // TODO NEXT Create the needed code to save Reminder time.
 //    var reminderDate: String = "31.12.24",
     var reminderImage: Uri = Uri.EMPTY,
     var reminderNote: String = ""
@@ -35,11 +35,24 @@ class myReminder(
     @Suppress("UNCHECKED_CAST")
     private fun createMap(): LinkedHashMap<String, LinkedHashMap<String, String>> {
         val currentDateTime = LocalDateTime.now()
-
         val currMap =mapOf(
             "reminderKey" to getRandomKey(),
-            "reminderTime" to "${currentDateTime.hour}:${currentDateTime.minute}",
-            "reminderDate" to "${currentDateTime.year}:${currentDateTime.month}${currentDateTime.dayOfMonth}",
+
+            "reminderYear" to "${currentDateTime.year}",
+            "reminderMonth" to "${currentDateTime.monthValue}",
+            "reminderDay" to "${currentDateTime.dayOfMonth}",
+            "reminderHour" to "${currentDateTime.hour}",
+            "reminderMinute" to "${currentDateTime.minute}", // TODO Format to make it look better
+
+            "reminderCreationYear" to "${currentDateTime.year}",
+            "reminderCreationMonth" to "${currentDateTime.monthValue}",
+            "reminderCreationDay" to "${currentDateTime.dayOfMonth}",
+            "reminderCreationHour" to "${currentDateTime.hour}",
+            "reminderCreationMinute" to "${currentDateTime.minute}",
+
+//            "reminderCreationTime" to "${currentDateTime.hour}:${currentDateTime.minute}",
+//            "reminderCreationDate" to "${currentDateTime.year}-${currentDateTime.monthValue}-${currentDateTime.dayOfMonth}",
+
             "reminderImage" to reminderImage.lastPathSegment,
             "reminderImageFullPath" to reminderImage.toString(),
             "reminderNote" to reminderNote
@@ -88,4 +101,11 @@ class myReminder(
         return LinkedHashMap()
     }
 
+}
+
+
+fun getReminderTime(currReminder: LinkedHashMap<String, String>): String {
+    return "${currReminder["reminderHour"]?.padStart(2,'0')}:${currReminder["reminderMinute"]?.padStart(2, '0')}"
+}fun getReminderDate(currReminder:  LinkedHashMap<String, String>): String {
+    return "${currReminder["reminderYear"]} - ${currReminder["reminderMonth"]?.padStart(2, '0')} - ${currReminder["reminderDay"]?.padStart(2, '0')}"
 }

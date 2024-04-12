@@ -1,4 +1,4 @@
-package it.walmann.adhdcompanion.commonUI
+package it.walmann.adhdcompanion.CommonUI
 
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text

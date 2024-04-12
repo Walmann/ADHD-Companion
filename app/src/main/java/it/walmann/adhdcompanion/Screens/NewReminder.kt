@@ -1,4 +1,4 @@
-package it.walmann.adhdcompanion.screens
+package it.walmann.adhdcompanion.Screens
 
 import android.content.Context
 import android.net.Uri
@@ -7,11 +7,14 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeightIn
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Scaffold
@@ -29,10 +32,11 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import it.walmann.adhdcompanion.CupcakeScreen
-import it.walmann.adhdcompanion.commonUI.MyTopAppBar
-import it.walmann.adhdcompanion.components.CameraView
-import it.walmann.adhdcompanion.components.TimeSelectBox
-import it.walmann.adhdcompanion.myObjects.myReminder
+import it.walmann.adhdcompanion.CommonUI.MyTopAppBar
+//import it.walmann.adhdcompanion.commonUI.MyTopAppBar
+import it.walmann.adhdcompanion.Components.CameraView
+import it.walmann.adhdcompanion.Components.TimeSelectBox
+import it.walmann.adhdcompanion.MyObjects.myReminder
 import java.io.File
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -67,22 +71,26 @@ fun NewReminder(context: Context, modifier: Modifier, navController: NavControll
         topBar = { MyTopAppBar() },
     ) { innerPadding ->
         Column(
+
             modifier = modifier
                 .padding(innerPadding)
-//            .fillMaxSize()
+                .fillMaxSize()
+                .height(IntrinsicSize.Max)
+                .width(IntrinsicSize.Max)
 //            .background(Color(0xff8d6e63))
 //        ,
 
         ) {
             if (shouldShowCamera.value) {
-                    CameraView(
-                        outputDirectory = outputDirectory,
-                        executor = cameraExecutor,
-                        onImageCaptured = ::handleImageCapture,
-                        onError = {
-                            Log.e("kilo", "View error:", it)
-                        }
-                    )
+                CameraView(
+                    modifier = modifier.fillMaxSize(),
+                    outputDirectory = outputDirectory,
+                    executor = cameraExecutor,
+                    onImageCaptured = ::handleImageCapture,
+                    onError = {
+                        Log.e("kilo", "View error:", it)
+                    }
+                )
 
             }
         }
@@ -93,11 +101,10 @@ fun NewReminder(context: Context, modifier: Modifier, navController: NavControll
                 navController = navController,
                 modifier = Modifier.fillMaxSize(),
 
-            )
+                )
         }
     }
 }
-
 
 
 @Composable
@@ -108,11 +115,11 @@ fun CreateReminderForm(
     navController: NavController,
 //    viewModel: ReminderViewModel = ReminderViewModel()
 ) {
-    var reminderTime by remember { mutableStateOf( "StringPlaceholder") }
+    var reminderTime by remember { mutableStateOf("StringPlaceholder") }
     val showButtons = remember { mutableStateOf(true) }
     val buttonBackOrCancel = remember { mutableStateOf("Cancel") }
 
-    val newReminder by remember {mutableStateOf(myReminder())}
+    val newReminder by remember { mutableStateOf(myReminder()) }
     newReminder.reminderTime = reminderTime
     newReminder.reminderImage = photoUri
 //    newReminder.reminderNote =
@@ -120,6 +127,7 @@ fun CreateReminderForm(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier.background(Color(0xff8d6e63))
     ) {
+
         Image(
             painter = rememberImagePainter(photoUri),
             contentDescription = null,
@@ -133,6 +141,7 @@ fun CreateReminderForm(
                 .fillMaxWidth()
 
         ) {
+            Text(text = reminderTime.toString())
             if (showButtons.value) {
                 buttonBackOrCancel.value = "Cancel"
                 TimerButtons(
@@ -157,9 +166,10 @@ fun CreateReminderForm(
                 TimeSelectBox(
                     dialogTitle = "Select time until next reminder",
 //                    viewModel = viewModel
-                    onValueChange = { reminderTime = it}
+                    onValueChange = {
+                        reminderTime = it
+                    }
                 )
-                Text(text = reminderTime)
 
             }
             Row(
@@ -173,7 +183,8 @@ fun CreateReminderForm(
                 NavigationButtons(
                     text = buttonBackOrCancel.value,
                     onClick = {
-                        showButtons.value = !showButtons.value },
+                        showButtons.value = !showButtons.value
+                    },
                 )
                 NavigationButtons(text = "Save", onClick = {
 

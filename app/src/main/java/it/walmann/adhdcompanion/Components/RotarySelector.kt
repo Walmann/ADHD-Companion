@@ -1,4 +1,4 @@
-package it.walmann.adhdcompanion.components
+package it.walmann.adhdcompanion.Components
 
 import android.content.Context
 import android.view.MotionEvent

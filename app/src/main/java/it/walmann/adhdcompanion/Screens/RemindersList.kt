@@ -1,4 +1,4 @@
-package it.walmann.adhdcompanion.screens
+package it.walmann.adhdcompanion.Screens
 
 import android.content.Context
 import android.graphics.BitmapFactory
@@ -6,6 +6,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -34,10 +35,12 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import it.walmann.adhdcompanion.commonUI.MyTopAppBar
+import it.walmann.adhdcompanion.CommonUI.MyTopAppBar
 import it.walmann.adhdcompanion.CupcakeScreen
-import it.walmann.adhdcompanion.myObjects.myReminder
-import it.walmann.adhdcompanion.myObjects.debugDeleteInternalStorage // TODO NEXT UNRESOLVED REFERENCE!??!?!?!
+import it.walmann.adhdcompanion.MyObjects.myReminder
+import it.walmann.adhdcompanion.MyObjects.debugDeleteInternalStorage // TODO NEXT UNRESOLVED REFERENCE!??!?!?!
+import it.walmann.adhdcompanion.MyObjects.getReminderDate
+import it.walmann.adhdcompanion.MyObjects.getReminderTime
 import it.walmann.adhdcompanion.R
 import java.io.File
 
@@ -81,8 +84,9 @@ fun RemindersScreen(modifier: Modifier, navController: NavController, context: C
             reminderArray.forEach { element ->// (key, value) ->
                 val currReminder = element.value
                 ReminderCard(
-                    reminderTime = currReminder["reminderTime"].toString(),
-                    reminderDate = "03.02.2024",
+//                    reminderTime = currReminder["reminderTime"].toString(),
+                    reminderTime = getReminderTime(currReminder),
+                    reminderDate = getReminderDate(currReminder),
                     reminderText = currReminder["reminderNote"].toString(),
                     reminderImage = currReminder["reminderImage"].toString(),
                     modifier = Modifier,
@@ -141,7 +145,7 @@ fun ReminderCard(
 //                modifier = modifier
 //                .background(Color.Black)
             ) {
-                Column(
+                Column( // Time and Date Info
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center,
                     modifier = modifier
@@ -151,8 +155,10 @@ fun ReminderCard(
 
                 ) {
                     Text(
+//                        modifier = modifier.auto,
                         text = reminderTime,
                         fontSize = 50.sp,
+
                     )
                     Text(
                         text = reminderDate,
