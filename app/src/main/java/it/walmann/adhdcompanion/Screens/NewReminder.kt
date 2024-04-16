@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeightIn
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Scaffold
@@ -31,11 +30,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
-import it.walmann.adhdcompanion.CupcakeScreen
 import it.walmann.adhdcompanion.CommonUI.MyTopAppBar
-//import it.walmann.adhdcompanion.commonUI.MyTopAppBar
 import it.walmann.adhdcompanion.Components.CameraView
 import it.walmann.adhdcompanion.Components.TimeSelectBox
+import it.walmann.adhdcompanion.CupcakeScreen
 import it.walmann.adhdcompanion.MyObjects.myReminder
 import java.io.File
 import java.util.concurrent.ExecutorService
@@ -89,7 +87,9 @@ fun NewReminder(context: Context, modifier: Modifier, navController: NavControll
                     onImageCaptured = ::handleImageCapture,
                     onError = {
                         Log.e("kilo", "View error:", it)
-                    }
+                    },
+                    context = context
+
                 )
 
             }
