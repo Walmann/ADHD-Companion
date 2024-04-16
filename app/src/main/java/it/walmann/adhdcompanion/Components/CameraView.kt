@@ -100,13 +100,13 @@ fun CameraView(
 
 
             CameraPreview( // Campose: https://github.com/ujizin/Camposer
-                    modifier = Modifier
+                modifier = Modifier
 //                        .height(200.dp)
 //                        .width(200.dp)
-                        .fillMaxSize()
-                        .padding(10.dp)
-                        .padding(top = 100.dp)
-                        .weight(5f),
+                    .fillMaxSize()
+                    .padding(10.dp)
+                    .padding(top = 100.dp)
+                    .weight(5f),
                 cameraState = cameraState,
                 camSelector = camSelector,
                 scaleType = ScaleType.FillCenter
@@ -122,21 +122,29 @@ fun CameraView(
 //                        modifier = Modifier.size(100.dp),
                     onClick = { camSelector = camSelector.inverse },
                     contentDescription = "Turn camera around",
-                    icon = R.drawable.camera_rotate_bold
-                    ,
+                    icon = R.drawable.camera_rotate_bold,
                 )
-                var temp1:ContentValues = ContentValues()
+                var temp1: ContentValues = ContentValues()
                 var temp2: ImageCaptureResult
                 CameraScreenButton(
 //                        modifier = Modifier.padding(bottom = 20.dp),
                     icon = R.drawable.arrow_right,
                     onClick = {
                         Log.i("kilo", "ON CLICK")
-                        cameraState.takePicture(contentValues = temp1) {result ->
-
+                        cameraState.takePicture(contentValues = temp1) { result ->
+//                        myTakePhoto(
+//                            filenameFormat = "yyyy-MM-dd-HH-mm-ss-SSS",
+////                                imageCapture = imageCapture,
+//                            outputDirectory = outputDirectory,
+//                            executor = executor,
+//                            onImageCaptured = onImageCaptured,
+//                            onError = onError
+//                        )
                             val photoFile = File(
                                 outputDirectory,
-                                SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-SSS", Locale.ENGLISH).format(System.currentTimeMillis()) + ".jpg"
+                                SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-SSS", Locale.ENGLISH).format(
+                                    System.currentTimeMillis()
+                                ) + ".jpg"
                             )
 
 
@@ -146,12 +154,7 @@ fun CameraView(
                             print("") // TODO NEXT Make this work. It stuck on camera. Must not be finally configured.
 
 
-//                            override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
-//                                val savedUri = Uri.fromFile(photoFile)
-//                                onImageCaptured(savedUri)
-//                            }
-
-                        }
+//                        }
 //                        takePhoto(
 //                            filenameFormat = "yyyy-MM-dd-HH-mm-ss-SSS",
 //                            imageCapture = imageCapture,
@@ -160,6 +163,7 @@ fun CameraView(
 //                            onImageCaptured = onImageCaptured,
 //                            onError = onError
 //                        )
+                        }
                     },
                 )
             }
@@ -197,6 +201,33 @@ fun CameraScreenButton(
         }
     )
 }
+
+
+//private fun myTakePhoto(
+//    filenameFormat: String,
+//    imageCapture: ImageCapture,
+//    outputDirectory: File,
+//    executor: Executor,
+//    onImageCaptured: (Uri) -> Unit,
+//    onError: (ImageCaptureException) -> Unit
+//) {
+//    cameraState.takePicture(contentValues = temp1) { result ->
+//        val photoFile = File(
+//            outputDirectory,
+//            SimpleDateFormat(
+//                "yyyy-MM-dd-HH-mm-ss-SSS",
+//                Locale.ENGLISH
+//            ).format(System.currentTimeMillis()) + ".jpg"
+//        )
+//
+//
+//        temp2 = result
+//        val savedUri = Uri.fromFile(photoFile)
+//        onImageCaptured(savedUri)
+//        print("") // TODO NEXT Make this wor
+//    }
+//}
+
 
 private fun takePhoto(
     filenameFormat: String,
