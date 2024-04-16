@@ -9,10 +9,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.requiredHeightIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.ElevatedButton
@@ -32,7 +34,7 @@ import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import it.walmann.adhdcompanion.CommonUI.MyTopAppBar
 import it.walmann.adhdcompanion.Components.CameraView
-import it.walmann.adhdcompanion.Components.TimeSelectBox
+import it.walmann.adhdcompanion.Components.TimeSelectDialog
 import it.walmann.adhdcompanion.CupcakeScreen
 import it.walmann.adhdcompanion.MyObjects.myReminder
 import java.io.File
@@ -67,20 +69,26 @@ fun NewReminder(context: Context, modifier: Modifier, navController: NavControll
 
     Scaffold(
         topBar = { MyTopAppBar() },
-    ) { innerPadding ->
-        Column(
 
+        ) { innerPadding ->
+        Column(
+            verticalArrangement = Arrangement.Top,
             modifier = modifier
                 .padding(innerPadding)
-                .fillMaxSize()
+                .background(Color(0xff8d6e63))
+                .padding(top = 10.dp)
+//                .fillMaxSize()
                 .height(IntrinsicSize.Max)
                 .width(IntrinsicSize.Max)
+
+
 //            .background(Color(0xff8d6e63))
 //        ,
 
         ) {
             if (shouldShowCamera.value) {
                 CameraView(
+                    context = context,
                     modifier = modifier.fillMaxSize(),
                     outputDirectory = outputDirectory,
                     executor = cameraExecutor,
@@ -88,24 +96,23 @@ fun NewReminder(context: Context, modifier: Modifier, navController: NavControll
                     onError = {
                         Log.e("kilo", "View error:", it)
                     },
-                    context = context
 
-                )
+                    )
 
             }
-        }
-        if (shouldShowPhoto.value) {
-            CreateReminderForm(
-                context = context,
-                photoUri = photoUri,
-                navController = navController,
-                modifier = Modifier.fillMaxSize(),
 
-                )
+            if (shouldShowPhoto.value) {
+                CreateReminderForm(
+                    context = context,
+                    photoUri = photoUri,
+                    navController = navController,
+                    modifier = Modifier.fillMaxSize(),
+
+                    )
+            }
         }
     }
 }
-
 
 @Composable
 fun CreateReminderForm(
@@ -122,34 +129,33 @@ fun CreateReminderForm(
     val newReminder by remember { mutableStateOf(myReminder()) }
     newReminder.reminderTime = reminderTime
     newReminder.reminderImage = photoUri
-//    newReminder.reminderNote =
+
+    val openTimerDialog = remember {mutableStateOf(false)}
+
+
+    Image(
+        painter = rememberImagePainter(photoUri),
+        contentDescription = null,
+        modifier = modifier
+//                .weight(1f)
+            .requiredHeight(200.dp)
+    )
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier.background(Color(0xff8d6e63))
+        verticalArrangement = Arrangement.SpaceBetween,
+        modifier = modifier
+//                .weight(5f)
+//                .fillMaxWidth()
     ) {
-
-        Image(
-            painter = rememberImagePainter(photoUri),
-            contentDescription = null,
-            modifier = Modifier.weight(5f)
-        )
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween,
-            modifier = modifier
-                .weight(5f)
-                .fillMaxWidth()
-
-        ) {
-            Text(text = reminderTime.toString())
-            if (showButtons.value) {
-                buttonBackOrCancel.value = "Cancel"
-                TimerButtons(
-                    text = "🕰️ Remind me in...",
-                    onClick = {
-                        showButtons.value = !showButtons.value
-                    }
-                )
+//            Text(text = reminderTime.toString())
+        if (showButtons.value) {
+            buttonBackOrCancel.value = "Cancel"
+            TimerButtons(
+                text = "🕰️ Remind me in...",
+                onClick = {
+                    showButtons.value = !showButtons.value
+                }
+            )
 
 //                TimerButtons(
 //                    text = "📅 Remind at...",
@@ -160,38 +166,49 @@ fun CreateReminderForm(
 ////                onClick = {} // TODO Make this configurable in settings
 //                )
 
-            }
-            if (!showButtons.value) {
-                buttonBackOrCancel.value = "Back"
-                TimeSelectBox(
-                    dialogTitle = "Select time until next reminder",
+        }
+        if (!showButtons.value) {
+            buttonBackOrCancel.value = "Back"
+            TimeSelectDialog(
+                dialogTitle = "Select time until next reminder",
 //                    viewModel = viewModel
-                    onValueChange = {
-                        reminderTime = it
-                    }
-                )
+                onConfirmRequest = {
+                    reminderTime = it
+                    showButtons.value = !showButtons.value
+                },
+                onDismissRequest = {
+                    showButtons.value = !showButtons.value
+                }
+            )
+//                TimeSelectBox(
+//                    dialogTitle = "Select time until next reminder",
+////                    viewModel = viewModel
+//                    onValueChange = {
+//                        reminderTime = it
+//                    }
+//                )
 
-            }
-            Row(
-                verticalAlignment = Alignment.Bottom,
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 50.dp),
+        }
+        Row(
+//                verticalAlignment = Alignment.CenterVertically,
+            modifier = modifier
+                .fillMaxWidth()
+                .fillMaxHeight()
+//                    .padding(bottom = 50.dp)
+            ,
 
-                horizontalArrangement = Arrangement.Center
-            ) {
-                NavigationButtons(
-                    text = buttonBackOrCancel.value,
-                    onClick = {
-                        showButtons.value = !showButtons.value
-                    },
-                )
-                NavigationButtons(text = "Save", onClick = {
-
-                    newReminder.saveNewReminder(context = context)
-                    navController.navigate(CupcakeScreen.Start.name)
-                })
-            }
+            horizontalArrangement = Arrangement.Center
+        ) {
+            NavigationButtons(
+                text = buttonBackOrCancel.value,
+                onClick = {
+                    showButtons.value = !showButtons.value
+                },
+            )
+            NavigationButtons(text = "Save", onClick = {
+                newReminder.saveNewReminder(context = context)
+                navController.navigate(CupcakeScreen.Start.name)
+            })
         }
     }
 }
@@ -220,7 +237,7 @@ fun TimerButtons(
             Text(text = text)
 //            if (showSubWidget.value) {
 //                TimeSelectBox(
-//                    onDismissRequest = { /*TODO*/ },
+//                    onDismissRequest = {},
 //                    onConfirmation = {},
 //                    dialogTitle = "Select time until next reminder"
 //                )
@@ -234,7 +251,7 @@ fun TimerButtons(
 fun NavigationButtons(
     modifier: Modifier = Modifier,
     text: String = "Text",
-    onClick: () -> Unit = { /*TODO*/ }
+    onClick: () -> Unit = { }
 ) {
     ElevatedButton(
         onClick = onClick,

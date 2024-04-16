@@ -27,7 +27,7 @@ class myReminder(
     private val reminderStorageFile: String = "reminder_db.txt",
 
 
-    var reminderTime: String = "", // TODO NEXT Create the needed code to save Reminder time.
+    var reminderTime: String = "",
 //    var reminderDate: String = "31.12.24",
     var reminderImage: Uri = Uri.EMPTY,
     var reminderNote: String = ""
@@ -82,7 +82,7 @@ class myReminder(
     //    fun loadReminders(context: Context): Map<String, String> {
     @Suppress("UNCHECKED_CAST")
     fun loadReminders(context: Context): LinkedHashMap<String, LinkedHashMap<String, String>> {
-        try { //TODO NEXT Make it load the existing ReminderDB and add the new one. Then save it to file.
+        try {
             val returningMap: LinkedHashMap<String, LinkedHashMap<String, String>>
 
 //            val file = File(context.filesDir, reminderStorageFile)

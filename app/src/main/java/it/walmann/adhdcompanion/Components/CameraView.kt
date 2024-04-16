@@ -61,17 +61,24 @@ fun CameraView(
             modifier = Modifier.fillMaxSize()
         ) {
             CameraPreview( // Campose: https://github.com/ujizin/Camposer
-                modifier = Modifier
+
+//                imageCaptureTargetSize = ImageTargetSize(
+////                    aspectRatio = AspectRatio.RATIO_16_9,
+//                    size = Size(width= 500f, height=500f)
+//                ),
+
+                modifier = modifier
 //                        .height(200.dp)
 //                        .width(200.dp)
-                    .fillMaxSize()
+//                    .fillMaxSize()
                     .padding(10.dp)
-                    .padding(top = 100.dp)
-                    .weight(5f),
+//                    .padding(top = 100.dp)
+                    .weight(2f),
                 cameraState = cameraState,
                 camSelector = camSelector,
-                scaleType = ScaleType.FillCenter
+                scaleType = ScaleType.FitCenter
             )
+
             Row(
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically,

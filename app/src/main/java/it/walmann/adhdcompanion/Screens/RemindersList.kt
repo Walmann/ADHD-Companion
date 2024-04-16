@@ -6,7 +6,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -37,10 +36,10 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import it.walmann.adhdcompanion.CommonUI.MyTopAppBar
 import it.walmann.adhdcompanion.CupcakeScreen
-import it.walmann.adhdcompanion.MyObjects.myReminder
-import it.walmann.adhdcompanion.MyObjects.debugDeleteInternalStorage // TODO NEXT UNRESOLVED REFERENCE!??!?!?!
+import it.walmann.adhdcompanion.MyObjects.debugDeleteInternalStorage
 import it.walmann.adhdcompanion.MyObjects.getReminderDate
 import it.walmann.adhdcompanion.MyObjects.getReminderTime
+import it.walmann.adhdcompanion.MyObjects.myReminder
 import it.walmann.adhdcompanion.R
 import java.io.File
 
@@ -83,7 +82,7 @@ fun RemindersScreen(modifier: Modifier, navController: NavController, context: C
             print("")
             reminderArray.forEach { element ->// (key, value) ->
                 val currReminder = element.value
-                ReminderCard(
+                ReminderCard( // TODO Create a "Reminder details" Screen.
 //                    reminderTime = currReminder["reminderTime"].toString(),
                     reminderTime = getReminderTime(currReminder),
                     reminderDate = getReminderDate(currReminder),
