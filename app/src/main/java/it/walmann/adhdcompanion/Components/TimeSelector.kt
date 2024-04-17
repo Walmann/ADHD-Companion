@@ -1,7 +1,6 @@
 package it.walmann.adhdcompanion.Components
 
 
-import android.content.Context
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,7 +18,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -27,7 +25,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.chargemap.compose.numberpicker.NumberPicker
-import java.time.LocalDateTime
 import java.util.Calendar
 
 
@@ -37,7 +34,7 @@ private fun CancelAndNextButtons(
     selectedHours: Int,
     selectedMinutes: Int,
     onDismissRequest: () -> Unit = {},
-    onConfirmRequest: (LocalDateTime) -> Unit,
+    onConfirmRequest: (Calendar) -> Unit,
 ) {
     Row {
         Button(onClick = onDismissRequest) {// TODO Create Back Button function. If needed?
@@ -62,10 +59,10 @@ private fun CancelAndNextButtons(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DateTimeSelectDialog(
-    context: Context,
-    dialogTitle: String,
+    calendar: Calendar,
+    dialogTitle: String = "Select Date",
     onDismissRequest: () -> Unit = {},
-    onConfirmRequest: (LocalDateTime) -> Unit = {},
+    onConfirmRequest: (Calendar) -> Unit = {},
 ) {
     Dialog(
         onDismissRequest = onDismissRequest,
@@ -79,7 +76,7 @@ fun DateTimeSelectDialog(
             var selectedHours by remember { mutableIntStateOf(0) }
             var selectedMinutes by remember { mutableIntStateOf(0) }
 
-            val currTime by remember { mutableStateOf<LocalDateTime>(LocalDateTime.now()) }
+//            val currTime by remember { mutableStateOf<LocalDateTime>(LocalDateTime.now()) }
 
             Column(
                 modifier = Modifier
@@ -87,7 +84,12 @@ fun DateTimeSelectDialog(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                DateSelectDialog()
+                DateSelectDialog(
+                    calendar = calendar,
+                    onConfirmRequest = onConfirmRequest,
+                    onDismissRequest = onDismissRequest
+
+                )
 
 
 //                Text(
@@ -106,13 +108,13 @@ fun DateTimeSelectDialog(
 //                    onHourChange = { selectedHours = it },
 //                    onMinuteChange = { selectedMinutes = it }
 //                )
-                CancelAndNextButtons(
-                    selectedDays = selectedDays,
-                    selectedHours = selectedHours,
-                    selectedMinutes = selectedMinutes,
-                    onConfirmRequest = onConfirmRequest,
-                    onDismissRequest = onDismissRequest
-                )
+//                CancelAndNextButtons(
+//                    selectedDays = selectedDays,
+//                    selectedHours = selectedHours,
+//                    selectedMinutes = selectedMinutes,
+//                    onConfirmRequest = onConfirmRequest,
+//                    onDismissRequest = onDismissRequest
+//                )
             }
         }
     }
@@ -123,7 +125,7 @@ fun DateTimeSelectDialog(
 fun TimeSelectDialog(
     dialogTitle: String,
     onDismissRequest: () -> Unit = {},
-    onConfirmRequest: (LocalDateTime) -> Unit = {},
+    onConfirmRequest: (Calendar) -> Unit = {},
 ) {
     Dialog(
         onDismissRequest = onDismissRequest
@@ -208,20 +210,28 @@ private fun calculateNewTimerTime(
     selectedDays: Int,
     selectedHours: Int,
     selectedMinutes: Int,
-): LocalDateTime {
-    val currentDateTime = LocalDateTime.now()
-    val reminderTimeInput = currentDateTime
-        .plusDays(selectedDays.toLong())
-        .plusHours(selectedHours.toLong())
-        .plusMinutes(selectedMinutes.toLong())
-    return reminderTimeInput
+): Calendar {
+
+    val currentDateTime = Calendar.getInstance()
+
+    currentDateTime.add(Calendar.DATE, selectedDays)
+    currentDateTime.add(Calendar.HOUR, selectedHours)
+    currentDateTime.add(Calendar.MINUTE, selectedMinutes)
+
+//    val reminderTimeInput = currentDateTime
+//        .plusDays(selectedDays.toLong())
+//        .plusHours(selectedHours.toLong())
+//        .plusMinutes(selectedMinutes.toLong())
+    return currentDateTime
 }
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DateSelectDialog(
-
+calendar: Calendar,
+onDismissRequest: () -> Unit,
+onConfirmRequest: (Calendar) -> Unit
 ) {
     val datePickerState = rememberDatePickerState()
     val confirmEnabled = remember {
@@ -237,27 +247,8 @@ fun DateSelectDialog(
         confirmButton = {
             TextButton(
                 onClick = {
-                    val temp2 = datePickerState.selectedDateMillis
-                    val temp1 = datePickerState
-                    val temp0 = datePickerState
-
-                    val calendar = Calendar.getInstance()
                     calendar.timeInMillis = datePickerState.selectedDateMillis!!
-
-                    val temp4 = calendar.get(Calendar.YEAR)
-
-
-                    val convertedDays = LocalDateTime.of(
-                        calendar.get(Calendar.YEAR),
-                        calendar.get(Calendar.MONTH) + 1, // Månedene er 0-baserte
-                        calendar.get(Calendar.DAY_OF_MONTH),
-                        calendar.get(Calendar.HOUR_OF_DAY),
-                        calendar.get(Calendar.MINUTE),
-                        calendar.get(Calendar.SECOND)
-                    )
-
-                    val convertedDate = datePickerState
-                    val ttt = ""
+                    onConfirmRequest
                 },
                 enabled = confirmEnabled.value
             ) {
@@ -266,7 +257,7 @@ fun DateSelectDialog(
         },
         dismissButton = {
             TextButton(
-                onClick = { }
+                onClick = onDismissRequest
             ) {
                 Text("Cancel")
             }

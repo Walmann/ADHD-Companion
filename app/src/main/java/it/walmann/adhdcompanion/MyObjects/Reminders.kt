@@ -9,6 +9,7 @@ import java.io.IOException
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 import java.time.LocalDateTime
+import java.util.Calendar
 
 
 private fun getRandomKey(): String {
@@ -22,38 +23,24 @@ private fun getRandomKey(): String {
 
 
 
+@Suppress("UNCHECKED_CAST")
 class myReminder(
 //    val alarmTime : LocalDateTime,
     private val reminderStorageFile: String = "reminder_db.txt",
 
 
-    var reminderTime: LocalDateTime = LocalDateTime.now(),
+    var reminderCalendar: Calendar = Calendar.getInstance(),
 //    var reminderDate: String = "31.12.24",
     var reminderImage: Uri = Uri.EMPTY,
     var reminderNote: String = ""
 ) {
-    @Suppress("UNCHECKED_CAST")
+
     private fun createMap(newReminder: LocalDateTime): LinkedHashMap<String, LinkedHashMap<String, String>> {
         val currentDateTime = LocalDateTime.now()
         val currMap = mapOf(
             "reminderKey" to getRandomKey(),
-
-            "reminderLocalDateTime" to "$newReminder",
-            "reminderYear" to "${newReminder.year}",
-            "reminderMonth" to "${newReminder.monthValue}",
-            "reminderDay" to "${newReminder.dayOfMonth}",
-            "reminderHour" to "${newReminder.hour}",
-            "reminderMinute" to "${newReminder.minute}", // TODO Format to make it look better
-
-            "reminderCreationYear" to "${currentDateTime.year}",
-            "reminderCreationMonth" to "${currentDateTime.monthValue}",
-            "reminderCreationDay" to "${currentDateTime.dayOfMonth}",
-            "reminderCreationHour" to "${currentDateTime.hour}",
-            "reminderCreationMinute" to "${currentDateTime.minute}",
-
-//            "reminderCreationTime" to "${currentDateTime.hour}:${currentDateTime.minute}",
-//            "reminderCreationDate" to "${currentDateTime.year}-${currentDateTime.monthValue}-${currentDateTime.dayOfMonth}",
-
+            "reminderCalendar" to "${newReminder}",
+            "reminderCreationCalendar" to "${Calendar.getInstance()}",
             "reminderImage" to reminderImage.lastPathSegment,
             "reminderImageFullPath" to reminderImage.toString(),
             "reminderNote" to reminderNote
@@ -62,7 +49,7 @@ class myReminder(
         returningMap[currMap["reminderKey"].toString()] = currMap as LinkedHashMap<String, String>
         return returningMap
     }
-//    , newReminder: myReminder
+
     fun saveNewReminder(context: Context, reminderTime: LocalDateTime) {
         try {
             val curReminders: LinkedHashMap<String, LinkedHashMap<String, String>> = loadReminders(context)
