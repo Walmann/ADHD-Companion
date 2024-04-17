@@ -20,8 +20,6 @@ import it.walmann.adhdcompanion.ui.theme.ADHDCompanionTheme
 enum class CupcakeScreen(@StringRes val title: Int) {
     Start(title = R.string.app_name),
     NewReminder(title = R.string.NewReminder),
-//    Pickup(title = R.string.choose_pickup_date),
-//    Summary(title = R.string.order_summary)
 }
 
 
@@ -43,19 +41,6 @@ class MainActivity : ComponentActivity() {
 
     // TODO Create "ask for alarm permission" section
 
-//    companion object {
-//        private const val TAG = "CameraXApp"
-//        private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
-//        public val REQUIRED_PERMISSIONS =
-//            mutableListOf(
-//                Manifest.permission.CAMERA,
-//                Manifest.permission.RECORD_AUDIO
-//            ).apply {
-//                if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
-//                    add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-//                }
-//            }.toTypedArray()
-//    }
 }
 
 @Composable

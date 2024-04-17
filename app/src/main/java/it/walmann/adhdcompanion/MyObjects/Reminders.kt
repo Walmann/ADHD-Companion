@@ -27,22 +27,23 @@ class myReminder(
     private val reminderStorageFile: String = "reminder_db.txt",
 
 
-    var reminderTime: String = "",
+    var reminderTime: LocalDateTime = LocalDateTime.now(),
 //    var reminderDate: String = "31.12.24",
     var reminderImage: Uri = Uri.EMPTY,
     var reminderNote: String = ""
 ) {
     @Suppress("UNCHECKED_CAST")
-    private fun createMap(): LinkedHashMap<String, LinkedHashMap<String, String>> {
+    private fun createMap(newReminder: LocalDateTime): LinkedHashMap<String, LinkedHashMap<String, String>> {
         val currentDateTime = LocalDateTime.now()
-        val currMap =mapOf(
+        val currMap = mapOf(
             "reminderKey" to getRandomKey(),
 
-            "reminderYear" to "${currentDateTime.year}",
-            "reminderMonth" to "${currentDateTime.monthValue}",
-            "reminderDay" to "${currentDateTime.dayOfMonth}",
-            "reminderHour" to "${currentDateTime.hour}",
-            "reminderMinute" to "${currentDateTime.minute}", // TODO Format to make it look better
+            "reminderLocalDateTime" to "$newReminder",
+            "reminderYear" to "${newReminder.year}",
+            "reminderMonth" to "${newReminder.monthValue}",
+            "reminderDay" to "${newReminder.dayOfMonth}",
+            "reminderHour" to "${newReminder.hour}",
+            "reminderMinute" to "${newReminder.minute}", // TODO Format to make it look better
 
             "reminderCreationYear" to "${currentDateTime.year}",
             "reminderCreationMonth" to "${currentDateTime.monthValue}",
@@ -61,11 +62,11 @@ class myReminder(
         returningMap[currMap["reminderKey"].toString()] = currMap as LinkedHashMap<String, String>
         return returningMap
     }
-
-    fun saveNewReminder(context: Context) {
+//    , newReminder: myReminder
+    fun saveNewReminder(context: Context, reminderTime: LocalDateTime) {
         try {
             val curReminders: LinkedHashMap<String, LinkedHashMap<String, String>> = loadReminders(context)
-            val reminderToSave = this.createMap()
+            val reminderToSave = this.createMap(reminderTime)
             curReminders.putAll(reminderToSave)
             val fos: FileOutputStream =
                 context.openFileOutput(reminderStorageFile, Context.MODE_PRIVATE)
@@ -84,17 +85,10 @@ class myReminder(
     fun loadReminders(context: Context): LinkedHashMap<String, LinkedHashMap<String, String>> {
         try {
             val returningMap: LinkedHashMap<String, LinkedHashMap<String, String>>
-
-//            val file = File(context.filesDir, reminderStorageFile)
-
             val fis: FileInputStream = context.openFileInput(reminderStorageFile)
             val ois = ObjectInputStream(fis)
-
             returningMap = ois.readObject() as LinkedHashMap<String, LinkedHashMap<String, String>>
-
-
             return returningMap
-
         } catch (e: IOException) {
             e.printStackTrace()
         }

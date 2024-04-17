@@ -27,7 +27,7 @@ fun TimeSelectDialog(
     dialogTitle: String,
 //    onValueChange: (String) -> Unit,
     onDismissRequest: () -> Unit = {},
-    onConfirmRequest: (String) -> Unit = {},
+    onConfirmRequest: (LocalDateTime) -> Unit = {},
 ) {
     Dialog(
         onDismissRequest = onDismissRequest,
@@ -51,13 +51,28 @@ fun TimeSelectDialog(
                 return seconds
             }
 
-            fun calculateNewTimerTime(): String {
-                val localtime = LocalDateTime.now().plusDays(selectedDays.toLong()).plusHours(
-                    selectedHours.toLong()
-                ).plusMinutes(selectedMinutes.toLong())
+//            fun calculateNewTimerTime(): Map<String, String> {
+            fun calculateNewTimerTime():LocalDateTime {
+                val currentDateTime = LocalDateTime.now()
+                val reminderTimeInput = currentDateTime.plusDays(selectedDays.toLong()).plusHours(selectedHours.toLong()).plusMinutes(selectedMinutes.toLong())
+//                val localReminderTime = mapOf(
+//                    "reminderYear" to "${currentDateTime.year}",
+//                    "reminderMonth" to "${currentDateTime.monthValue}",
+//                    "reminderDay" to "${currentDateTime.dayOfMonth}",
+//                    "reminderHour" to "${currentDateTime.hour}",
+//                    "reminderMinute" to "${currentDateTime.minute}",
+//                )
 
-                return localtime.toString()
+//
+                return reminderTimeInput
             }
+//            fun calculateNewTimerTime(): String {
+//                val localtime = LocalDateTime.now().plusDays(selectedDays.toLong()).plusHours(
+//                    selectedHours.toLong()
+//                ).plusMinutes(selectedMinutes.toLong())
+//
+//                return localtime.toString()
+//            }
 
 //            onValueChange(calculateNewTimerTime())
 

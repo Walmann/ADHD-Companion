@@ -72,8 +72,8 @@ fun CameraView(
 //                        .width(200.dp)
 //                    .fillMaxSize()
                     .padding(10.dp)
-//                    .padding(top = 100.dp)
-                    .weight(2f),
+                    .weight(3f)
+                ,
                 cameraState = cameraState,
                 camSelector = camSelector,
                 scaleType = ScaleType.FitCenter
@@ -153,7 +153,6 @@ private fun myTakePhoto(
     cameraState.takePicture(context.createNewFile()) { result ->
         if (result is ImageCaptureResult.Success) {
             onImageCaptured(result.savedUri!!)
-            print("") // TODO NEXT Make this work. It stuck on camera. Must not be finally configured.
         } else {
             Throwable("Error capturing image!")
         }
