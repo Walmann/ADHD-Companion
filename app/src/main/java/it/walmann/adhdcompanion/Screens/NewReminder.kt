@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeightIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,6 +33,7 @@ import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import it.walmann.adhdcompanion.CommonUI.MyTopAppBar
 import it.walmann.adhdcompanion.Components.CameraView
+import it.walmann.adhdcompanion.Components.DateSelectDialog
 import it.walmann.adhdcompanion.Components.TimeSelectDialog
 import it.walmann.adhdcompanion.CupcakeScreen
 import it.walmann.adhdcompanion.MyObjects.myReminder
@@ -103,12 +105,13 @@ fun NewReminder(context: Context, modifier: Modifier, navController: NavControll
                     modifier = modifier //.fillMaxSize()
 
 
-                    )
+                )
             }
         }
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateReminderForm(
     context: Context,
@@ -118,6 +121,7 @@ fun CreateReminderForm(
 //    viewModel: ReminderViewModel = ReminderViewModel()
 ) {
     var reminderTime by remember { mutableStateOf<LocalDateTime>(LocalDateTime.now()) }
+//    var reminderTime by remember { mutableStateOf<Calendar>(Calendar.getInstance()) }
 //    val buttonBackOrCancel = remember { mutableStateOf("Cancel") }
 
     val newReminder by remember { mutableStateOf(myReminder()) }
@@ -125,6 +129,7 @@ fun CreateReminderForm(
     newReminder.reminderImage = photoUri
 
     val openTimerDialog = remember { mutableStateOf(false) }
+    val openDateAndTimerDialog = remember { mutableStateOf(false) }
 
     Column(
         verticalArrangement = Arrangement.Top,
@@ -151,16 +156,21 @@ fun CreateReminderForm(
         ) {
             Text(text = reminderTime.toString())
 
-                TimerButtons(
-                    text = "🕰️ Remind me in...",
-                    onClick = {
-                        openTimerDialog.value = !openTimerDialog.value
-                    }
-                )
+            TimerButtons(
+                text = "🕰️ Remind me in...",
+                onClick = {
+//                        openTimerDialog.value = !openTimerDialog.value
+                    openTimerDialog.value = true
+                }
+            )
 
-//                TimerButtons(
-//                    text = "📅 Remind at...",
-//                ) // Make a clock and calendar choices
+            TimerButtons(
+                text = "📅 Remind at...", // TODO WORKNOW Create a "remind me on..." selector where you can select date and time for reminder.
+                onClick = {
+//                        openDateAndTimerDialog.value = !openDateAndTimerDialog.value
+                    openDateAndTimerDialog.value = true
+                }
+            ) // Make a clock and calendar choices
 //
 //                TimerButtons(
 //                    text = "⏱️ Remind me in 10 minutes",
@@ -169,28 +179,48 @@ fun CreateReminderForm(
 
 
             if (openTimerDialog.value) {
-                TimeSelectDialog(
+                TimeSelectDialog( // TODO Make this prettier
                     dialogTitle = "Select time until next reminder",
                     onConfirmRequest = {
                         reminderTime = it
-                        openTimerDialog.value = !openTimerDialog.value
+//                        openTimerDialog.value = !openTimerDialog.value
+                        openTimerDialog.value = false
+                        openDateAndTimerDialog.value = false
                     },
                     onDismissRequest = {
-                        openTimerDialog.value = !openTimerDialog.value
+//                        openTimerDialog.value = !openTimerDialog.value
+                        openTimerDialog.value = false
+                        openDateAndTimerDialog.value = false
                     }
                 )
-
             }
+            if (openDateAndTimerDialog.value) {
+                DateSelectDialog()
+//                DateTimeSelectDialog( // TODO Make this prettier
+//                    dialogTitle = "Select time until next reminder",
+//                    onConfirmRequest = {
+//                        reminderTime = it
+////                        openTimerDialog.value = !openTimerDialog.value
+//                        openTimerDialog.value = false
+//                        openDateAndTimerDialog.value = false
+//                    },
+//                    onDismissRequest = {
+////                        openTimerDialog.value = !openTimerDialog.value
+//                        openTimerDialog.value = false
+//                        openDateAndTimerDialog.value = false
+//                    }
+//                )
+            }
+
+
             Row(
                 verticalAlignment = Alignment.Bottom,
                 horizontalArrangement = Arrangement.SpaceAround,
                 modifier = modifier
                     .fillMaxWidth()
-                    .padding(bottom = 15.dp)
+                    .padding(bottom = 15.dp),
 
-                ,
-
-            ) {
+                ) {
 //                NavigationButtons(
 //                    text = "Cancel",
 //                    onClick = {
@@ -199,9 +229,9 @@ fun CreateReminderForm(
                 NavigationButtons(
                     text = "Save",
                     onClick = {
-                    newReminder.saveNewReminder(context = context, reminderTime = reminderTime)
-                    navController.navigate(CupcakeScreen.Start.name)
-                })
+                        newReminder.saveNewReminder(context = context, reminderTime = reminderTime)
+                        navController.navigate(CupcakeScreen.Start.name)
+                    })
             }
         }
     }
@@ -213,10 +243,8 @@ fun TimerButtons(
     text: String = "Button Text",
     onClick: () -> Unit = {}
 ) {
-    val showSubWidget = remember { mutableStateOf(false) }
     ElevatedButton(
         onClick = {
-            showSubWidget.value = true
             onClick()
         },
         modifier = modifier
@@ -238,10 +266,10 @@ fun NavigationButtons(
     ElevatedButton(
         onClick = onClick,
 
-    ) {
-        Text(text = text,
-        modifier = modifier.padding(10.dp))
+        ) {
+        Text(
+            text = text,
+            modifier = modifier.padding(10.dp)
+        )
     }
 }
-
-
