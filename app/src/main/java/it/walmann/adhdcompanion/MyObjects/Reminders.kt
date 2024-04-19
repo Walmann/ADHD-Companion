@@ -35,24 +35,24 @@ class myReminder(
     var reminderNote: String = ""
 ) {
 
-    private fun createMap(newReminder: LocalDateTime): LinkedHashMap<String, LinkedHashMap<String, String>> {
-        val currentDateTime = LocalDateTime.now()
+    private fun createMap(newReminder: Calendar): LinkedHashMap<String, LinkedHashMap<String, Any>> {
+        val currentDateTime = Calendar.getInstance()
         val currMap = mapOf(
             "reminderKey" to getRandomKey(),
-            "reminderCalendar" to "${newReminder}",
-            "reminderCreationCalendar" to "${Calendar.getInstance()}",
+            "reminderCalendar" to "${newReminder.timeInMillis}",
+            "reminderCreationCalendar" to "${Calendar.getInstance().timeInMillis}",
             "reminderImage" to reminderImage.lastPathSegment,
             "reminderImageFullPath" to reminderImage.toString(),
             "reminderNote" to reminderNote
         )
-        val returningMap = LinkedHashMap<String, LinkedHashMap<String, String>>()
-        returningMap[currMap["reminderKey"].toString()] = currMap as LinkedHashMap<String, String>
+        val returningMap = LinkedHashMap<String, LinkedHashMap<String, Any>>()
+        returningMap[currMap["reminderKey"].toString()] = currMap as LinkedHashMap<String, Any>
         return returningMap
     }
 
-    fun saveNewReminder(context: Context, reminderTime: LocalDateTime) {
+    fun saveNewReminder(context: Context, reminderTime: Calendar) {
         try {
-            val curReminders: LinkedHashMap<String, LinkedHashMap<String, String>> = loadReminders(context)
+            val curReminders: LinkedHashMap<String, LinkedHashMap<String, Any>> = loadReminders(context)
             val reminderToSave = this.createMap(reminderTime)
             curReminders.putAll(reminderToSave)
             val fos: FileOutputStream =
@@ -69,12 +69,12 @@ class myReminder(
 
     //    fun loadReminders(context: Context): Map<String, String> {
     @Suppress("UNCHECKED_CAST")
-    fun loadReminders(context: Context): LinkedHashMap<String, LinkedHashMap<String, String>> {
+    fun loadReminders(context: Context): LinkedHashMap<String, LinkedHashMap<String, Any>> {
         try {
-            val returningMap: LinkedHashMap<String, LinkedHashMap<String, String>>
+            val returningMap: LinkedHashMap<String, LinkedHashMap<String, Any>>
             val fis: FileInputStream = context.openFileInput(reminderStorageFile)
             val ois = ObjectInputStream(fis)
-            returningMap = ois.readObject() as LinkedHashMap<String, LinkedHashMap<String, String>>
+            returningMap = ois.readObject() as LinkedHashMap<String, LinkedHashMap<String, Any>>
             return returningMap
         } catch (e: IOException) {
             e.printStackTrace()

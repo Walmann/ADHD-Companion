@@ -42,6 +42,7 @@ import it.walmann.adhdcompanion.MyObjects.getReminderTime
 import it.walmann.adhdcompanion.MyObjects.myReminder
 import it.walmann.adhdcompanion.R
 import java.io.File
+import java.util.Calendar
 
 @Composable
 fun RemindersScreen(modifier: Modifier, navController: NavController, context: Context) {
@@ -83,10 +84,19 @@ fun RemindersScreen(modifier: Modifier, navController: NavController, context: C
             print("")
             reminderArray.forEach { element ->// (key, value) ->
                 val currReminder = element.value
+
+                val currCalendar = Calendar.getInstance()
+//                val temp2 = currReminder["reminderCalendar"]
+                val temp3 = currReminder["reminderCalendar"].toString().toLong()
+                currCalendar.setTimeInMillis(temp3)
+
+                val temp = currCalendar.time
                 ReminderCard( // TODO Create a "Reminder details" Screen.
 //                    reminderTime = currReminder["reminderTime"].toString(),
-                    reminderTime = getReminderTime(currReminder),
-                    reminderDate = getReminderDate(currReminder),
+//                    reminderTime = getReminderTime(currReminder),
+//                    reminderDate = getReminderDate(currReminder),
+                    reminderTime = "${currCalendar.get(Calendar.HOUR).toString().padStart(2,'0')}:${currCalendar.get(Calendar.MINUTE).toString().padStart(2,'0')}",
+                    reminderDate = "${currCalendar.get(Calendar.DATE).toString().padStart(2,'0')}.${currCalendar.get(Calendar.MONTH).toString().padStart(2,'0')}.${currCalendar.get(Calendar.YEAR).toString().padStart(2,'0')}",
                     reminderText = currReminder["reminderNote"].toString(),
                     reminderImage = currReminder["reminderImage"].toString(),
                     modifier = Modifier,
@@ -135,16 +145,7 @@ fun ReminderCard(
             } else {
                 BitmapFactory.decodeResource(context.resources, R.drawable.bing)
             }
-
-//            val temp1 = imgFile.absolutePath
-//            val temp2 = imgFile.absoluteFile
-//            val temp3 = imgFile.path
-//            val reminderImage = BitmapFactory.decodeFile(imgFile.path)
-
-            Row(
-//                modifier = modifier
-//                .background(Color.Black)
-            ) {
+            Row{
                 Column( // Time and Date Info
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center,

@@ -72,9 +72,9 @@ fun DateTimeSelectDialog(
                 .fillMaxWidth()
                 .padding(16.dp),
         ) {
-            var selectedDays by remember { mutableIntStateOf(0) }
-            var selectedHours by remember { mutableIntStateOf(0) }
-            var selectedMinutes by remember { mutableIntStateOf(0) }
+//            var selectedDays by remember { mutableIntStateOf(0) }
+//            var selectedHours by remember { mutableIntStateOf(0) }
+//            var selectedMinutes by remember { mutableIntStateOf(0) }
 
 //            val currTime by remember { mutableStateOf<LocalDateTime>(LocalDateTime.now()) }
 
@@ -84,12 +84,11 @@ fun DateTimeSelectDialog(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                DateSelectDialog(
-                    calendar = calendar,
-                    onConfirmRequest = onConfirmRequest,
-                    onDismissRequest = onDismissRequest
-
-                )
+//                DateSelectDialog(
+//                    calendar = calendar,
+//                    onConfirmRequest = onConfirmRequest,
+//                    onDismissRequest = onDismissRequest
+//                )
 
 
 //                Text(
@@ -137,7 +136,7 @@ fun TimeSelectDialog(
                 .padding(16.dp),
         ) {
             var selectedDays by remember { mutableIntStateOf(0) }
-            var selectedHours by remember { mutableIntStateOf(0) }
+            var selectedHours by remember { mutableIntStateOf(0) } // FIX When adding time, it always start at 0, so if you go to add or subtract time, it will calculate from the reminderTime not actual time.
             var selectedMinutes by remember { mutableIntStateOf(0) }
 
             Column(

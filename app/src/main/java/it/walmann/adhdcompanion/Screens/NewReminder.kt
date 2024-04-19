@@ -33,7 +33,7 @@ import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import it.walmann.adhdcompanion.CommonUI.MyTopAppBar
 import it.walmann.adhdcompanion.Components.CameraView
-import it.walmann.adhdcompanion.Components.DateTimeSelectDialog
+import it.walmann.adhdcompanion.Components.DateSelectorDialog
 import it.walmann.adhdcompanion.Components.TimeSelectDialog
 import it.walmann.adhdcompanion.CupcakeScreen
 import it.walmann.adhdcompanion.MyObjects.myReminder
@@ -158,18 +158,26 @@ fun CreateReminderForm(
             Text(text = reminderCalendar.time.toString())
 
             TimerButtons(
-                text = "🕰️ Remind me in...",
+                text = "Remind me in 10 minutes",
                 onClick = {
-                    openTimerDialog.value = true
+                    reminderCalendar.add(Calendar.MINUTE, 10)
                 }
             )
 
-            TimerButtons(
-                text = "📅 Remind at...", // TODO WORKNOW Create a "remind me on..." selector where you can select date and time for reminder.
-                onClick = {
-                    openDateAndTimerDialog.value = true
-                }
-            ) // Make a clock and calendar choices
+
+//            TimerButtons(
+//                text = "🕰️ Remind me in...",
+//                onClick = {
+//                    openTimerDialog.value = true
+//                }
+//            )
+//
+//            TimerButtons(
+//                text = "📅 Remind at...", // TODO WORKNOW Create a "remind me on..." selector where you can select date and time for reminder.
+//                onClick = {
+//                    openDateAndTimerDialog.value = true
+//                }
+//            ) // Make a clock and calendar choices
 //
 //                TimerButtons(
 //                    text = "⏱️ Remind me in 10 minutes",
@@ -177,51 +185,26 @@ fun CreateReminderForm(
 //                )
 
 
-            if (openTimerDialog.value) {
-                TimeSelectDialog( // TODO Make this prettier
-                    dialogTitle = "Select time until next reminder",
-                    onConfirmRequest = {
-                        reminderCalendar = it
-//                        openTimerDialog.value = !openTimerDialog.value
-                        openTimerDialog.value = false
-                        openDateAndTimerDialog.value = false
-                    },
-                    onDismissRequest = {
-//                        openTimerDialog.value = !openTimerDialog.value
-                        openTimerDialog.value = false
-                        openDateAndTimerDialog.value = false
-                    }
-                )
-            }
-            if (openDateAndTimerDialog.value) {
-                DateTimeSelectDialog(
-                    calendar = reminderCalendar, // TODO NEXT Continue changing localDateTime to Calendar.
-                    onConfirmRequest = {
-                        openTimerDialog.value = false
-                        openDateAndTimerDialog.value = false
-                    },
-                    onDismissRequest = {
-                        openTimerDialog.value = false
-                        openDateAndTimerDialog.value = false
-                    }
-
-                )
-//                DateSelectDialog()
-////                DateTimeSelectDialog( // TODO Make this prettier
-////                    dialogTitle = "Select time until next reminder",
-////                    onConfirmRequest = {
-////                        reminderTime = it
-//////                        openTimerDialog.value = !openTimerDialog.value
-////                        openTimerDialog.value = false
-////                        openDateAndTimerDialog.value = false
-////                    },
-////                    onDismissRequest = {
-//////                        openTimerDialog.value = !openTimerDialog.value
-////                        openTimerDialog.value = false
-////                        openDateAndTimerDialog.value = false
-////                    }
-////                )
-            }
+//            if (openTimerDialog.value) {
+//                TimeSelectDialog( // TODO Make this prettier
+//                    dialogTitle = "Select time until next reminder",
+//                    onConfirmRequest = {
+//                        reminderCalendar = it
+////                        openTimerDialog.value = !openTimerDialog.value
+//                        openTimerDialog.value = false
+//                        openDateAndTimerDialog.value = false
+//                    },
+//                    onDismissRequest = {
+////                        openTimerDialog.value = !openTimerDialog.value
+//                        openTimerDialog.value = false
+//                        openDateAndTimerDialog.value = false
+//                    }
+//                )
+//            }
+//            if (openDateAndTimerDialog.value) {
+//                DateSelectorDialog(calendar = reminderCalendar, modifier = modifier)
+//
+//            }
 
 
             Row(
@@ -240,7 +223,7 @@ fun CreateReminderForm(
                 NavigationButtons(
                     text = "Save",
                     onClick = {
-//                        newReminder.saveNewReminder(context = context, reminderTime = reminderCalendar)
+                        newReminder.saveNewReminder(context = context, reminderTime = reminderCalendar)
                         navController.navigate(CupcakeScreen.Start.name)
                     })
             }
