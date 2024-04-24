@@ -22,7 +22,6 @@ private fun getRandomKey(): String {
 }
 
 
-
 @Suppress("UNCHECKED_CAST")
 class myReminder(
 //    val alarmTime : LocalDateTime,
@@ -38,7 +37,8 @@ class myReminder(
     private fun createMap(newReminder: Calendar): LinkedHashMap<String, LinkedHashMap<String, Any>> {
         val currentDateTime = Calendar.getInstance()
         val currMap = mapOf(
-            "reminderKey" to getRandomKey(),
+//            "reminderKey" to getRandomKey(),
+            "reminderKey" to "${newReminder.timeInMillis}",
             "reminderCalendar" to "${newReminder.timeInMillis}",
             "reminderCreationCalendar" to "${Calendar.getInstance().timeInMillis}",
             "reminderImage" to reminderImage.lastPathSegment,
@@ -52,7 +52,8 @@ class myReminder(
 
     fun saveNewReminder(context: Context, reminderTime: Calendar) {
         try {
-            val curReminders: LinkedHashMap<String, LinkedHashMap<String, Any>> = loadReminders(context)
+            val curReminders: LinkedHashMap<String, LinkedHashMap<String, Any>> =
+                loadReminders(context)
             val reminderToSave = this.createMap(reminderTime)
             curReminders.putAll(reminderToSave)
             val fos: FileOutputStream =
@@ -69,13 +70,20 @@ class myReminder(
 
     //    fun loadReminders(context: Context): Map<String, String> {
     @Suppress("UNCHECKED_CAST")
-    fun loadReminders(context: Context): LinkedHashMap<String, LinkedHashMap<String, Any>> {
+    fun loadReminders(
+        context: Context,
+        sort: String = "default"
+    ): LinkedHashMap<String, LinkedHashMap<String, Any>> {
         try {
-            val returningMap: LinkedHashMap<String, LinkedHashMap<String, Any>>
+            var returningMap: LinkedHashMap<String, LinkedHashMap<String, Any>>
             val fis: FileInputStream = context.openFileInput(reminderStorageFile)
             val ois = ObjectInputStream(fis)
             returningMap = ois.readObject() as LinkedHashMap<String, LinkedHashMap<String, Any>>
-            return returningMap
+
+            val temp1 = returningMap.toList().sortedBy { it.first }
+            val result = linkedMapOf(*temp1.toTypedArray())
+
+            return result
         } catch (e: IOException) {
             e.printStackTrace()
         }
@@ -86,7 +94,19 @@ class myReminder(
 
 
 fun getReminderTime(currReminder: LinkedHashMap<String, String>): String {
-    return "${currReminder["reminderHour"]?.padStart(2,'0')}:${currReminder["reminderMinute"]?.padStart(2, '0')}"
-}fun getReminderDate(currReminder:  LinkedHashMap<String, String>): String {
-    return "${currReminder["reminderYear"]} - ${currReminder["reminderMonth"]?.padStart(2, '0')} - ${currReminder["reminderDay"]?.padStart(2, '0')}"
+    return "${
+        currReminder["reminderHour"]?.padStart(
+            2,
+            '0'
+        )
+    }:${currReminder["reminderMinute"]?.padStart(2, '0')}"
+}
+
+fun getReminderDate(currReminder: LinkedHashMap<String, String>): String {
+    return "${currReminder["reminderYear"]} - ${
+        currReminder["reminderMonth"]?.padStart(
+            2,
+            '0'
+        )
+    } - ${currReminder["reminderDay"]?.padStart(2, '0')}"
 }
