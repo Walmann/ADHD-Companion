@@ -1,7 +1,9 @@
 package it.walmann.adhdcompanion.Screens
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Matrix
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -29,6 +31,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
@@ -170,9 +173,11 @@ fun ReminderCard(
                 Image(
                     bitmap = RemindImage.asImageBitmap(),
                     modifier = modifier
+                        .rotate(90f)
                         .height(200.dp)
                         .padding(10.dp),
                     contentScale = ContentScale.Fit,
+
 //                    painter = painterResource(id = R.drawable.bing),
                     contentDescription = null
                 )
