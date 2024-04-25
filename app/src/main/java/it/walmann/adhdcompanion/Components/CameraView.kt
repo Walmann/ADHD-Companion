@@ -3,7 +3,10 @@ package it.walmann.adhdcompanion.Components
 import android.Manifest
 import android.content.Context
 import android.net.Uri
+import android.util.Size
+import androidx.camera.core.AspectRatio
 import androidx.camera.core.ImageCaptureException
+import androidx.camera.view.CameraController
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -27,6 +30,7 @@ import com.ujizin.camposer.CameraPreview
 import com.ujizin.camposer.state.CamSelector
 import com.ujizin.camposer.state.CameraState
 import com.ujizin.camposer.state.ImageCaptureResult
+import com.ujizin.camposer.state.ImageTargetSize
 import com.ujizin.camposer.state.ScaleType
 import com.ujizin.camposer.state.rememberCamSelector
 import com.ujizin.camposer.state.rememberCameraState
@@ -63,20 +67,17 @@ fun CameraView(
             CameraPreview( // Campose: https://github.com/ujizin/Camposer
 
 //                imageCaptureTargetSize = ImageTargetSize(
-////                    aspectRatio = AspectRatio.RATIO_16_9,
-//                    size = Size(width= 500f, height=500f)
+////                    aspectRatio = AspectRatio.RATIO_4_3,
+////                    size = Size(500,500),
+//                    outputSize = CameraController.OutputSize(Size(500,500))
 //                ),
-
+                cameraState = cameraState,
+                camSelector = camSelector,
+                scaleType = ScaleType.FitCenter,
                 modifier = modifier
-//                        .height(200.dp)
-//                        .width(200.dp)
-//                    .fillMaxSize()
                     .padding(10.dp)
                     .weight(3f)
                 ,
-                cameraState = cameraState,
-                camSelector = camSelector,
-                scaleType = ScaleType.FitCenter
             )
 
             Row(
@@ -150,8 +151,12 @@ private fun myTakePhoto(
     context: Context,
     onImageCaptured: (Uri) -> Unit,
 ) {
-    cameraState.takePicture(context.createNewFile()) { result ->
+    cameraState.takePicture(
+        context.createNewFile(),
+
+    ) { result ->
         if (result is ImageCaptureResult.Success) {
+
             onImageCaptured(result.savedUri!!)
         } else {
             Throwable("Error capturing image!")

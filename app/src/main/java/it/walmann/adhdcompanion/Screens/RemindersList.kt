@@ -98,7 +98,7 @@ fun RemindersScreen(modifier: Modifier, navController: NavController, context: C
 //                    reminderTime = currReminder["reminderTime"].toString(),
 //                    reminderTime = getReminderTime(currReminder),
 //                    reminderDate = getReminderDate(currReminder),
-                    reminderTime = "${currCalendar.get(Calendar.HOUR).toString().padStart(2,'0')}:${currCalendar.get(Calendar.MINUTE).toString().padStart(2,'0')}",
+                    reminderTime = "${currCalendar.get(Calendar.HOUR_OF_DAY).toString().padStart(2,'0')}:${currCalendar.get(Calendar.MINUTE).toString().padStart(2,'0')}",
                     reminderDate = "${currCalendar.get(Calendar.DATE).toString().padStart(2,'0')}.${currCalendar.get(Calendar.MONTH).toString().padStart(2,'0')}.${currCalendar.get(Calendar.YEAR).toString().padStart(2,'0')}",
                     reminderText = currReminder["reminderNote"].toString(),
                     reminderImage = currReminder["reminderImage"].toString(),

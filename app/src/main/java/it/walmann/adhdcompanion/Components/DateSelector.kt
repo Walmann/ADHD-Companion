@@ -2,12 +2,16 @@ package it.walmann.adhdcompanion.Components
 
 import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -26,13 +30,16 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import it.walmann.adhdcompanion.R
+import java.time.LocalDateTime
 import java.util.Calendar
+import kotlin.time.Duration.Companion.milliseconds
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DateSelectorDialog( // https://dribbble.com/shots/16612638-Day-Time-Picker-Dark-Mode-Anywhere-DS
+fun DateSelectorDialog(
     modifier: Modifier = Modifier,
     calendar: Calendar,
     onDismissRequest: () -> Unit = {},
@@ -41,49 +48,40 @@ fun DateSelectorDialog( // https://dribbble.com/shots/16612638-Day-Time-Picker-D
     Dialog(
         onDismissRequest = onDismissRequest,
     ) {
-        val datePickState = rememberDatePickerState()
-        var showDatePicker = true
+        val datePickState =
+            rememberDatePickerState(initialSelectedDateMillis = System.currentTimeMillis())//LocalDateTime.now().toInstant().toEpochMilli())
+//        var showDatePicker = true
 
         Card(
-//            modifier = modifier.fillMaxWidth().fillMaxHeight()
+//            modifier = modifier.fillMaxWidth()
         ) {
-            Button(
-                shape = RoundedCornerShape(10.dp),
-                contentPadding = PaddingValues(1.dp),
-                modifier = modifier.padding(10.dp).fillMaxWidth(),
-                onClick = {
-                    showDatePicker = !showDatePicker
-                }
+//
+            DatePicker(state = datePickState) // TODO FIX In DatePicker you can see part of the dates for the next month.
+
+            Row(
+                horizontalArrangement = Arrangement.End,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 10.dp, end = 10.dp)
             ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = modifier.widthIn(min = 200.dp)
+                Button(onClick = { onDismissRequest }) {
+                    Text(text = "Cancel")
+                }
+                Spacer(modifier = Modifier.width(10.dp))
+                Button(onClick = {
+                    val cal2 = Calendar.getInstance()
+                    cal2.setTimeInMillis(datePickState.selectedDateMillis!!)
+
+                    calendar.set(Calendar.YEAR, cal2.get(Calendar.YEAR))
+                    calendar.set(Calendar.MONTH, cal2.get(Calendar.MONTH))
+                    calendar.set(Calendar.DAY_OF_MONTH, cal2.get(Calendar.DAY_OF_MONTH))
+
+                    onConfirmRequest(calendar)
+                }
                 ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.calendar_days),
-                        contentDescription = null,
-                        modifier
-                            .padding(10.dp)
-                            .size(20.dp)
-                    )
-                    Column {
-                        // "Select a day", and currently chosen date
-                        Text(text = "Select a date")
-                        Text(
-                            text = "${calendar.get(Calendar.YEAR)}.${calendar.get(Calendar.MONTH)}.${calendar.get(Calendar.DATE)}"
-                        )
-                    }
+                    Text(text = "Save")
                 }
             }
-            if (showDatePicker) {
-                DatePicker(state = datePickState)
-            }
-
-            // Select Date
-
-
-            // Select Time
-
         }
     }
 
