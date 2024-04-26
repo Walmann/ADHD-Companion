@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun AutoResizeText(
+fun AutoResizeText( //https://stackoverflow.com/questions/63971569/androidautosizetexttype-in-jetpack-compose
     text: String,
     fontSizeRange: FontSizeRange,
     modifier: Modifier = Modifier,
