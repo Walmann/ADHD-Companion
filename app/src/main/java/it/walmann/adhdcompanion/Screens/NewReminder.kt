@@ -158,10 +158,7 @@ fun CreateReminderForm(
     newReminder.reminderCalendar = reminderCalendar
     newReminder.reminderImage = photoUri
 
-
     val openTimerDialog = remember { mutableStateOf(false) }
-    val timePickerState = rememberTimePickerState()
-
 
     val openDateAndTimerDialog = remember { mutableStateOf(false) }
 
@@ -170,7 +167,6 @@ fun CreateReminderForm(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
             .padding(20.dp)
-//            .padding(top = 10.dp)
     ) {
 
 
@@ -180,8 +176,6 @@ fun CreateReminderForm(
             contentScale = ContentScale.Inside,
             modifier = modifier
                 .weight(7f)
-                //                .fillMaxWidth()
-//                .aspectRatio(6.1f)
                 .fillMaxSize()
                 .heightIn(50.dp, 100.dp)
 
@@ -196,9 +190,7 @@ fun CreateReminderForm(
         ) {
             val buttonRoundness = 30.dp
 
-
-            Text(text = reminderCalendar.time.toString())
-
+//            Text(text = reminderCalendar.time.toString())
 
             Button(
                 onClick = {
@@ -209,9 +201,7 @@ fun CreateReminderForm(
                     .weight(10f)
                     .fillMaxWidth()
 
-            ) {// https://stackoverflow.com/questions/63971569/androidautosizetexttype-in-jetpack-compose
-//                "${reminderCalendar.get(Calendar.HOUR).toString().padStart(2, '0')}:${reminderCalendar.get(Calendar.MINUTE).toString().padStart(2, '0')}",
-
+            ) {
                 AutoResizeText(
                     text = "${reminderCalendar.get(Calendar.HOUR_OF_DAY).toString().padStart(2, '0')}:${reminderCalendar.get(Calendar.MINUTE).toString().padStart(2, '0')}",
                     maxLines = 1,
@@ -243,7 +233,6 @@ fun CreateReminderForm(
                         reminderCalendar.get(Calendar.MONTH).toString().padStart(2, '0')
                     }.${reminderCalendar.get(Calendar.YEAR).toString().padStart(2, '0')}",
                     maxLines = 1,
-//                    modifier = Modifier.padding(20.dp),
                     fontSizeRange = FontSizeRange(
                         min = 10.sp,
                         max = 60.sp,
@@ -261,76 +250,28 @@ fun CreateReminderForm(
                     .fillMaxWidth()
             ) {
                 AutoResizeText(
-                    text = "⏱️ Remind me in 10 minutes",
+                    text = "⏱️ Remind me in 10 minutes", // TODO SETTINGS Make this configurable in settings
                     maxLines = 1,
                     fontSizeRange = FontSizeRange(
                         min = 10.sp,
                         max = 40.sp,
                     ),
                 )
-//                Text(
-//                    "⏱️ Remind me in 10 minutes",
-//                    fontSize = 20.sp,
-//                    modifier = Modifier.padding(vertical = 5.dp)
-//                )
             }
             Spacer(modifier = Modifier.height(1.dp))
-//            TimerButtons(
-////                text = "${reminderCalendar.get(Calendar.HOUR).toString().padStart(2, '0')}:${reminderCalendar.get(Calendar.MINUTE).toString().padStart(2, '0')}",
-//                onClick = {
-//                    openTimerDialog.value = !openDateAndTimerDialog.value
-//                },
-//
-//            ){
-//                Text(
-//                    text = "${reminderCalendar.get(Calendar.DATE).toString().padStart(2, '0')}.${reminderCalendar.get(Calendar.MONTH).toString().padStart(2, '0')}.${reminderCalendar.get(Calendar.YEAR).toString().padStart(2, '0')}",
-//                    fontSize = 20.sp
-//                )
-//            }
 
-
-//            TimerButtons(
-//                text = "Remind me in 10 minutes",
-//                onClick = {
-//                    reminderCalendar.add(Calendar.MINUTE, 10)
-//                }
-//            ){
-//                Text(text = "Remind me in 10 minutes")
-//            }
-
-
-//            TimerButtons(
-//                text = "🕰️ Remind me in...",
-//                onClick = {
-//                    openTimerDialog.value = true
-//                }
-//            )
-//
-//            TimerButtons(
-//                text = "📅 Remind at...", // TODO WORKNOW Create a "remind me on..." selector where you can select date and time for reminder.
-//                onClick = {
-//                    openDateAndTimerDialog.value = true
-//                }
-//            ) // Make a clock and calendar choices
-//
-//                TimerButtons(
-//                    text = "⏱️ Remind me in 10 minutes",
-////                onClick = {} // TODO Make this configurable in settings
-//                )
 
 
             if (openTimerDialog.value) {
                 TimeSelectDialog(
                     // TODO Make this prettier
                     dialogTitle = "Select time until next reminder",
-//                    calendar = reminderCalendar,
                     onConfirmRequest = {
                         reminderCalendar = it
                         openTimerDialog.value = false
                         openDateAndTimerDialog.value = false
                     },
                     onDismissRequest = {
-//                        openTimerDialog.value = !openTimerDialog.value
                         openTimerDialog.value = false
                         openDateAndTimerDialog.value = false
                     },
@@ -340,16 +281,12 @@ fun CreateReminderForm(
 
             if (openDateAndTimerDialog.value) {
                 DateSelectorDialog(
-//                    modifier = Modifier
-//                        .height(200.dp)
-//                        .width(200.dp),
                     onDismissRequest = {
                         openTimerDialog.value = false
                         openDateAndTimerDialog.value = false
                     },
                     onConfirmRequest = {
                         reminderCalendar = it
-//                        openTimerDialog.value = !openTimerDialog.value
                         openTimerDialog.value = false
                         openDateAndTimerDialog.value = false
                     },
@@ -386,28 +323,6 @@ fun CreateReminderForm(
     }
 }
 
-//@Composable
-//fun TimerButtons(
-//    modifier: Modifier = Modifier,
-//    text: String = "Button Text",
-//    onClick: () -> Unit = {},
-//    content: @Composable () -> Unit,
-//) {
-//    ElevatedButton(
-//        onClick = {
-//            onClick()
-//        },
-//        modifier = modifier
-//            .width(300.dp)
-//            .requiredHeightIn(min = 75.dp)
-////            .padding(vertical = 10.dp),
-//    ) {
-//        content()
-////        Text(text = text)
-//    }
-//}
-
-
 @Composable
 fun NavigationButtons(
     modifier: Modifier = Modifier,
@@ -429,10 +344,6 @@ fun NavigationButtons(
                 max = 40.sp,
             ),
         )
-//        Text(
-//            text = text,
-//            modifier = modifier.padding(10.dp)
-//        )
     }
 }
 
