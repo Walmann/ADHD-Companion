@@ -1,9 +1,10 @@
 package it.walmann.adhdcompanion.Screens
 
+import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
 import android.util.Log
-import android.widget.Space
+import androidx.annotation.AnyRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -11,31 +12,16 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.requiredHeight
-import androidx.compose.foundation.layout.requiredHeightIn
-import androidx.compose.foundation.layout.requiredWidth
-import androidx.compose.foundation.layout.requiredWidthIn
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.overscroll
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.DatePickerDialog
-import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.material3.TimePicker
-import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
@@ -44,19 +30,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import coil.compose.rememberImagePainter
+import coil.compose.rememberAsyncImagePainter
 import it.walmann.adhdcompanion.CommonUI.MyTopAppBar
 import it.walmann.adhdcompanion.Components.AutoResizeText
 import it.walmann.adhdcompanion.Components.CameraView
@@ -66,11 +49,11 @@ import it.walmann.adhdcompanion.Components.TimeSelectDialog
 import it.walmann.adhdcompanion.CupcakeScreen
 import it.walmann.adhdcompanion.MyObjects.myReminder
 import it.walmann.adhdcompanion.R
-import org.checkerframework.checker.units.qual.min
 import java.io.File
 import java.util.Calendar
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+
 
 @Composable
 fun NewReminder(context: Context, modifier: Modifier, navController: NavController) {
@@ -113,9 +96,7 @@ fun NewReminder(context: Context, modifier: Modifier, navController: NavControll
             if (shouldShowCamera.value) {
                 CameraView(
                     context = context,
-                    modifier = modifier
-                        .padding(5.dp)
-                        .fillMaxSize(),
+                    modifier = Modifier,
                     outputDirectory = outputDirectory,
                     executor = cameraExecutor,
                     onImageCaptured = ::handleImageCapture,
@@ -132,9 +113,7 @@ fun NewReminder(context: Context, modifier: Modifier, navController: NavControll
                     context = context,
                     photoUri = photoUri,
                     navController = navController,
-                    modifier = modifier //.fillMaxSize()
-
-
+                    modifier = modifier.fillMaxSize()
                 )
             }
         }
@@ -166,25 +145,26 @@ fun CreateReminderForm(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
-            .padding(20.dp)
+//            .padding(20.dp)
     ) {
 
 
         Image(
-            painter = rememberImagePainter(photoUri),
+            painter = rememberAsyncImagePainter(photoUri), // TODO NEXT FIX Image is rotated on small screens. Mabye on all API, but atleast on API 24
             contentDescription = null,
             contentScale = ContentScale.Inside,
             modifier = modifier
                 .weight(7f)
-                .fillMaxSize()
-                .heightIn(50.dp, 100.dp)
+//                .fillMaxSize()
+                .padding(vertical = 10.dp)
+//                .heightIn(50.dp, 100.dp)
 
         )
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceBetween,
             modifier = modifier
-                .heightIn(50.dp, 50.dp)
+//                .heightIn(50.dp, 50.dp)
                 .weight(10f)
 
         ) {
@@ -301,7 +281,7 @@ fun CreateReminderForm(
                 modifier = modifier
                     .fillMaxWidth()
                     .weight(10f)
-                    .padding(bottom = 15.dp),
+                    .padding(vertical = 10.dp),
 
                 ) {
                 NavigationButtons(
@@ -347,14 +327,18 @@ fun NavigationButtons(
     }
 }
 
-
+//@PreviewScreenSizes()
 @Preview(widthDp = 720, heightDp = 1280)
-@Preview(widthDp = 680, heightDp = 2000)
+//@Preview(widthDp = 680, heightDp = 2000)
 @Composable
 private fun NewReminderPreview() {
+val context = LocalContext.current
+    val resources = context.resources
     CreateReminderForm(
-        context = LocalContext.current,
-        photoUri = Uri.parse("android.resource://it.walmann.adhdcompanion/${R.drawable.placeholder_reminderimage}"),
+        context = context,
+//        photoUri = getUriToDrawable(context = context, drawableId = R.drawable.placeholder_reminderimage),
+        photoUri = Uri.parse("android.resource://it.walmann.adhdcompanion/0/${R.drawable.placeholder_reminderimage}"),
+//        photoUri = Uri.parse("file:///data/user/0/it.walmann.adhdcompanion/files/1714124651621.jpg"),
         modifier = Modifier,
         navController = rememberNavController()
     )

@@ -59,6 +59,7 @@ dependencies {
     implementation(libs.camera.view)
     implementation(libs.simple.icons)
     implementation(libs.font.awesome)
+    implementation(libs.coil.compose)
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
 
 
