@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId = "it.walmann.adhdcompanion"
-        minSdk = 24
+        minSdk = 27
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -90,7 +90,7 @@ dependencies {
 
     implementation ("com.chargemap.compose:numberpicker:${rootProject.extra["numberpickerVersion"]}")
 
-    val camerax_version = "1.3.2"
+    val camerax_version = "1.3.3"
     implementation ("androidx.camera:camera-core:${camerax_version}")
     implementation ("androidx.camera:camera-camera2:${camerax_version}")
     implementation ("androidx.camera:camera-lifecycle:${camerax_version}")
@@ -99,5 +99,5 @@ dependencies {
     implementation ("androidx.camera:camera-view:${camerax_version}")
     implementation ("androidx.camera:camera-extensions:${camerax_version}")
 
-    implementation("io.coil-kt:coil-compose:1.4.0")
+    implementation("io.coil-kt:coil-compose:2.6.0")
 }

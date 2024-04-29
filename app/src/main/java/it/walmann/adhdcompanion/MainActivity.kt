@@ -52,8 +52,8 @@ fun ADHDCompanionApp(
     // TODO NEXT Camera permission request is not working on Pixel 7
     NavHost(
         navController = navController,
-//        startDestination = CupcakeScreen.NewReminder.name,
-        startDestination = CupcakeScreen.Start.name,
+        startDestination = CupcakeScreen.NewReminder.name,
+//        startDestination = CupcakeScreen.Start.name,
         modifier = modifier
             .fillMaxSize()
 //            .verticalScroll(rememberScrollState())

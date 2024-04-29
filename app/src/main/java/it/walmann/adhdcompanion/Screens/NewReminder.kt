@@ -150,7 +150,7 @@ fun CreateReminderForm(
 
 
         Image(
-            painter = rememberAsyncImagePainter(photoUri), // TODO NEXT FIX Image is rotated on small screens. Mabye on all API, but atleast on API 24
+            painter = rememberAsyncImagePainter(photoUri),
             contentDescription = null,
             contentScale = ContentScale.Inside,
             modifier = modifier
