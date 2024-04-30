@@ -1,20 +1,39 @@
 package it.walmann.adhdcompanion
 
+import android.Manifest
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Context.NOTIFICATION_SERVICE
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.StringRes
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.getSystemService
+//import androidx.core.content.ContextCompat.getSystemService
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import it.walmann.adhdcompanion.MyObjects.ReminderNotification
+import it.walmann.adhdcompanion.MyObjects.newNotification
 import it.walmann.adhdcompanion.Screens.NewReminder
 import it.walmann.adhdcompanion.Screens.RemindersScreen
 import it.walmann.adhdcompanion.ui.theme.ADHDCompanionTheme
+import kotlin.random.Random
 
 
 enum class CupcakeScreen(@StringRes val title: Int) {
@@ -49,11 +68,15 @@ fun ADHDCompanionApp(
     modifier: Modifier,
     context: Context
 ) {
-    // TODO NEXT Camera permission request is not working on Pixel 7
+
+    val notificationThingy = newNotification(context, title = "Hello!", content = "Hello from content!")
+
+//    ReminderNotification(context = context, builder = notificationThingy, notificationID = 123)
+
     NavHost(
         navController = navController,
-        startDestination = CupcakeScreen.NewReminder.name,
-//        startDestination = CupcakeScreen.Start.name,
+//        startDestination = CupcakeScreen.NewReminder.name,
+        startDestination = CupcakeScreen.Start.name,
         modifier = modifier
             .fillMaxSize()
 //            .verticalScroll(rememberScrollState())
@@ -81,7 +104,5 @@ fun ADHDCompanionApp(
             )
         }
     }
-
-
 }
 

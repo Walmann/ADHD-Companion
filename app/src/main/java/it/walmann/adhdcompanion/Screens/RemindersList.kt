@@ -39,17 +39,27 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import it.walmann.adhdcompanion.CommonUI.MyTopAppBar
 import it.walmann.adhdcompanion.CupcakeScreen
+import it.walmann.adhdcompanion.MyObjects.ReminderNotification
+import it.walmann.adhdcompanion.MyObjects.createScheduledNotification
 import it.walmann.adhdcompanion.MyObjects.debugDeleteInternalStorage
 import it.walmann.adhdcompanion.MyObjects.getReminderDate
 import it.walmann.adhdcompanion.MyObjects.getReminderTime
 import it.walmann.adhdcompanion.MyObjects.myReminder
+import it.walmann.adhdcompanion.MyObjects.newNotification
 import it.walmann.adhdcompanion.R
 import java.io.File
 import java.util.Calendar
+import kotlin.random.Random
 
 @Composable
 fun RemindersScreen(modifier: Modifier, navController: NavController, context: Context) {
     val newReminder by remember { mutableStateOf(myReminder()) }
+
+    // TODO FUTURE I want to create a better looking app. Therefore the list needs a redesign.
+    // Look at these links for inspiration:
+    // https://dribbble.com/shots/5221219-Card-Vault-Mobile-App
+    // https://dribbble.com/shots/12078609-Circle-Hook-Fisher-man-app-Micro-interactions
+
     Scaffold(
         topBar = { MyTopAppBar() },
         floatingActionButton = {
@@ -80,9 +90,28 @@ fun RemindersScreen(modifier: Modifier, navController: NavController, context: C
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
+            val notificationThingy = newNotification(context, title = "Hello!", content = "Hello from content!")
             ElevatedButton(onClick = { debugDeleteInternalStorage(context) }) {
                 Text(text = "DELETE INTERLAN STORAGE!!!")
             }
+            ElevatedButton(onClick = { // Alarm is not being triggered?
+                val tempCal = Calendar.getInstance().apply {
+                    timeInMillis = System.currentTimeMillis()
+                    add(Calendar.SECOND, 5)
+                }
+//                tempCal.add(Calendar.SECOND, 5)
+//                ReminderNotification(context = context, builder = notificationThingy, notificationID = Random.nextInt())
+                createScheduledNotification(context, reminderTime = tempCal)
+            }) {
+                Text(text = "Create alarm notification")
+            }
+            ElevatedButton(onClick = {
+                ReminderNotification(context = context, builder = notificationThingy, notificationID = Random.nextInt())
+            }) {
+                Text(text = "Show notification")
+            }
+
+
             val reminderArray = newReminder.loadReminders(context)
             print("")
             reminderArray.forEach { element ->// (key, value) ->

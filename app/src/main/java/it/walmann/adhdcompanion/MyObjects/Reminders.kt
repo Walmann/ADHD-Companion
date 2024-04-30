@@ -1,15 +1,23 @@
 package it.walmann.adhdcompanion.MyObjects
 
+import android.Manifest
+import android.annotation.SuppressLint
+import android.app.AlarmManager
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
+import androidx.compose.runtime.Composable
+import it.walmann.adhdcompanion.MainActivity
+import it.walmann.adhdcompanion.requestPermission
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
-import java.time.LocalDateTime
 import java.util.Calendar
+import kotlin.random.Random
 
 
 private fun getRandomKey(): String {
@@ -50,22 +58,34 @@ class myReminder(
         return returningMap
     }
 
-    fun saveNewReminder(context: Context, reminderTime: Calendar) {
-        try {
-            val curReminders: LinkedHashMap<String, LinkedHashMap<String, Any>> =
-                loadReminders(context)
-            val reminderToSave = this.createMap(reminderTime)
-            curReminders.putAll(reminderToSave)
-            val fos: FileOutputStream =
-                context.openFileOutput(reminderStorageFile, Context.MODE_PRIVATE)
-            val oos = ObjectOutputStream(fos)
-            oos.writeObject(curReminders)
-            oos.close()
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
+
+    fun SaveNewReminder(context: Context, reminderTime: Calendar) {
+//        try { // I have commented out the Try block. Is this really needed when writing to internal app storage?
+        // Save reminder to file
+        val curReminders: LinkedHashMap<String, LinkedHashMap<String, Any>> =
+            loadReminders(context)
+        val reminderToSave = this.createMap(reminderTime)
+        curReminders.putAll(reminderToSave)
+        val fos: FileOutputStream =
+            context.openFileOutput(reminderStorageFile, Context.MODE_PRIVATE)
+        val oos = ObjectOutputStream(fos)
+        oos.writeObject(curReminders)
+        oos.close()
+//        } catch (e: IOException) {
+//            e.printStackTrace()
+//        }
+
+
+        // Create notification
+        createScheduledNotification(
+            context,
+            reminderTime = reminderTime
+        )
+        print("")
+
 //        message.value = ""
-        Toast.makeText(context, "Data saved successfully..", Toast.LENGTH_SHORT).show()
+//        Toast.makeText(context, "Data saved successfully..", Toast.LENGTH_SHORT).show()
+
     }
 
     //    fun loadReminders(context: Context): Map<String, String> {

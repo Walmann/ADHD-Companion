@@ -1,5 +1,6 @@
 package it.walmann.adhdcompanion
 
+import android.content.Context
 import android.content.pm.PackageManager
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -10,9 +11,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
 
+
 @Composable
-fun requestPermission(permission: String): Boolean {
-    val context = LocalContext.current
+fun requestPermission(permission: String, context: Context = LocalContext.current): Boolean {
+//    val context = LocalContext.current
     val permissionState = remember { mutableStateOf(false) }
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()

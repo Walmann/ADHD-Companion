@@ -1,12 +1,11 @@
 package it.walmann.adhdcompanion.Screens
 
-import android.content.ContentResolver
+import android.Manifest
 import android.content.Context
 import android.net.Uri
+import android.os.Build
 import android.util.Log
-import androidx.annotation.AnyRes
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -15,7 +14,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -30,11 +28,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -49,6 +45,7 @@ import it.walmann.adhdcompanion.Components.TimeSelectDialog
 import it.walmann.adhdcompanion.CupcakeScreen
 import it.walmann.adhdcompanion.MyObjects.myReminder
 import it.walmann.adhdcompanion.R
+import it.walmann.adhdcompanion.requestPermission
 import java.io.File
 import java.util.Calendar
 import java.util.concurrent.ExecutorService
@@ -138,8 +135,13 @@ fun CreateReminderForm(
     newReminder.reminderImage = photoUri
 
     val openTimerDialog = remember { mutableStateOf(false) }
-
     val openDateAndTimerDialog = remember { mutableStateOf(false) }
+
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        requestPermission(permission = Manifest.permission.SCHEDULE_EXACT_ALARM)
+    }
+
 
     Column(
         verticalArrangement = Arrangement.Top,
@@ -183,7 +185,9 @@ fun CreateReminderForm(
 
             ) {
                 AutoResizeText(
-                    text = "${reminderCalendar.get(Calendar.HOUR_OF_DAY).toString().padStart(2, '0')}:${reminderCalendar.get(Calendar.MINUTE).toString().padStart(2, '0')}",
+                    text = "${
+                        reminderCalendar.get(Calendar.HOUR_OF_DAY).toString().padStart(2, '0')
+                    }:${reminderCalendar.get(Calendar.MINUTE).toString().padStart(2, '0')}",
                     maxLines = 1,
 
                     fontSizeRange = FontSizeRange(
@@ -291,7 +295,7 @@ fun CreateReminderForm(
                 NavigationButtons(
                     text = "Save",
                     onClick = {
-                        newReminder.saveNewReminder(
+                        newReminder.SaveNewReminder(
                             context = context,
                             reminderTime = reminderCalendar
                         )
@@ -332,7 +336,7 @@ fun NavigationButtons(
 //@Preview(widthDp = 680, heightDp = 2000)
 @Composable
 private fun NewReminderPreview() {
-val context = LocalContext.current
+    val context = LocalContext.current
     val resources = context.resources
     CreateReminderForm(
         context = context,
