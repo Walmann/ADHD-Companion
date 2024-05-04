@@ -52,7 +52,7 @@ import com.ujizin.camposer.state.rememberCamSelector
 import com.ujizin.camposer.state.rememberCameraState
 import it.walmann.adhdcompanion.CommonUI.MyTopAppBar
 import it.walmann.adhdcompanion.R
-import it.walmann.adhdcompanion.requestPermission
+import it.walmann.adhdcompanion.requestPermissionCamera
 import java.io.File
 import java.util.concurrent.Executor
 import java.util.concurrent.ExecutorService
@@ -75,7 +75,8 @@ fun CameraView(
     var camSelector by rememberCamSelector(CamSelector.Back)
 
 
-    if (requestPermission(Manifest.permission.CAMERA)) {
+//    if (requestPermission(Manifest.permission.CAMERA)) {
+    if (requestPermissionCamera(context)) {
         Column(
             verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = Alignment.CenterHorizontally,

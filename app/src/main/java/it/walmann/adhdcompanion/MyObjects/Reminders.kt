@@ -77,9 +77,11 @@ class myReminder(
 
 
         // Create notification
-        createScheduledNotification(
-            context,
-            reminderTime = reminderTime
+        createNewNotification(
+            context = context,
+            title = "ADHD Reminder!",
+            content = "This is the content of the notification!",
+            time = reminderTime.timeInMillis
         )
         print("")
 

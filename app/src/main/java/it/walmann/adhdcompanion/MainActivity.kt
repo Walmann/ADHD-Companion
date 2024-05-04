@@ -28,8 +28,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import it.walmann.adhdcompanion.MyObjects.ReminderNotification
-import it.walmann.adhdcompanion.MyObjects.newNotification
+//import it.walmann.adhdcompanion.MyObjects.ReminderNotification
+import it.walmann.adhdcompanion.MyObjects.createNotificationChannel
+//import it.walmann.adhdcompanion.MyObjects.newNotification
 import it.walmann.adhdcompanion.Screens.NewReminder
 import it.walmann.adhdcompanion.Screens.RemindersScreen
 import it.walmann.adhdcompanion.ui.theme.ADHDCompanionTheme
@@ -49,6 +50,10 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         PACKAGE_NAME = applicationContext.packageName
         super.onCreate(savedInstanceState)
+
+
+        createNotificationChannel(context = this)
+
         setContent {
             ADHDCompanionTheme {
 //                window.navigationBarColor(@ColorInt )
@@ -58,7 +63,6 @@ class MainActivity : ComponentActivity() {
 
     }
 
-    // TODO Create "ask for alarm permission" section
 
 }
 
@@ -69,9 +73,7 @@ fun ADHDCompanionApp(
     context: Context
 ) {
 
-    val notificationThingy = newNotification(context, title = "Hello!", content = "Hello from content!")
 
-//    ReminderNotification(context = context, builder = notificationThingy, notificationID = 123)
 
     NavHost(
         navController = navController,

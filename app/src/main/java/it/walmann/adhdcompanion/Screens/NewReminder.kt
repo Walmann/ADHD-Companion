@@ -5,6 +5,7 @@ import android.content.Context
 import android.net.Uri
 import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -45,7 +46,7 @@ import it.walmann.adhdcompanion.Components.TimeSelectDialog
 import it.walmann.adhdcompanion.CupcakeScreen
 import it.walmann.adhdcompanion.MyObjects.myReminder
 import it.walmann.adhdcompanion.R
-import it.walmann.adhdcompanion.requestPermission
+import it.walmann.adhdcompanion.requestPermissionExactAlarm
 import java.io.File
 import java.util.Calendar
 import java.util.concurrent.ExecutorService
@@ -117,6 +118,7 @@ fun NewReminder(context: Context, modifier: Modifier, navController: NavControll
     }
 }
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateReminderForm(
@@ -126,6 +128,8 @@ fun CreateReminderForm(
     navController: NavController,
 //    viewModel: ReminderViewModel = ReminderViewModel()
 ) {
+
+
 
     var reminderCalendar by remember { mutableStateOf<Calendar>(Calendar.getInstance()) }
 
@@ -138,9 +142,9 @@ fun CreateReminderForm(
     val openDateAndTimerDialog = remember { mutableStateOf(false) }
 
 
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-        requestPermission(permission = Manifest.permission.SCHEDULE_EXACT_ALARM)
-    }
+//    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+//        requestPermission(permission = Manifest.permission.SCHEDULE_EXACT_ALARM)
+//    }
 
 
     Column(
@@ -227,6 +231,7 @@ fun CreateReminderForm(
             Button(
                 onClick = {
                     reminderCalendar.add(Calendar.MINUTE, 10)
+                    saveReminder(context, reminderCalendar, newReminder, navController)
                 },
                 shape = RoundedCornerShape(buttonRoundness),
                 modifier = Modifier
@@ -235,6 +240,26 @@ fun CreateReminderForm(
             ) {
                 AutoResizeText(
                     text = "⏱️ Remind me in 10 minutes", // TODO SETTINGS Make this configurable in settings
+                    maxLines = 1,
+                    fontSizeRange = FontSizeRange(
+                        min = 10.sp,
+                        max = 40.sp,
+                    ),
+                )
+            }
+            Spacer(modifier = Modifier.height(1.dp))
+            Button(
+                onClick = {
+                    reminderCalendar.add(Calendar.SECOND, 10)
+                    saveReminder(context, reminderCalendar, newReminder, navController)
+                },
+                shape = RoundedCornerShape(buttonRoundness),
+                modifier = Modifier
+                    .weight(5f)
+                    .fillMaxWidth()
+            ) {
+                AutoResizeText(
+                    text = "⏱️ Remind me in 10 seconds", // TODO SETTINGS Make this configurable in settings
                     maxLines = 1,
                     fontSizeRange = FontSizeRange(
                         min = 10.sp,
@@ -295,16 +320,25 @@ fun CreateReminderForm(
                 NavigationButtons(
                     text = "Save",
                     onClick = {
-                        newReminder.SaveNewReminder(
-                            context = context,
-                            reminderTime = reminderCalendar
-                        )
-                        navController.navigate(CupcakeScreen.Start.name)
+                        saveReminder(context, reminderCalendar, newReminder, navController)
                     }
                 )
             }
         }
     }
+}
+
+fun saveReminder(
+    context: Context,
+    reminderCalendar: Calendar,
+    newReminder: myReminder,
+    navController: NavController
+) {
+    newReminder.SaveNewReminder(
+        context = context,
+        reminderTime = reminderCalendar
+    )
+    navController.navigate(CupcakeScreen.Start.name)
 }
 
 @Composable

@@ -3,6 +3,7 @@ package it.walmann.adhdcompanion.MyObjects
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.AlarmManager
+import android.app.AlertDialog
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -13,14 +14,23 @@ import android.content.Context.NOTIFICATION_SERVICE
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
+import android.provider.Settings
+import android.widget.Toast
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import it.walmann.adhdcompanion.MainActivity
 import it.walmann.adhdcompanion.R
+import it.walmann.adhdcompanion.requestPermissionExactAlarm
+import it.walmann.adhdcompanion.requestPermissionNotifications
 import okhttp3.internal.notify
+import java.time.LocalTime
+import java.time.temporal.ChronoField
 import java.util.Calendar
-
+import java.util.Date
 
 
 // Constants for notification
@@ -30,37 +40,84 @@ const val titleExtra = "titleExtra"
 const val messageExtra = "messageExtra"
 
 
-// BroadcastReceiver for handling notifications
-class Notification : BroadcastReceiver() {
 
-    // Method called when the broadcast is received
-    override fun onReceive(context: Context, intent: Intent) {
-
-        // Build the notification using NotificationCompat.Builder
-        val notification = NotificationCompat.Builder(context, channelID)
-            .setSmallIcon(R.drawable.ic_launcher_foreground)
-            .setContentTitle(intent.getStringExtra(titleExtra)) // Set title from intent
-            .setContentText(intent.getStringExtra(messageExtra)) // Set content text from intent
-            .build()
-
-        // Get the NotificationManager service
-        val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
-        // Show the notification using the manager
-        manager.notify(notificationID, notification)
-    }
-}
-
-fun createNewNotification(){ // TODO NEXT
+@Composable
+fun createNewNotification(
+    context: Context,
+    title: String,
+    content: String,
+    priority: Int = NotificationCompat.PRIORITY_DEFAULT,
+    icon: Int = R.drawable.ic_launcher_foreground,
+    time: Long = LocalTime.now().getLong(ChronoField.MILLI_OF_DAY)
+) { // TODO NEXT
     // https://www.geeksforgeeks.org/schedule-notifications-in-android/
+
+    val intent = Intent(context, MyNotification::class.java)
+
+    // Add title and message as extras to the intent
+    intent.putExtra(titleExtra, title)
+    intent.putExtra(messageExtra, content)
+
+    val pendingIntent = PendingIntent.getBroadcast(
+        context,
+        notificationID,
+        intent,
+        PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+    )
+
+    // Get the Alarm Service
+    val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+
+    // Handle permission
+
+
+    var hasAlarmPermission = false
+    var hasNotificationPermission = false
+//    val hasAlarmPermission = remember { mutableStateOf(true) }
+//    val hasNotificationPermission = remember { mutableStateOf(true) }
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        hasAlarmPermission =
+            requestPermissionExactAlarm(context=context, alarmManager)
+    }
+
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        hasNotificationPermission = // TODO NEXT Get permission to work.
+            requestPermissionNotifications(context=context)
+    }
+//    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+//        if (!alarmManager.canScheduleExactAlarms()) {
+//            Intent().also { x ->
+//                x.action = Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM
+//                context.startActivity(x)
+//            }
+//        }
+//    }
+
+
+
+    try {
+        // Try to create the Alarm for notification.
+        alarmManager.setExactAndAllowWhileIdle(
+            AlarmManager.RTC_WAKEUP,
+            time,
+            pendingIntent
+        )
+    } catch (e: SecurityException){
+        print("Error with Alarm Permission!")
+    }
+
+    showAlert(time, title, content, context)
+
 }
 
 
-private fun createNotificationChannel(context: Context) {
+fun createNotificationChannel(context: Context) {
     // Create a notification channel for devices running
     // Android Oreo (API level 26) and above
-    val name = "Reminders"
-    val desc = "Reminders set with the app"
+    val name = "Reminder notifications"
+    val desc = "Reminders set in the app"
     val importance = NotificationManager.IMPORTANCE_DEFAULT
     val channel = NotificationChannel(channelID, name, importance)
     channel.description = desc
@@ -69,6 +126,24 @@ private fun createNotificationChannel(context: Context) {
     val notificationManager = context.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
     notificationManager.createNotificationChannel(channel)
 }
+
+private fun showAlert(time: Long, title: String, message: String, context: Context) {
+    // Format the time for display
+    val date = Date(time)
+    val dateFormat = android.text.format.DateFormat.getLongDateFormat(context)
+    val timeFormat = android.text.format.DateFormat.getTimeFormat(context)
+
+    // Create and show an alert dialog with notification details
+    AlertDialog.Builder(context)
+        .setTitle("Notification Scheduled")
+        .setMessage(
+            "Title: $title\nMessage: $message\nAt: ${dateFormat.format(date)} ${timeFormat.format(date)}"
+        )
+        .setPositiveButton("Okay") { _, _ -> }
+        .show()
+}
+
+
 
 
 
