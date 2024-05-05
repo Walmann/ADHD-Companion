@@ -1,27 +1,39 @@
 package it.walmann.adhdcompanion
 
 import android.Manifest
+import android.app.AlarmManager
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
+import android.content.ComponentName
 import android.content.Context
 import android.content.Context.NOTIFICATION_SERVICE
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat
 import androidx.core.content.getSystemService
 //import androidx.core.content.ContextCompat.getSystemService
 import androidx.navigation.NavHostController
@@ -41,23 +53,105 @@ enum class CupcakeScreen(@StringRes val title: Int) {
     Start(title = R.string.app_name),
     NewReminder(title = R.string.NewReminder),
 }
+// TODO FUTURE Check that all the reminders survive a reboot!
+
+
+// TODO BEFORE RELEASE
+// - Make the app prettier
+// - Make sure the reminders actually shows after a long while.
+// -
+// - Add google login for syncing reminders
+
+
 
 
 class MainActivity : ComponentActivity() {
     private lateinit var PACKAGE_NAME: String
+//    private lateinit var alarmManager: AlarmManager
+
+
+    private val requestNotificationPermission =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            if (isGranted) {
+                // make your action here
+            } else {
+                // Explain to the user that the feature is unavailable because the
+                // features requires a permission that the user has denied.
+            }
+        }
+
+
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    @Composable
+    fun CheckNotificationPermission() {
+        val permission = Manifest.permission.POST_NOTIFICATIONS
+        when {
+            ContextCompat.checkSelfPermission(
+                this, permission
+            ) == PackageManager.PERMISSION_GRANTED -> {
+                // make your action here
+            }
+
+            shouldShowRequestPermissionRationale(permission) -> {
+
+                AlertDialog(
+                    onDismissRequest = { },
+                    text = { Text(text = "Notification permission is required for this app to work properly") },
+
+                    confirmButton = {
+                        TextButton(onClick = {
+                            val uri: Uri =
+                                Uri.fromParts("package", this.PACKAGE_NAME, null)
+                            Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                data = uri
+                                startActivity(this)
+                            }
+                        }) { Text(text = "Go to settings") }
+                    },
+                    dismissButton = {
+                        TextButton(
+                            onClick = {
+                                if (this.checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
+                                val packageManager: PackageManager = this.packageManager
+                                val intent: Intent =
+                                    packageManager.getLaunchIntentForPackage(this.packageName)!!
+                                val componentName: ComponentName = intent.component!!
+                                val restartIntent: Intent =
+                                    Intent.makeRestartActivityTask(componentName)
+                                this.startActivity(restartIntent)
+                                Runtime.getRuntime().exit(0)
+                                } else {
+                                }
+                            },
+                        ) { Text(text = "Done") }
+                    }
+                )
+            }
+
+            else -> {
+                requestNotificationPermission.launch(permission)
+            }
+        }
+
+
+    }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         PACKAGE_NAME = applicationContext.packageName
         super.onCreate(savedInstanceState)
 
+//        alarmManager = this.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
-        createNotificationChannel(context = this)
 
         setContent {
             ADHDCompanionTheme {
 //                window.navigationBarColor(@ColorInt )
                 ADHDCompanionApp(modifier = Modifier, context = this)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    CheckNotificationPermission()
+                }
             }
         }
 
@@ -73,6 +167,9 @@ fun ADHDCompanionApp(
     context: Context
 ) {
 
+    createNotificationChannel(context = context)
+
+//    requestPermissionNotifications(context = context)
 
 
     NavHost(

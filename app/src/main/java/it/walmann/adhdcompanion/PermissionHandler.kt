@@ -21,6 +21,7 @@ import androidx.core.app.ActivityCompat.checkSelfPermission
 import androidx.core.app.ActivityCompat.shouldShowRequestPermissionRationale
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.startActivity
+import com.google.accompanist.permissions.rememberPermissionState
 import it.walmann.adhdcompanion.MyObjects.simpleAlert
 
 
@@ -58,7 +59,6 @@ import it.walmann.adhdcompanion.MyObjects.simpleAlert
 //
 //    return permissionState.value
 //}
-
 
 
 //@Composable
@@ -122,41 +122,64 @@ fun requestPermissionCamera(context: Context): Boolean {
 }
 
 fun requestPermissionExactAlarm(context: Context, aManager: AlarmManager): Boolean {
-
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-        if (!aManager.canScheduleExactAlarms()) {
-            val settingsIntent: Intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+        val temp = context.checkSelfPermission(android.Manifest.permission.SCHEDULE_EXACT_ALARM)
+        val temp2 = PackageManager.PERMISSION_DENIED
+        if (context.checkSelfPermission(android.Manifest.permission.SCHEDULE_EXACT_ALARM) == PackageManager.PERMISSION_DENIED) {
+            // TODO Make better. Need to tell the user why it needs the alarm permission, and check that it still has the permission.
+            Log.e("PermissionHandler", "No ScheduleExactAlarms permission granted")
+
+
+//            val settingsIntent: Intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+            val settingsIntent: Intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 .putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
+
+
             startActivity(context, settingsIntent, null)
-        } else {
-            Log.d("MainActivity", "onCreate: can schedule it")
+
         }
+
     }
+    Log.d("PermissionHandler", "ScheduleExactAlarms permission granted")
     return true
 }
 
-@Composable
-fun requestPermissionNotifications(context: Context): Boolean {
-    val permissionState = remember { mutableStateOf(false) }
-    val launcher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission()
-    ) { isGranted ->
-        permissionState.value = isGranted
-    }
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-    LaunchedEffect(key1 = true) {
-        val hasPermission =
-            context.checkSelfPermission(
-                android.Manifest.permission.POST_NOTIFICATIONS
-            ) == PackageManager.PERMISSION_GRANTED
-
-        if (!hasPermission) {
-            launcher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
-        } else {
-            permissionState.value = true
-        }
-    } }
-
-    return permissionState.value
-}
+//
+//@Composable
+//fun requestPermissionNotifications(context: Context): Boolean {
+////    val permissionState = remember { mutableStateOf(false) }
+////    val launcher = rememberLauncherForActivityResult(
+////        contract = ActivityResultContracts.RequestPermission()
+////    ) { isGranted ->
+////        permissionState.value = isGranted
+////    }
+//
+//
+//    val requestNotificationPermission =
+//        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+//            if (isGranted) {
+//                // make your action here
+//            } else {
+//                // Explain to the user that the feature is unavailable because the
+//                // features requires a permission that the user has denied.
+//            }
+//        }
+//
+//
+//    val hasPermission =
+//        context.checkSelfPermission(
+//            android.Manifest.permission.POST_NOTIFICATIONS
+//        ) == PackageManager.PERMISSION_GRANTED
+//
+//    if (!hasPermission) {
+//        launcher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
+//
+//    } else {
+//        permissionState.value = true
+//    }
+//
+//
+//
+//    return permissionState.value
+//}

@@ -15,6 +15,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.provider.Settings
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -22,31 +23,32 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
 import it.walmann.adhdcompanion.MainActivity
 import it.walmann.adhdcompanion.R
 import it.walmann.adhdcompanion.requestPermissionExactAlarm
-import it.walmann.adhdcompanion.requestPermissionNotifications
+//import it.walmann.adhdcompanion.requestPermissionNotifications
 import okhttp3.internal.notify
 import java.time.LocalTime
 import java.time.temporal.ChronoField
 import java.util.Calendar
 import java.util.Date
+import java.util.Random
 
 
 // Constants for notification
-const val notificationID = 121
-const val channelID = "channel1"
-const val titleExtra = "titleExtra"
-const val messageExtra = "messageExtra"
+//const val notificationID = 121
+//const val channelID = "channel1"
+//const val titleExtra = "titleExtra"
+//const val messageExtra = "messageExtra"
 
 
-
-@Composable
 fun createNewNotification(
     context: Context,
     title: String,
     content: String,
     priority: Int = NotificationCompat.PRIORITY_DEFAULT,
+    notificationID: Int = kotlin.random.Random.nextInt(),
     icon: Int = R.drawable.ic_launcher_foreground,
     time: Long = LocalTime.now().getLong(ChronoField.MILLI_OF_DAY)
 ) { // TODO NEXT
@@ -55,8 +57,9 @@ fun createNewNotification(
     val intent = Intent(context, MyNotification::class.java)
 
     // Add title and message as extras to the intent
-    intent.putExtra(titleExtra, title)
-    intent.putExtra(messageExtra, content)
+    intent.putExtra("titleExtra", title)
+    intent.putExtra("messageExtra", content)
+    intent.putExtra("notificationID", notificationID)
 
     val pendingIntent = PendingIntent.getBroadcast(
         context,
@@ -68,33 +71,9 @@ fun createNewNotification(
     // Get the Alarm Service
     val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
+
     // Handle permission
-
-
-    var hasAlarmPermission = false
-    var hasNotificationPermission = false
-//    val hasAlarmPermission = remember { mutableStateOf(true) }
-//    val hasNotificationPermission = remember { mutableStateOf(true) }
-
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-        hasAlarmPermission =
-            requestPermissionExactAlarm(context=context, alarmManager)
-    }
-
-
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        hasNotificationPermission = // TODO NEXT Get permission to work.
-            requestPermissionNotifications(context=context)
-    }
-//    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-//        if (!alarmManager.canScheduleExactAlarms()) {
-//            Intent().also { x ->
-//                x.action = Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM
-//                context.startActivity(x)
-//            }
-//        }
-//    }
-
+    requestPermissionExactAlarm(context = context, alarmManager)
 
 
     try {
@@ -104,11 +83,11 @@ fun createNewNotification(
             time,
             pendingIntent
         )
-    } catch (e: SecurityException){
-        print("Error with Alarm Permission!")
+    } catch (e: SecurityException) {
+        Log.e("ExactAlarm", "Error with Alarm Permission!")
     }
 
-    showAlert(time, title, content, context)
+//    showAlert(time, title, content, context)
 
 }
 
@@ -119,7 +98,7 @@ fun createNotificationChannel(context: Context) {
     val name = "Reminder notifications"
     val desc = "Reminders set in the app"
     val importance = NotificationManager.IMPORTANCE_DEFAULT
-    val channel = NotificationChannel(channelID, name, importance)
+    val channel = NotificationChannel("reminder", name, importance)
     channel.description = desc
 
     // Get the NotificationManager service and create the channel
@@ -137,14 +116,15 @@ private fun showAlert(time: Long, title: String, message: String, context: Conte
     AlertDialog.Builder(context)
         .setTitle("Notification Scheduled")
         .setMessage(
-            "Title: $title\nMessage: $message\nAt: ${dateFormat.format(date)} ${timeFormat.format(date)}"
+            "Title: $title\nMessage: $message\nAt: ${dateFormat.format(date)} ${
+                timeFormat.format(
+                    date
+                )
+            }"
         )
         .setPositiveButton("Okay") { _, _ -> }
         .show()
 }
-
-
-
 
 
 //

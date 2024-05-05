@@ -10,7 +10,6 @@ import android.net.Uri
 import android.widget.Toast
 import androidx.compose.runtime.Composable
 import it.walmann.adhdcompanion.MainActivity
-import it.walmann.adhdcompanion.requestPermission
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.IOException
@@ -76,21 +75,24 @@ class myReminder(
 //        }
 
 
+        val notificationMessage = if (reminderNote == "") {
+            "You have a new reminder!"
+        } else {
+            reminderNote
+        }
+
         // Create notification
         createNewNotification(
             context = context,
             title = "ADHD Reminder!",
-            content = "This is the content of the notification!",
+            content = notificationMessage,
             time = reminderTime.timeInMillis
         )
-        print("")
-
-//        message.value = ""
-//        Toast.makeText(context, "Data saved successfully..", Toast.LENGTH_SHORT).show()
-
     }
 
-    //    fun loadReminders(context: Context): Map<String, String> {
+
+
+
     @Suppress("UNCHECKED_CAST")
     fun loadReminders(
         context: Context,

@@ -8,17 +8,19 @@ import android.content.Intent
 import androidx.core.app.NotificationCompat
 import it.walmann.adhdcompanion.R
 
-class MyNotification : BroadcastReceiver() {
+class MyNotification() : BroadcastReceiver() {
     // BroadcastReceiver for handling notifications
 
     // Method called when the broadcast is received
     override fun onReceive(context: Context, intent: Intent) {
+        val notificationID = intent.getIntExtra("notificationID", 0)
+
 
         // Build the notification using NotificationCompat.Builder
-        val notification = NotificationCompat.Builder(context, channelID)
+        val notification = NotificationCompat.Builder(context, "reminder")
             .setSmallIcon(R.drawable.ic_launcher_foreground)
-            .setContentTitle(intent.getStringExtra(titleExtra)) // Set title from intent
-            .setContentText(intent.getStringExtra(messageExtra)) // Set content text from intent
+            .setContentTitle(intent.getStringExtra("titleExtra")) // Set title from intent
+            .setContentText(intent.getStringExtra("messageExtra")) // Set content text from intent
             .build()
 
         // Get the NotificationManager service

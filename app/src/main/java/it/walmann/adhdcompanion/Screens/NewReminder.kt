@@ -142,6 +142,13 @@ fun CreateReminderForm(
     val openDateAndTimerDialog = remember { mutableStateOf(false) }
 
 
+
+    // Ask for all needed permissions
+//    requestPermissionExactAlarm(context, aManager = )
+
+
+
+
 //    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
 //        requestPermission(permission = Manifest.permission.SCHEDULE_EXACT_ALARM)
 //    }
@@ -260,6 +267,26 @@ fun CreateReminderForm(
             ) {
                 AutoResizeText(
                     text = "⏱️ Remind me in 10 seconds", // TODO SETTINGS Make this configurable in settings
+                    maxLines = 1,
+                    fontSizeRange = FontSizeRange(
+                        min = 10.sp,
+                        max = 40.sp,
+                    ),
+                )
+            }
+            Spacer(modifier = Modifier.height(1.dp))
+            Button(
+                onClick = {
+                    reminderCalendar.add(Calendar.SECOND, 20)
+                    saveReminder(context, reminderCalendar, newReminder, navController)
+                },
+                shape = RoundedCornerShape(buttonRoundness),
+                modifier = Modifier
+                    .weight(5f)
+                    .fillMaxWidth()
+            ) {
+                AutoResizeText(
+                    text = "⏱️ Remind me in 20 seconds", // TODO SETTINGS Make this configurable in settings
                     maxLines = 1,
                     fontSizeRange = FontSizeRange(
                         min = 10.sp,
