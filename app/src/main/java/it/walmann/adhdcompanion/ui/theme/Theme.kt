@@ -106,8 +106,9 @@ fun ADHDCompanionTheme(
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = Typography,
+        typography = myTypography,
         content = content,
+
 
     )
 }

@@ -73,7 +73,7 @@ fun createNewNotification(
 
 
     // Handle permission
-    requestPermissionExactAlarm(context = context, alarmManager)
+//    requestPermissionExactAlarm(context = context, alarmManager)
 
 
     try {

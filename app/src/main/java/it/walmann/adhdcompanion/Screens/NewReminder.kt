@@ -2,6 +2,7 @@ package it.walmann.adhdcompanion.Screens
 
 import android.Manifest
 import android.content.Context
+import android.content.res.Configuration
 import android.net.Uri
 import android.os.Build
 import android.util.Log
@@ -20,7 +21,10 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
@@ -31,7 +35,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewFontScale
+import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.tooling.preview.PreviewScreenSizes
+import androidx.compose.ui.tooling.preview.Wallpapers
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -47,6 +57,7 @@ import it.walmann.adhdcompanion.CupcakeScreen
 import it.walmann.adhdcompanion.MyObjects.myReminder
 import it.walmann.adhdcompanion.R
 import it.walmann.adhdcompanion.requestPermissionExactAlarm
+import it.walmann.adhdcompanion.ui.theme.ADHDCompanionTheme
 import java.io.File
 import java.util.Calendar
 import java.util.concurrent.ExecutorService
@@ -130,7 +141,6 @@ fun CreateReminderForm(
 ) {
 
 
-
     var reminderCalendar by remember { mutableStateOf<Calendar>(Calendar.getInstance()) }
 
 
@@ -142,11 +152,8 @@ fun CreateReminderForm(
     val openDateAndTimerDialog = remember { mutableStateOf(false) }
 
 
-
     // Ask for all needed permissions
 //    requestPermissionExactAlarm(context, aManager = )
-
-
 
 
 //    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
@@ -195,16 +202,12 @@ fun CreateReminderForm(
                     .fillMaxWidth()
 
             ) {
-                AutoResizeText(
+                Text(
                     text = "${
                         reminderCalendar.get(Calendar.HOUR_OF_DAY).toString().padStart(2, '0')
                     }:${reminderCalendar.get(Calendar.MINUTE).toString().padStart(2, '0')}",
                     maxLines = 1,
-
-                    fontSizeRange = FontSizeRange(
-                        min = 10.sp,
-                        max = 70.sp,
-                    ),
+                    style = MaterialTheme.typography.displayLarge
                 )
             }
             Spacer(modifier = Modifier.height(1.dp))
@@ -221,79 +224,37 @@ fun CreateReminderForm(
                     .fillMaxWidth()
 
             ) {
-                AutoResizeText(
+                Text(
                     text = "${
                         reminderCalendar.get(Calendar.DATE).toString().padStart(2, '0')
                     }.${
                         reminderCalendar.get(Calendar.MONTH).toString().padStart(2, '0')
                     }.${reminderCalendar.get(Calendar.YEAR).toString().padStart(2, '0')}",
                     maxLines = 1,
-                    fontSizeRange = FontSizeRange(
-                        min = 10.sp,
-                        max = 60.sp,
-                    ),
+                    style = MaterialTheme.typography.displayMedium
+
                 )
             }
             Spacer(modifier = Modifier.height(30.dp))
-            Button(
+            RemindMeButtons(
                 onClick = {
                     reminderCalendar.add(Calendar.MINUTE, 10)
                     saveReminder(context, reminderCalendar, newReminder, navController)
                 },
-                shape = RoundedCornerShape(buttonRoundness),
-                modifier = Modifier
-                    .weight(5f)
-                    .fillMaxWidth()
-            ) {
-                AutoResizeText(
-                    text = "⏱️ Remind me in 10 minutes", // TODO SETTINGS Make this configurable in settings
-                    maxLines = 1,
-                    fontSizeRange = FontSizeRange(
-                        min = 10.sp,
-                        max = 40.sp,
-                    ),
-                )
-            }
+                text = "⏱\uFE0F Remind me in 10 minutes"
+            ) // TODO SETTINGS Make this configurable in settings
+
             Spacer(modifier = Modifier.height(1.dp))
-            Button(
-                onClick = {
-                    reminderCalendar.add(Calendar.SECOND, 10)
-                    saveReminder(context, reminderCalendar, newReminder, navController)
-                },
-                shape = RoundedCornerShape(buttonRoundness),
-                modifier = Modifier
-                    .weight(5f)
-                    .fillMaxWidth()
-            ) {
-                AutoResizeText(
-                    text = "⏱️ Remind me in 10 seconds", // TODO SETTINGS Make this configurable in settings
-                    maxLines = 1,
-                    fontSizeRange = FontSizeRange(
-                        min = 10.sp,
-                        max = 40.sp,
-                    ),
-                )
-            }
+            RemindMeButtons(onClick = {
+                reminderCalendar.add(Calendar.SECOND, 10)
+                saveReminder(context, reminderCalendar, newReminder, navController)
+            }, text = "⏱️ Remind me in 10 seconds")
+
             Spacer(modifier = Modifier.height(1.dp))
-            Button(
-                onClick = {
-                    reminderCalendar.add(Calendar.SECOND, 20)
-                    saveReminder(context, reminderCalendar, newReminder, navController)
-                },
-                shape = RoundedCornerShape(buttonRoundness),
-                modifier = Modifier
-                    .weight(5f)
-                    .fillMaxWidth()
-            ) {
-                AutoResizeText(
-                    text = "⏱️ Remind me in 20 seconds", // TODO SETTINGS Make this configurable in settings
-                    maxLines = 1,
-                    fontSizeRange = FontSizeRange(
-                        min = 10.sp,
-                        max = 40.sp,
-                    ),
-                )
-            }
+            RemindMeButtons(onClick = {
+                reminderCalendar.add(Calendar.SECOND, 20)
+                saveReminder(context, reminderCalendar, newReminder, navController)
+            }, text = "⏱️ Remind me in 20 seconds")
             Spacer(modifier = Modifier.height(1.dp))
 
 
@@ -368,6 +329,25 @@ fun saveReminder(
     navController.navigate(CupcakeScreen.Start.name)
 }
 
+
+@Composable
+fun RemindMeButtons(modifier: Modifier = Modifier, onClick: () -> Unit, text: String) {
+    Button(
+        onClick = onClick,
+        shape = RoundedCornerShape(30.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+    ) {
+
+        Text(
+            text = text,
+            maxLines = 1,
+//            overflow = TextOverflow.Clip,
+            style = MaterialTheme.typography.headlineSmall
+        )
+    }
+}
+
 @Composable
 fun NavigationButtons(
     modifier: Modifier = Modifier,
@@ -376,35 +356,35 @@ fun NavigationButtons(
 ) {
     Button(
         onClick = onClick,
-
-        ) {
-        AutoResizeText(
+        modifier.height(50.dp)
+    ) {
+//        AutoResizeText(
+        Text(
             text = text,
-            maxLines = 1,
-            modifier = modifier
-                .padding(10.dp)
-                .height(50.dp),
-            fontSizeRange = FontSizeRange(
-                min = 10.sp,
-                max = 40.sp,
-            ),
+            style = MaterialTheme.typography.labelMedium,
         )
     }
 }
 
-//@PreviewScreenSizes()
-@Preview(widthDp = 720, heightDp = 1280)
+//@PreviewFontScale
+//@PreviewScreenSizes
+//@PreviewLightDark
+@Preview(device = "spec:id=reference_phone,shape=Normal,width=411,height=891,unit=dp,dpi=420")
 //@Preview(widthDp = 680, heightDp = 2000)
 @Composable
 private fun NewReminderPreview() {
     val context = LocalContext.current
-    val resources = context.resources
-    CreateReminderForm(
-        context = context,
-//        photoUri = getUriToDrawable(context = context, drawableId = R.drawable.placeholder_reminderimage),
-        photoUri = Uri.parse("android.resource://it.walmann.adhdcompanion/0/${R.drawable.placeholder_reminderimage}"),
-//        photoUri = Uri.parse("file:///data/user/0/it.walmann.adhdcompanion/files/1714124651621.jpg"),
-        modifier = Modifier,
-        navController = rememberNavController()
-    )
+//    val resources = context.resources
+    val photoUri =
+        Uri.parse("android.resource://it.walmann.adhdcompanion/" + R.drawable.placeholder_reminderimage)
+    ADHDCompanionTheme {
+        Surface {
+            CreateReminderForm(
+                context = context,
+                photoUri = photoUri,
+                modifier = Modifier,
+                navController = rememberNavController()
+            )
+        }
+    }
 }

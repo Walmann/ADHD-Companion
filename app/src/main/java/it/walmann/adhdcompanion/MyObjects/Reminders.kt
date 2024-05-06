@@ -28,11 +28,11 @@ private fun getRandomKey(): String {
 
 }
 
+const val reminderStorageFile: String = "reminder_db.txt"
 
 @Suppress("UNCHECKED_CAST")
 class myReminder(
 //    val alarmTime : LocalDateTime,
-    private val reminderStorageFile: String = "reminder_db.txt",
 
 
     var reminderCalendar: Calendar = Calendar.getInstance(),
@@ -41,7 +41,7 @@ class myReminder(
     var reminderNote: String = ""
 ) {
 
-    private fun createMap(newReminder: Calendar): LinkedHashMap<String, LinkedHashMap<String, Any>> {
+    fun createMap(newReminder: Calendar): LinkedHashMap<String, LinkedHashMap<String, Any>> {
         val currentDateTime = Calendar.getInstance()
         val currMap = mapOf(
 //            "reminderKey" to getRandomKey(),
@@ -91,28 +91,36 @@ class myReminder(
     }
 
 
+}
 
+@Suppress("UNCHECKED_CAST")
+fun loadReminders(
+    context: Context,
+    sort: String = "default"
+): LinkedHashMap<String, LinkedHashMap<String, Any>> {
+    try {
+        var returningMap: LinkedHashMap<String, LinkedHashMap<String, Any>>
+        val fis: FileInputStream = context.openFileInput(reminderStorageFile)
+        val ois = ObjectInputStream(fis)
+        returningMap = ois.readObject() as LinkedHashMap<String, LinkedHashMap<String, Any>>
 
-    @Suppress("UNCHECKED_CAST")
-    fun loadReminders(
-        context: Context,
-        sort: String = "default"
-    ): LinkedHashMap<String, LinkedHashMap<String, Any>> {
-        try {
-            var returningMap: LinkedHashMap<String, LinkedHashMap<String, Any>>
-            val fis: FileInputStream = context.openFileInput(reminderStorageFile)
-            val ois = ObjectInputStream(fis)
-            returningMap = ois.readObject() as LinkedHashMap<String, LinkedHashMap<String, Any>>
+        val temp1 = returningMap.toList().sortedBy { it.first }
+        val result = linkedMapOf(*temp1.toTypedArray())
 
-            val temp1 = returningMap.toList().sortedBy { it.first }
-            val result = linkedMapOf(*temp1.toTypedArray())
-
-            return result
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-        return LinkedHashMap()
+        return result
+    } catch (e: IOException) {
+        e.printStackTrace()
     }
+    return LinkedHashMap()
+}
+//}
+
+fun getReminder(reminderId: Long, context: Context, preview:Boolean = true): java.util.LinkedHashMap<String, Any>? {
+
+    val reminderMap = loadReminders(context = context)
+    val reminder = reminderMap[reminderId.toString()]
+
+    return reminder
 
 }
 

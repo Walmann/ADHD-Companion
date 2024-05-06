@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
+import android.os.Bundle
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -36,7 +37,9 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavArgs
 import androidx.navigation.NavController
+import androidx.navigation.Navigator
 import it.walmann.adhdcompanion.CommonUI.MyTopAppBar
 import it.walmann.adhdcompanion.CupcakeScreen
 //import it.walmann.adhdcompanion.MyObjects.ReminderNotification
@@ -44,6 +47,7 @@ import it.walmann.adhdcompanion.CupcakeScreen
 import it.walmann.adhdcompanion.MyObjects.debugDeleteInternalStorage
 import it.walmann.adhdcompanion.MyObjects.getReminderDate
 import it.walmann.adhdcompanion.MyObjects.getReminderTime
+import it.walmann.adhdcompanion.MyObjects.loadReminders
 import it.walmann.adhdcompanion.MyObjects.myReminder
 //import it.walmann.adhdcompanion.MyObjects.newNotification
 import it.walmann.adhdcompanion.R
@@ -90,58 +94,33 @@ fun RemindersScreen(modifier: Modifier, navController: NavController, context: C
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-//            val notificationThingy = newNotification(context, title = "Hello!", content = "Hello from content!")
             ElevatedButton(onClick = { debugDeleteInternalStorage(context) }) {
-                Text(text = "DELETE INTERLAN STORAGE!!!")
+                Text(text = "DELETE INTERLAN STORAGE!!!") // TODO Fix text size
             }
-//            ElevatedButton(onClick = { // Alarm is not being triggered?
-//                val tempCal = Calendar.getInstance().apply {
-//                    timeInMillis = System.currentTimeMillis()
-//                    add(Calendar.SECOND, 5)
-//                }
-////                tempCal.add(Calendar.SECOND, 5)
-////                ReminderNotification(context = context, builder = notificationThingy, notificationID = Random.nextInt())
-//                createScheduledNotification(context, reminderTime = tempCal)
-//            }) {
-//                Text(text = "Create alarm notification")
-//            }
-//            ElevatedButton(onClick = {
-//                ReminderNotification(context = context, builder = notificationThingy, notificationID = Random.nextInt())
-//            }) {
-//                Text(text = "Show notification")
-//            }
 
 
-            val reminderArray = newReminder.loadReminders(context)
+
+            val reminderArray = loadReminders(context)
             print("")
             reminderArray.forEach { element ->// (key, value) ->
                 val currReminder = element.value
-
+                val temp2 = element.key
                 val currCalendar = Calendar.getInstance()
-//                val temp2 = currReminder["reminderCalendar"]
                 val temp3 = currReminder["reminderCalendar"].toString().toLong()
                 currCalendar.setTimeInMillis(temp3)
 
-                val temp = currCalendar.time
+                val bundle = Bundle().apply { putSerializable("calendar", currCalendar) }
+
                 ReminderCard( // TODO Create a "Reminder details" Screen.
-//                    reminderTime = currReminder["reminderTime"].toString(),
-//                    reminderTime = getReminderTime(currReminder),
-//                    reminderDate = getReminderDate(currReminder),
                     reminderTime = "${currCalendar.get(Calendar.HOUR_OF_DAY).toString().padStart(2,'0')}:${currCalendar.get(Calendar.MINUTE).toString().padStart(2,'0')}",
                     reminderDate = "${currCalendar.get(Calendar.DATE).toString().padStart(2,'0')}.${currCalendar.get(Calendar.MONTH).toString().padStart(2,'0')}.${currCalendar.get(Calendar.YEAR).toString().padStart(2,'0')}",
                     reminderText = currReminder["reminderNote"].toString(),
                     reminderImage = currReminder["reminderImage"].toString(),
                     modifier = Modifier,
-                    context = context
+                    context = context,
+                    onClick = {navController.navigate("${CupcakeScreen.ReminderDetails.name}/${element.key}")}
                 )
             }
-
-//            ReminderCard(
-//                ReminderTime = "10:45",
-//                ReminderDate = "03.02.2024",
-//                ReminderText = "Lorem Ipsum is simply dummy ",
-//                modifier = Modifier
-//            )
         }
     }
 }
@@ -155,8 +134,10 @@ fun ReminderCard(
     reminderImage: String,
     context: Context,
     modifier: Modifier = Modifier,
+    onClick: () -> Unit
 ) {
     Card(
+        onClick = onClick,
         modifier = modifier
             .fillMaxWidth(0.9f)
             .height(275.dp)
