@@ -42,12 +42,10 @@ import androidx.navigation.NavController
 import androidx.navigation.Navigator
 import it.walmann.adhdcompanion.CommonUI.MyTopAppBar
 import it.walmann.adhdcompanion.CupcakeScreen
+import it.walmann.adhdcompanion.Handlers.Reminder.reminderLoad
 //import it.walmann.adhdcompanion.MyObjects.ReminderNotification
 //import it.walmann.adhdcompanion.MyObjects.createScheduledNotification
 import it.walmann.adhdcompanion.MyObjects.debugDeleteInternalStorage
-import it.walmann.adhdcompanion.MyObjects.getReminderDate
-import it.walmann.adhdcompanion.MyObjects.getReminderTime
-import it.walmann.adhdcompanion.MyObjects.loadReminders
 import it.walmann.adhdcompanion.MyObjects.myReminder
 //import it.walmann.adhdcompanion.MyObjects.newNotification
 import it.walmann.adhdcompanion.R
@@ -100,26 +98,37 @@ fun RemindersScreen(modifier: Modifier, navController: NavController, context: C
 
 
 
-            val reminderArray = loadReminders(context)
+            val reminderArray = reminderLoad.all(context)
             print("")
             reminderArray.forEach { element ->// (key, value) ->
                 val currReminder = element.value
-                val temp2 = element.key
-                val currCalendar = Calendar.getInstance()
-                val temp3 = currReminder["reminderCalendar"].toString().toLong()
-                currCalendar.setTimeInMillis(temp3)
+//                val currCalendar = Calendar.getInstance()
+//                val temp3 = currReminder["reminderCalendar"].toString().toLong()
 
-                val bundle = Bundle().apply { putSerializable("calendar", currCalendar) }
+//                currCalendar.setTimeInMillis(temp3)
 
-                ReminderCard( // TODO Create a "Reminder details" Screen.
-                    reminderTime = "${currCalendar.get(Calendar.HOUR_OF_DAY).toString().padStart(2,'0')}:${currCalendar.get(Calendar.MINUTE).toString().padStart(2,'0')}",
-                    reminderDate = "${currCalendar.get(Calendar.DATE).toString().padStart(2,'0')}.${currCalendar.get(Calendar.MONTH).toString().padStart(2,'0')}.${currCalendar.get(Calendar.YEAR).toString().padStart(2,'0')}",
-                    reminderText = currReminder["reminderNote"].toString(),
-                    reminderImage = currReminder["reminderImage"].toString(),
+
+
+                ReminderCard(
+                    reminderTime = "${currReminder.reminderCalendar.get(Calendar.HOUR_OF_DAY).toString().padStart(2,'0')}:${currReminder.reminderCalendar.get(Calendar.MINUTE).toString().padStart(2,'0')}",
+                    reminderDate = "${currReminder.reminderCalendar.get(Calendar.DATE).toString().padStart(2,'0')}.${currReminder.reminderCalendar.get(Calendar.MONTH).toString().padStart(2,'0')}.${currReminder.reminderCalendar.get(Calendar.YEAR).toString().padStart(2,'0')}",
+                    reminderText = currReminder.reminderNote,
+                    reminderImage = currReminder.reminderImage.toString(),
                     modifier = Modifier,
                     context = context,
                     onClick = {navController.navigate("${CupcakeScreen.ReminderDetails.name}/${element.key}")}
                 )
+//                val bundle = Bundle().apply { putSerializable("calendar", currCalendar) }
+//
+//                ReminderCard( // TODO Create a "Reminder details" Screen.
+//                    reminderTime = "${currCalendar.get(Calendar.HOUR_OF_DAY).toString().padStart(2,'0')}:${currCalendar.get(Calendar.MINUTE).toString().padStart(2,'0')}",
+//                    reminderDate = "${currCalendar.get(Calendar.DATE).toString().padStart(2,'0')}.${currCalendar.get(Calendar.MONTH).toString().padStart(2,'0')}.${currCalendar.get(Calendar.YEAR).toString().padStart(2,'0')}",
+//                    reminderText = currReminder["reminderNote"].toString(),
+//                    reminderImage = currReminder["reminderImage"].toString(),
+//                    modifier = Modifier,
+//                    context = context,
+//                    onClick = {navController.navigate("${CupcakeScreen.ReminderDetails.name}/${element.key}")}
+//                )
             }
         }
     }

@@ -1,14 +1,8 @@
 package it.walmann.adhdcompanion
 
 import android.Manifest
-import android.app.AlarmManager
-import android.app.NativeActivity
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
 import android.content.ComponentName
 import android.content.Context
-import android.content.Context.NOTIFICATION_SERVICE
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -20,24 +14,13 @@ import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.core.app.ActivityCompat
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
-import androidx.core.content.getSystemService
-import androidx.navigation.NavArgs
-import androidx.navigation.NavController
 //import androidx.core.content.ContextCompat.getSystemService
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -45,15 +28,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import it.walmann.adhdcompanion.Handlers.Settings.initSettings
 //import it.walmann.adhdcompanion.MyObjects.ReminderNotification
 import it.walmann.adhdcompanion.MyObjects.createNotificationChannel
 //import it.walmann.adhdcompanion.MyObjects.newNotification
 import it.walmann.adhdcompanion.Screens.NewReminder
-import it.walmann.adhdcompanion.Screens.ReminderDetails
 import it.walmann.adhdcompanion.Screens.RemindersScreen
+import it.walmann.adhdcompanion.Screens.SingleReminderForm
 import it.walmann.adhdcompanion.ui.theme.ADHDCompanionTheme
-import java.util.Calendar
-import kotlin.random.Random
 
 
 enum class CupcakeScreen(@StringRes val title: Int) {
@@ -150,7 +132,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
 //        alarmManager = this.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-
+        initSettings(context = this)
 
         setContent {
             ADHDCompanionTheme {
@@ -218,10 +200,10 @@ fun ADHDCompanionApp(
         ) {
             val curCalendar = it.arguments?.getString("calendarId") ?: ""
 
-            ReminderDetails(
+            SingleReminderForm(
                 context = context,
                 navController = navController,
-                calendarId = curCalendar,
+                calendarId = curCalendar.toLong(),
                 modifier = Modifier
                     .fillMaxSize()
 //                    .verticalScroll(rememberScrollState())
