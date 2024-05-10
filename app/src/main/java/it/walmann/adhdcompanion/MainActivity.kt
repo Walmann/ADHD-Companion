@@ -29,6 +29,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import it.walmann.adhdcompanion.Handlers.Settings.initSettings
+import it.walmann.adhdcompanion.MyObjects.ThingsToTest
 //import it.walmann.adhdcompanion.MyObjects.ReminderNotification
 import it.walmann.adhdcompanion.MyObjects.createNotificationChannel
 //import it.walmann.adhdcompanion.MyObjects.newNotification
@@ -133,6 +134,10 @@ class MainActivity : ComponentActivity() {
 
 //        alarmManager = this.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         initSettings(context = this)
+
+
+//        ThingsToTest(context = this)
+
 
         setContent {
             ADHDCompanionTheme {

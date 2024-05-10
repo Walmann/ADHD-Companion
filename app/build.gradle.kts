@@ -3,6 +3,7 @@ import com.android.build.gradle.internal.utils.ATTR_ENABLE_CORE_LIBRARY_DESUGARI
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
+    kotlin("plugin.serialization") version "1.9.22"
 }
 
 android {
@@ -60,6 +61,8 @@ dependencies {
     implementation(libs.simple.icons)
     implementation(libs.font.awesome)
     implementation(libs.coil.compose)
+    implementation(libs.kotlinx.serialization.json)
+    implementation(libs.gson)
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
 
 

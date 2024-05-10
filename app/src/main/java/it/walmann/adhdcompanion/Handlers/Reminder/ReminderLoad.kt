@@ -35,7 +35,7 @@ class reminderLoad {
             try {
                 val returningMap: LinkedHashMap<String, myReminder>
                 val fis: FileInputStream =
-                    context.openFileInput(loadSetting(context, "reminderDbLoc"))
+                    context.openFileInput(loadSetting(context, "reminderDbLoc").toString())
                 val ois = ObjectInputStream(fis)
                 returningMap = ois.readObject() as LinkedHashMap<String, myReminder>
 
