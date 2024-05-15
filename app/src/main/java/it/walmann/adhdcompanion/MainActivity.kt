@@ -52,8 +52,9 @@ enum class CupcakeScreen(@StringRes val title: Int) {
 
 
 // TODO BEFORE RELEASE
+// - Add Reminder Note availability
 // - Make the app prettier
-// - Make sure the reminders actually shows after a long while.
+// - Make sure the reminder notifications actually shows after a long while.
 // - Create App icon
 // - Support all screen orientations
 // - Add google login for syncing reminders
@@ -188,7 +189,19 @@ fun ADHDCompanionApp(
     }
 
 
+    val EmptyDBOnStartup = true
 
+    if (EmptyDBOnStartup) {
+
+        Thread.sleep(500)
+
+        MainActivity.reminderDB.ReminderDao().getAll().forEach { x ->
+            MainActivity.reminderDB.ReminderDao().delete(x)
+        }
+
+        val temp123 = MainActivity.reminderDB.ReminderDao().getAll()
+        print("")
+    }
     NavHost(
         navController = navController,
 //        startDestination = CupcakeScreen.NewReminder.name,
@@ -226,12 +239,12 @@ fun ADHDCompanionApp(
             }
             )
         ) {
-            val curCalendar = it.arguments?.getString("calendarId") ?: ""
+            val curReminder = it.arguments?.getString("calendarId") ?: ""
 
             SingleReminderForm(
                 context = context,
                 navController = navController,
-                calendarId = curCalendar.toLong(),
+                reminderID = curReminder.toLong(),
                 modifier = Modifier
                     .fillMaxSize()
 //                    .verticalScroll(rememberScrollState())

@@ -109,72 +109,24 @@ fun RemindersScreen(modifier: Modifier, navController: NavController, context: C
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
 
-//            Text(text = getReminderDatabaseLocation(context = context))
-
-
             ElevatedButton(onClick = { debugDeleteInternalStorage(context) }) {
                 Text(text = "DELETE INTERLAN STORAGE!!!") // TODO Fix text size
             }
-            val reminderArray = reminderLoad.all(context)
-
-//            val reminderDB = databaseBuilder(
-//                context, ReminderDatabase::class.java, "reminder"
-//            ).allowMainThreadQueries().build()
-
-
-//            val reminderArr = reminderDB.ReminderDao().getAll()
-
             val reminderArr = MainActivity.reminderDB.ReminderDao().getAll()
 
-            print("")
-//            reminderArray.forEach { element ->// (key, value) ->
             reminderArr.forEach { element ->// (key, value) ->
                 val currReminder = element
+                val reminderTime = "${currReminder.reminderCalendar.get(Calendar.HOUR_OF_DAY).toString().padStart(2, '0')}:${currReminder.reminderCalendar.get(Calendar.MINUTE).toString().padStart(2, '0')}"
+                val reminderDate = "${currReminder.reminderCalendar.get(Calendar.DATE).toString().padStart(2, '0')}.${currReminder.reminderCalendar.get(Calendar.MONTH).toString().padStart(2, '0')}.${currReminder.reminderCalendar.get(Calendar.YEAR).toString().padStart(2, '0')}"
                 ReminderCard(
-                    reminderTime = "${
-                        currReminder.reminderCalendar.get(Calendar.HOUR_OF_DAY).toString()
-                            .padStart(2, '0')
-                    }:${
-                        currReminder.reminderCalendar.get(Calendar.MINUTE).toString()
-                            .padStart(2, '0')
-                    }",
-                    reminderDate = "${
-                        currReminder.reminderCalendar.get(Calendar.DATE).toString().padStart(2, '0')
-                    }.${
-                        currReminder.reminderCalendar.get(Calendar.MONTH).toString()
-                            .padStart(2, '0')
-                    }.${
-                        currReminder.reminderCalendar.get(Calendar.YEAR).toString().padStart(2, '0')
-                    }",
+                    reminderTime = reminderTime,
+                    reminderDate = reminderDate,
                     reminderText = currReminder.reminderNote,
                     reminderImage = currReminder.reminderImage.toString(),
                     modifier = Modifier,
                     context = context,
-//                    onClick = {navController.navigate("${CupcakeScreen.ReminderDetails.name}/${element.key}")}
+                    onClick = {navController.navigate("${CupcakeScreen.ReminderDetails.name}/${currReminder.uid}")}
                 )
-//                ReminderCard(
-//                    reminderTime = "${
-//                        currReminder.reminderCalendar.get(Calendar.HOUR_OF_DAY).toString()
-//                            .padStart(2, '0')
-//                    }:${
-//                        currReminder.reminderCalendar.get(Calendar.MINUTE).toString()
-//                            .padStart(2, '0')
-//                    }",
-//                    reminderDate = "${
-//                        currReminder.reminderCalendar.get(Calendar.DATE).toString().padStart(2, '0')
-//                    }.${
-//                        currReminder.reminderCalendar.get(Calendar.MONTH).toString()
-//                            .padStart(2, '0')
-//                    }.${
-//                        currReminder.reminderCalendar.get(Calendar.YEAR).toString().padStart(2, '0')
-//                    }",
-//                    reminderText = currReminder.reminderNote,
-//                    reminderImage = currReminder.reminderImage.toString(),
-//                    modifier = Modifier,
-//                    context = context,
-//                    onClick = {navController.navigate("${CupcakeScreen.ReminderDetails.name}/${element.key}")}
-//                )
-
             }
         }
     }

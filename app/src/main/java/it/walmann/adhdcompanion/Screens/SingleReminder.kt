@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,9 +27,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberAsyncImagePainter
+import it.walmann.adhdcompanion.CommonUI.MyTopAppBar
 import it.walmann.adhdcompanion.Components.DateSelectorDialog
 import it.walmann.adhdcompanion.Components.MyButtonCombinedBottom
 import it.walmann.adhdcompanion.Components.TimeSelectDialog
@@ -37,6 +40,7 @@ import it.walmann.adhdcompanion.Components.myButtonDefault
 import it.walmann.adhdcompanion.CupcakeScreen
 import it.walmann.adhdcompanion.Handlers.Reminder.reminderLoad
 import it.walmann.adhdcompanion.Handlers.Reminder.reminderSave
+import it.walmann.adhdcompanion.MainActivity
 import it.walmann.adhdcompanion.MyObjects.myReminder
 import it.walmann.adhdcompanion.MyObjects.reminder
 import it.walmann.adhdcompanion.R
@@ -46,47 +50,64 @@ import java.util.Calendar
 
 @Composable
 fun SingleReminderForm(
-    calendarId: Long,
+    reminderID: Long,
     context: Context,
     modifier: Modifier = Modifier,
     navController: NavController = rememberNavController(),
 ) {
-    val reminderToLoad = reminderLoad.single(reminderId = calendarId, context = context)
-    val photoUri = reminderToLoad.reminderImage
+//    val reminderToLoad = reminderLoad.single(reminderId = reminderID, context = context)
+//    val photoUri = reminderToLoad.reminderImage
 
+    val currReminder = MainActivity.reminderDB.ReminderDao().getReminder(reminderID)
+//    var photoUri: Uri
+//    try {
+//        photoUri = currReminder.reminderImageFullPath.toUri()
+//    } catch (e: Exception) {
+//        print(e)
+//        photoUri = Uri.EMPTY
+//        print("")
+//    }
+    Scaffold(
+        topBar = { MyTopAppBar() },
 
+        ) { innerPadding ->
 
-    SingleReminderForm(
-        context = context,
-        photoUri = photoUri,
-        modifier = modifier,
-        navController = navController
-    )
-
+        SingleReminderForm(
+            context = context,
+//        photoUri = photoUri,
+            reminder = currReminder,
+            modifier = modifier,
+            navController = navController
+        )
+    }
 }
 
 
 @Composable
 fun SingleReminderForm(
     context: Context,
-    photoUri: Uri,
-    calendarId: String? = null,
-    modifier: Modifier,
+    photoUri: Uri = Uri.EMPTY,
+    modifier: Modifier = Modifier,
     navController: NavController,
+    reminder: reminder = reminder(
+        uid = Calendar.getInstance().timeInMillis,
+        reminderImage = photoUri.lastPathSegment.toString(),
+        reminderImageFullPath = photoUri.toString(),
+        reminderCalendar = Calendar.getInstance()
+    ),
 ) {
     /**
      * Screen to show a single Reminder.
      */
-//    val currentReminder = myReminder(reminderImage = photoUri)
-    val currentReminder = reminder(reminderImage = photoUri.toString())
 
 
-//    var reminderCalendar by remember { mutableStateOf<Calendar>(Calendar.getInstance()) }
+    val currentReminder = reminder
+    val currPhotoUri = if (photoUri == Uri.EMPTY) {
+        reminder.reminderImageFullPath.toUri()
+    } else {
+        photoUri
+    }
 
-
-//    val newReminder by remember { mutableStateOf(myReminder(reminderCalendar = reminderCalendar)) }
-//    newReminder.reminderCalendar = reminderCalendar
-//    newReminder.reminderImage = photoUri
 
     val openTimerDialog = remember { mutableStateOf(false) }
     val openDateAndTimerDialog = remember { mutableStateOf(false) }
@@ -99,7 +120,7 @@ fun SingleReminderForm(
     ) {
 
         Image(
-            painter = rememberAsyncImagePainter(photoUri),
+            painter = rememberAsyncImagePainter(currPhotoUri),
             contentDescription = null,
             contentScale = ContentScale.Inside,
             modifier = modifier
@@ -125,9 +146,6 @@ fun SingleReminderForm(
                     currentReminder.reminderCalendar.get(Calendar.MINUTE).toString()
                         .padStart(2, '0')
                 }",
-//                text = "${
-//                    reminderCalendar.get(Calendar.HOUR_OF_DAY).toString().padStart(2, '0')
-//                }:${reminderCalendar.get(Calendar.MINUTE).toString().padStart(2, '0')}",
                 textStyle = MaterialTheme.typography.displayLarge,
                 modifier = Modifier
                     .weight(10f)
@@ -143,11 +161,14 @@ fun SingleReminderForm(
                     .fillMaxWidth(),
                 textStyle = MaterialTheme.typography.displayMedium,
                 text = "${
-                    currentReminder.reminderCalendar.get(Calendar.DATE).toString().padStart(2, '0')
+                    currentReminder.reminderCalendar.get(Calendar.DATE).toString()
+                        .padStart(2, '0')
                 }.${
-                    currentReminder.reminderCalendar.get(Calendar.MONTH).toString().padStart(2, '0')
+                    currentReminder.reminderCalendar.get(Calendar.MONTH).toString()
+                        .padStart(2, '0')
                 }.${
-                    currentReminder.reminderCalendar.get(Calendar.YEAR).toString().padStart(2, '0')
+                    currentReminder.reminderCalendar.get(Calendar.YEAR).toString()
+                        .padStart(2, '0')
                 }"
             )
             Spacer(modifier = Modifier.height(30.dp))
@@ -259,6 +280,11 @@ private fun saveReminder(
     newReminder: reminder,
     navController: NavController
 ) {
+
+    val temp2 = Calendar.getInstance().timeInMillis
+    val temp3 = newReminder.reminderCalendar.timeInMillis
+
+
     reminderSave(context = context, reminderToSave = newReminder)
     navController.navigate(CupcakeScreen.Start.name)
 }

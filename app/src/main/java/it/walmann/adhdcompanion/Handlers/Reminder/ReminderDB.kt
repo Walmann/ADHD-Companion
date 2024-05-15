@@ -1,6 +1,8 @@
 package it.walmann.adhdcompanion.Handlers.Reminder
 
 import android.content.Context
+import android.net.Uri
+import android.util.Log
 import androidx.room.ColumnInfo
 import androidx.room.Dao
 import androidx.room.Database
@@ -41,6 +43,7 @@ interface ReminderDao {
 
     @Delete
     fun delete(reminder: reminder)
+
 }
 
 
@@ -58,8 +61,10 @@ class ReminderConverter {
     }
 
     @TypeConverter
-    fun stringToReminder(value: String): reminder {
-        val newReminder = reminder(uid = 1234123123)
+    fun stringToReminder(value: String): reminder { // TODO Check here if there is something wrong with Reminders
+        Log.d("StringToReminder", "stringToReminder: Current value: ${value}")
+
+        val newReminder = reminder(uid = 1234123123, reminderCalendar = Calendar.getInstance(), reminderImage = "Uri.EMPTY", reminderImageFullPath = "Uri.EMPTY")
         return newReminder
     }
 

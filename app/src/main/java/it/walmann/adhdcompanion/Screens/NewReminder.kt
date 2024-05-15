@@ -97,7 +97,7 @@ fun NewReminder(context: Context, modifier: Modifier, navController: NavControll
                     )
             }
 
-            if (shouldShowPhoto.value) {
+            if (shouldShowPhoto.value) { // TODO FUTURE Convert this into a separate screen. That way it's easier to handle scaffolding and unifying themes.
                 SingleReminderForm(
                     context = context,
                     photoUri = photoUri,

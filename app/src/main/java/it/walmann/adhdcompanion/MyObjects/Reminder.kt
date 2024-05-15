@@ -19,13 +19,16 @@ import java.util.Calendar
 
 @Entity
 data class reminder(
-    @PrimaryKey val uid: Long = Calendar.getInstance().timeInMillis,
-    @ColumnInfo(name = "reminderKey") val reminderKey: Long = Calendar.getInstance().timeInMillis,
-    @ColumnInfo(name = "reminderCalendar") var reminderCalendar: Calendar = Calendar.getInstance(),
-    @ColumnInfo(name = "reminderImage") val reminderImage: String = "",
-    @ColumnInfo(name = "reminderImageFullPath") val reminderImageFullPath: String = "",
+    /**
+     * Reminder object.
+     * uid is usually a Calendar.timeInMillis
+     */
+    @PrimaryKey val uid: Long,
+//    @ColumnInfo(name = "reminderKey") val reminderKey: Long = Calendar.getInstance().timeInMillis,
+    @ColumnInfo(name = "reminderCalendar") var reminderCalendar: Calendar,
+    @ColumnInfo(name = "reminderImage") val reminderImage: String ,
+    @ColumnInfo(name = "reminderImageFullPath") val reminderImageFullPath: String ,
     @ColumnInfo(name = "reminderNote") val reminderNote: String = "",
-
     )
 
 
