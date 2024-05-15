@@ -38,6 +38,7 @@ import it.walmann.adhdcompanion.CupcakeScreen
 import it.walmann.adhdcompanion.Handlers.Reminder.reminderLoad
 import it.walmann.adhdcompanion.Handlers.Reminder.reminderSave
 import it.walmann.adhdcompanion.MyObjects.myReminder
+import it.walmann.adhdcompanion.MyObjects.reminder
 import it.walmann.adhdcompanion.R
 import it.walmann.adhdcompanion.ui.theme.ADHDCompanionTheme
 import java.util.Calendar
@@ -52,6 +53,8 @@ fun SingleReminderForm(
 ) {
     val reminderToLoad = reminderLoad.single(reminderId = calendarId, context = context)
     val photoUri = reminderToLoad.reminderImage
+
+
 
     SingleReminderForm(
         context = context,
@@ -74,7 +77,8 @@ fun SingleReminderForm(
     /**
      * Screen to show a single Reminder.
      */
-    val currentReminder = myReminder(reminderImage = photoUri)
+//    val currentReminder = myReminder(reminderImage = photoUri)
+    val currentReminder = reminder(reminderImage = photoUri.toString())
 
 
 //    var reminderCalendar by remember { mutableStateOf<Calendar>(Calendar.getInstance()) }
@@ -184,6 +188,7 @@ fun SingleReminderForm(
                     // TODO Make this prettier
                     dialogTitle = "Select time until next reminder",
                     onConfirmRequest = {
+//                        currentReminder.reminderCalendar = it
                         currentReminder.reminderCalendar = it
                         openTimerDialog.value = false
                         openDateAndTimerDialog.value = false
@@ -250,7 +255,8 @@ fun NavigationButtons(
 private fun saveReminder(
     context: Context,
 //    reminderCalendar: Calendar,
-    newReminder: myReminder,
+//    newReminder: myReminder,
+    newReminder: reminder,
     navController: NavController
 ) {
     reminderSave(context = context, reminderToSave = newReminder)

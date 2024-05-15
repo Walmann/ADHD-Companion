@@ -1,22 +1,26 @@
 package it.walmann.adhdcompanion.Handlers.FileSaveLoad
 
 import android.content.Context
+import androidx.datastore.core.DataStore
 import com.google.gson.Gson
-import it.walmann.adhdcompanion.Handlers.Settings.loadSetting
 import it.walmann.adhdcompanion.MyObjects.myReminder
 import java.io.FileOutputStream
 import java.io.ObjectOutputStream
+import java.util.prefs.Preferences
 
 
 fun saveRemindersToInternalFile(context: Context, ObjectToSave: LinkedHashMap<String, myReminder>) {
-    val fileLoc = loadSetting(context, "reminderDbLoc").toString()
+//    val fileLoc = loadSetting(context, "reminderDbLoc").toString()
+    val fileLoc = "reminder_db"
 
-    val myReminderToString = ObjectToSave
-    val thingson = Gson().toJson(ObjectToSave)
+//    val dataStore: DataStore<Preferences> = context.createDataStore(name = "user_preferences")
 
-    val thingsDecoded = Gson(). // TODO NEXT Make settings and reminders available to save onto disk.
-    val temp1 = ""
-//    saveFileToInternalStorage(context = context, FileLoc = loadSetting(context, "reminderDbLoc").toString(), ObjectToSave = toMap<String, String>())
+//    val myReminderToString = ObjectToSave
+//    val thingson = Gson().toJson(ObjectToSave)
+//
+//    val thingsDecoded = Gson(). // TODO NEXT Make settings and reminders available to save onto disk.
+//    val temp1 = ""
+////    saveFileToInternalStorage(context = context, FileLoc = loadSetting(context, "reminderDbLoc").toString(), ObjectToSave = toMap<String, String>())
 
 }
 

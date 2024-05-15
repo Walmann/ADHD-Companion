@@ -1,7 +1,6 @@
 package it.walmann.adhdcompanion.Handlers.Reminder
 
 import android.content.Context
-import it.walmann.adhdcompanion.Handlers.Settings.loadSetting
 import it.walmann.adhdcompanion.MyObjects.myReminder
 import java.io.FileInputStream
 import java.io.IOException
@@ -35,7 +34,8 @@ class reminderLoad {
             try {
                 val returningMap: LinkedHashMap<String, myReminder>
                 val fis: FileInputStream =
-                    context.openFileInput(loadSetting(context, "reminderDbLoc").toString())
+                    context.openFileInput("reminder_db")
+//                    context.openFileInput(loadSetting(context, "reminderDbLoc").toString())
                 val ois = ObjectInputStream(fis)
                 returningMap = ois.readObject() as LinkedHashMap<String, myReminder>
 
@@ -61,7 +61,6 @@ class reminderLoad {
             return reminder
         }
     }
-
 }
 
 

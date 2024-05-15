@@ -2,5 +2,6 @@
 plugins {
     alias(libs.plugins.androidApplication) apply false
     alias(libs.plugins.jetbrainsKotlinAndroid) apply false
+
 }
 val numberpickerVersion by extra("1.0.3")

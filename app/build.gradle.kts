@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
     kotlin("plugin.serialization") version "1.9.22"
+    id("kotlin-kapt")
 }
 
 android {
@@ -63,6 +64,9 @@ dependencies {
     implementation(libs.coil.compose)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.gson)
+    implementation(libs.androidx.datastore.core.android)
+    implementation(libs.androidx.datastore.preferences)
+    implementation(libs.androidx.datastore)
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
 
 
@@ -90,6 +94,10 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
+    val room_version = "2.5.2"
+    implementation("androidx.room:room-ktx:2.6.1")
+    kapt("androidx.room:room-compiler:2.6.1")
+
 
     implementation ("com.chargemap.compose:numberpicker:${rootProject.extra["numberpickerVersion"]}")
 
@@ -103,4 +111,7 @@ dependencies {
     implementation ("androidx.camera:camera-extensions:${camerax_version}")
 
     implementation("io.coil-kt:coil-compose:2.6.0")
+}
+kapt {
+    correctErrorTypes=true
 }

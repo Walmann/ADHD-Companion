@@ -28,8 +28,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import androidx.room.Room
+import it.walmann.adhdcompanion.Handlers.Reminder.ReminderDatabase
 import it.walmann.adhdcompanion.Handlers.Settings.initSettings
-import it.walmann.adhdcompanion.MyObjects.ThingsToTest
 //import it.walmann.adhdcompanion.MyObjects.ReminderNotification
 import it.walmann.adhdcompanion.MyObjects.createNotificationChannel
 //import it.walmann.adhdcompanion.MyObjects.newNotification
@@ -37,6 +38,9 @@ import it.walmann.adhdcompanion.Screens.NewReminder
 import it.walmann.adhdcompanion.Screens.RemindersScreen
 import it.walmann.adhdcompanion.Screens.SingleReminderForm
 import it.walmann.adhdcompanion.ui.theme.ADHDCompanionTheme
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 enum class CupcakeScreen(@StringRes val title: Int) {
@@ -58,6 +62,10 @@ enum class CupcakeScreen(@StringRes val title: Int) {
 class MainActivity : ComponentActivity() {
     private lateinit var PACKAGE_NAME: String
 //    private lateinit var alarmManager: AlarmManager
+
+    companion object {
+        lateinit var reminderDB: ReminderDatabase
+    }
 
 
     private val requestNotificationPermission =
@@ -133,7 +141,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
 //        alarmManager = this.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        initSettings(context = this)
+//        initSettings(context = context)
 
 
 //        ThingsToTest(context = this)
@@ -163,7 +171,22 @@ fun ADHDCompanionApp(
 
     createNotificationChannel(context = context)
 
+    CoroutineScope(Dispatchers.Default).launch {
+        initSettings(context = context)
+    }
+
+//    CoroutineScope(Dispatchers.Default).launch {
+//        debugTestSQLdb(context)
+//    }
+
 //    requestPermissionNotifications(context = context)
+
+    CoroutineScope(Dispatchers.Default).launch {
+        MainActivity.reminderDB = Room.databaseBuilder(
+            context, ReminderDatabase::class.java, "reminder"
+        ).allowMainThreadQueries().build()
+    }
+
 
 
     NavHost(
@@ -179,11 +202,11 @@ fun ADHDCompanionApp(
         composable(route = CupcakeScreen.Start.name) {
             RemindersScreen(
                 modifier = Modifier
-                    .fillMaxSize()
+                    .fillMaxSize(),
 //                    .verticalScroll(rememberScrollState())
-                ,
                 navController,
-                context = context
+                context = context,
+//                reminderDB = reminderDB
 
             )
         }
@@ -216,6 +239,7 @@ fun ADHDCompanionApp(
         }
     }
 }
+
 
 //fun navigateWithCalender(calendar: Calendar, navController: NavController): Unit {
 //    // Sender Calendar-objektet til destinasjonsmålet "my_destination"

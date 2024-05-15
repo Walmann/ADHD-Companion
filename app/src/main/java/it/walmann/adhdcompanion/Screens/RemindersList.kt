@@ -27,6 +27,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,25 +38,41 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.navigation.NavArgs
 import androidx.navigation.NavController
 import androidx.navigation.Navigator
+import androidx.room.Room
+import androidx.room.Room.databaseBuilder
 import it.walmann.adhdcompanion.CommonUI.MyTopAppBar
 import it.walmann.adhdcompanion.CupcakeScreen
+import it.walmann.adhdcompanion.Handlers.Reminder.ReminderDatabase
+//import it.walmann.adhdcompanion.Handlers.Reminder.ReminderDatabase
+//import it.walmann.adhdcompanion.Handlers.Reminder.accessReminderDatabase
 import it.walmann.adhdcompanion.Handlers.Reminder.reminderLoad
+import it.walmann.adhdcompanion.Handlers.Settings.dataStore
+import it.walmann.adhdcompanion.Handlers.Settings.getReminderDatabaseLocation
+import it.walmann.adhdcompanion.MainActivity
 //import it.walmann.adhdcompanion.MyObjects.ReminderNotification
 //import it.walmann.adhdcompanion.MyObjects.createScheduledNotification
 import it.walmann.adhdcompanion.MyObjects.debugDeleteInternalStorage
-import it.walmann.adhdcompanion.MyObjects.myReminder
+//import it.walmann.adhdcompanion.MyObjects.debugTestSQLdb
+//import it.walmann.adhdcompanion.MyObjects.myReminder
 //import it.walmann.adhdcompanion.MyObjects.newNotification
 import it.walmann.adhdcompanion.R
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import java.io.File
 import java.util.Calendar
 import kotlin.random.Random
 
 @Composable
 fun RemindersScreen(modifier: Modifier, navController: NavController, context: Context) {
-    val newReminder by remember { mutableStateOf(myReminder()) }
+//    val newReminder by remember { mutableStateOf(myReminder()) }
 
     // TODO FUTURE I want to create a better looking app. Therefore the list needs a redesign.
     // Look at these links for inspiration:
@@ -86,49 +103,78 @@ fun RemindersScreen(modifier: Modifier, navController: NavController, context: C
                 .padding(innerPadding)
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
-                .background(MaterialTheme.colorScheme.background)
-            ,
+                .background(MaterialTheme.colorScheme.background),
 
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
+
+//            Text(text = getReminderDatabaseLocation(context = context))
+
+
             ElevatedButton(onClick = { debugDeleteInternalStorage(context) }) {
                 Text(text = "DELETE INTERLAN STORAGE!!!") // TODO Fix text size
             }
-
-
-
             val reminderArray = reminderLoad.all(context)
+
+//            val reminderDB = databaseBuilder(
+//                context, ReminderDatabase::class.java, "reminder"
+//            ).allowMainThreadQueries().build()
+
+
+//            val reminderArr = reminderDB.ReminderDao().getAll()
+
+            val reminderArr = MainActivity.reminderDB.ReminderDao().getAll()
+
             print("")
-            reminderArray.forEach { element ->// (key, value) ->
-                val currReminder = element.value
-//                val currCalendar = Calendar.getInstance()
-//                val temp3 = currReminder["reminderCalendar"].toString().toLong()
-
-//                currCalendar.setTimeInMillis(temp3)
-
-
-
+//            reminderArray.forEach { element ->// (key, value) ->
+            reminderArr.forEach { element ->// (key, value) ->
+                val currReminder = element
                 ReminderCard(
-                    reminderTime = "${currReminder.reminderCalendar.get(Calendar.HOUR_OF_DAY).toString().padStart(2,'0')}:${currReminder.reminderCalendar.get(Calendar.MINUTE).toString().padStart(2,'0')}",
-                    reminderDate = "${currReminder.reminderCalendar.get(Calendar.DATE).toString().padStart(2,'0')}.${currReminder.reminderCalendar.get(Calendar.MONTH).toString().padStart(2,'0')}.${currReminder.reminderCalendar.get(Calendar.YEAR).toString().padStart(2,'0')}",
+                    reminderTime = "${
+                        currReminder.reminderCalendar.get(Calendar.HOUR_OF_DAY).toString()
+                            .padStart(2, '0')
+                    }:${
+                        currReminder.reminderCalendar.get(Calendar.MINUTE).toString()
+                            .padStart(2, '0')
+                    }",
+                    reminderDate = "${
+                        currReminder.reminderCalendar.get(Calendar.DATE).toString().padStart(2, '0')
+                    }.${
+                        currReminder.reminderCalendar.get(Calendar.MONTH).toString()
+                            .padStart(2, '0')
+                    }.${
+                        currReminder.reminderCalendar.get(Calendar.YEAR).toString().padStart(2, '0')
+                    }",
                     reminderText = currReminder.reminderNote,
                     reminderImage = currReminder.reminderImage.toString(),
                     modifier = Modifier,
                     context = context,
-                    onClick = {navController.navigate("${CupcakeScreen.ReminderDetails.name}/${element.key}")}
+//                    onClick = {navController.navigate("${CupcakeScreen.ReminderDetails.name}/${element.key}")}
                 )
-//                val bundle = Bundle().apply { putSerializable("calendar", currCalendar) }
-//
-//                ReminderCard( // TODO Create a "Reminder details" Screen.
-//                    reminderTime = "${currCalendar.get(Calendar.HOUR_OF_DAY).toString().padStart(2,'0')}:${currCalendar.get(Calendar.MINUTE).toString().padStart(2,'0')}",
-//                    reminderDate = "${currCalendar.get(Calendar.DATE).toString().padStart(2,'0')}.${currCalendar.get(Calendar.MONTH).toString().padStart(2,'0')}.${currCalendar.get(Calendar.YEAR).toString().padStart(2,'0')}",
-//                    reminderText = currReminder["reminderNote"].toString(),
-//                    reminderImage = currReminder["reminderImage"].toString(),
+//                ReminderCard(
+//                    reminderTime = "${
+//                        currReminder.reminderCalendar.get(Calendar.HOUR_OF_DAY).toString()
+//                            .padStart(2, '0')
+//                    }:${
+//                        currReminder.reminderCalendar.get(Calendar.MINUTE).toString()
+//                            .padStart(2, '0')
+//                    }",
+//                    reminderDate = "${
+//                        currReminder.reminderCalendar.get(Calendar.DATE).toString().padStart(2, '0')
+//                    }.${
+//                        currReminder.reminderCalendar.get(Calendar.MONTH).toString()
+//                            .padStart(2, '0')
+//                    }.${
+//                        currReminder.reminderCalendar.get(Calendar.YEAR).toString().padStart(2, '0')
+//                    }",
+//                    reminderText = currReminder.reminderNote,
+//                    reminderImage = currReminder.reminderImage.toString(),
 //                    modifier = Modifier,
 //                    context = context,
 //                    onClick = {navController.navigate("${CupcakeScreen.ReminderDetails.name}/${element.key}")}
 //                )
+
             }
         }
     }
@@ -143,7 +189,7 @@ fun ReminderCard(
     reminderImage: String,
     context: Context,
     modifier: Modifier = Modifier,
-    onClick: () -> Unit
+    onClick: () -> Unit = {}
 ) {
     Card(
         onClick = onClick,
@@ -162,12 +208,13 @@ fun ReminderCard(
         ) {
 //            var reminderImage: Bitmap? = null
             val imgFile = File(context.filesDir, reminderImage)
+
             val RemindImage = if (imgFile.exists()) {
                 BitmapFactory.decodeFile(imgFile.absolutePath)
             } else {
                 BitmapFactory.decodeResource(context.resources, R.drawable.bing)
             }
-            Row{
+            Row {
                 Column( // Time and Date Info
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center,
@@ -182,7 +229,7 @@ fun ReminderCard(
                         text = reminderTime,
                         fontSize = 50.sp,
 
-                    )
+                        )
                     Text(
                         text = reminderDate,
                         fontSize = 20.sp,
