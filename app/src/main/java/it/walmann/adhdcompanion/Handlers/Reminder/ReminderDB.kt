@@ -61,7 +61,7 @@ class ReminderConverter {
     }
 
     @TypeConverter
-    fun stringToReminder(value: String): reminder { // TODO Check here if there is something wrong with Reminders
+    fun stringToReminder(value: String): reminder { // Check here if there is something wrong with Reminders
         Log.d("StringToReminder", "stringToReminder: Current value: ${value}")
 
         val newReminder = reminder(uid = 1234123123, reminderCalendar = Calendar.getInstance(), reminderImage = "Uri.EMPTY", reminderImageFullPath = "Uri.EMPTY")

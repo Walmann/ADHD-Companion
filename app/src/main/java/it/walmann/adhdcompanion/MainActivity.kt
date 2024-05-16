@@ -189,7 +189,7 @@ fun ADHDCompanionApp(
     }
 
 
-    val EmptyDBOnStartup = true
+    val EmptyDBOnStartup = !true
 
     if (EmptyDBOnStartup) {
 

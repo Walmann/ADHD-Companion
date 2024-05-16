@@ -111,7 +111,7 @@ fun RemindersScreen(modifier: Modifier, navController: NavController, context: C
 
             ElevatedButton(onClick = { debugDeleteInternalStorage(context) }) {
                 Text(text = "DELETE INTERLAN STORAGE!!!") // TODO Fix text size
-            }
+            } 
             val reminderArr = MainActivity.reminderDB.ReminderDao().getAll()
 
             reminderArr.forEach { element ->// (key, value) ->

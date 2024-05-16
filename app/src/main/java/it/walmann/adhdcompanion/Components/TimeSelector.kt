@@ -1,101 +1,38 @@
 package it.walmann.adhdcompanion.Components
 
 
-import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.AnimationResult
-import androidx.compose.animation.core.AnimationVector1D
-import androidx.compose.animation.core.DecayAnimationSpec
-import androidx.compose.animation.core.calculateTargetValue
-import androidx.compose.animation.core.exponentialDecay
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.gestures.draggable
-import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.material.ContentAlpha
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
-import androidx.compose.material3.ColorScheme
-import androidx.compose.material3.DatePicker
-import androidx.compose.material3.DatePickerDialog
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ProvideTextStyle
-import androidx.compose.material3.Shapes
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.tooling.preview.PreviewFontScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.chargemap.compose.numberpicker.NumberPicker
-import kotlinx.coroutines.launch
+import it.walmann.adhdcompanion.ui.theme.ADHDCompanionTheme
 import java.util.Calendar
-import kotlin.math.abs
-import kotlin.math.roundToInt
-
-
-@Composable
-private fun CancelAndNextButtons(
-    selectedDays: Int,
-    selectedHours: Int,
-    selectedMinutes: Int,
-    onDismissRequest: () -> Unit = {},
-    onConfirmRequest: (Calendar) -> Unit,
-) {
-    Row {
-        Button(onClick = onDismissRequest) {// TODO Create Back Button function. If needed?
-            Text(text = "Cancel")
-        }
-        Button(onClick = {
-            onConfirmRequest(
-                calculateNewTimerTime(
-                    selectedDays = selectedDays,
-                    selectedHours = selectedHours,
-                    selectedMinutes = selectedMinutes
-                )
-            )
-        }
-        ) {
-            Text(text = "Save")
-        }
-    }
-}
-
 
 
 @Composable
 fun TimeSelectDialog(
     dialogTitle: String,
+    calendar: Calendar,
     onDismissRequest: () -> Unit = {},
     onConfirmRequest: (Calendar) -> Unit = {},
 ) {
@@ -109,13 +46,14 @@ fun TimeSelectDialog(
                 .padding(16.dp),
         ) {
             var selectedDays by remember { mutableIntStateOf(0) }
-            var selectedHours by remember { mutableIntStateOf(0) } // FIX When adding time, it always start at 0, so if you go to add or subtract time, it will calculate from the reminderTime not actual time.
+            var selectedHours by remember { mutableIntStateOf(0) }
             var selectedMinutes by remember { mutableIntStateOf(0) }
 
 
             Column(
                 modifier = Modifier
-                    .fillMaxWidth(),
+                    .fillMaxWidth()
+                ,
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
@@ -135,11 +73,13 @@ fun TimeSelectDialog(
                     onMinuteChange = { selectedMinutes = it }
                 )
                 CancelAndNextButtons(
+                    calendar = calendar,
                     selectedDays = selectedDays,
                     selectedHours = selectedHours,
                     selectedMinutes = selectedMinutes,
                     onConfirmRequest = onConfirmRequest,
-                    onDismissRequest = onDismissRequest
+                    onDismissRequest = onDismissRequest,
+                    modifier = Modifier.padding(15.dp)
                 )
             }
         }
@@ -148,23 +88,17 @@ fun TimeSelectDialog(
 
 @Composable
 private fun TimeSelector(
-
     selectedDays: Int,
     selectedHours: Int,
     selectedMinutes: Int,
     onDayChange: (Int) -> Unit,
     onHourChange: (Int) -> Unit,
     onMinuteChange: (Int) -> Unit,
-
-//    stateMinutes: MutableState,
-//    stateHours: MutableState,
-//    stateDays: MutableState<Int>
 ) {
     Row {// TODO Create box around each section. Maybe mark by text.
         val numberPickerModifier = Modifier
             .background(MaterialTheme.colorScheme.onSurface)
 //            .height(30.dp)
-
 
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
@@ -204,24 +138,67 @@ private fun TimeSelector(
     }
 }
 
+@Composable
+private fun CancelAndNextButtons(
+    modifier: Modifier = Modifier,
+    calendar: Calendar,
+    selectedDays: Int,
+    selectedHours: Int,
+    selectedMinutes: Int,
+    onDismissRequest: () -> Unit = {},
+    onConfirmRequest: (Calendar) -> Unit,
+) {
+    Row(
+        horizontalArrangement = Arrangement.SpaceEvenly,
+        modifier = modifier.fillMaxWidth(),
+
+    ) {
+        Button(onClick = onDismissRequest) {
+            Text(text = "Cancel")
+        }
+//        Spacer(modifier = Modifier.padding(5.dp))
+        Button(onClick = {
+            onConfirmRequest(
+                calculateNewTimerTime(
+                    calendar = calendar,
+                    selectedDays = selectedDays,
+                    selectedHours = selectedHours,
+                    selectedMinutes = selectedMinutes
+                )
+            )
+        }
+        ) {
+            Text(text = "Save")
+        }
+    }
+}
 
 private fun calculateNewTimerTime(
+    calendar: Calendar,
     selectedDays: Int,
     selectedHours: Int,
     selectedMinutes: Int,
 ): Calendar {
 
-    val currentDateTime = Calendar.getInstance()
+//    val currentDateTime = Calendar.getInstance()
+    val currentDateTime = calendar
 
     currentDateTime.add(Calendar.DATE, selectedDays)
     currentDateTime.add(Calendar.HOUR, selectedHours)
     currentDateTime.add(Calendar.MINUTE, selectedMinutes)
 
-//    val reminderTimeInput = currentDateTime
-//        .plusDays(selectedDays.toLong())
-//        .plusHours(selectedHours.toLong())
-//        .plusMinutes(selectedMinutes.toLong())
     return currentDateTime
+}
+
+
+@PreviewFontScale
+@Composable
+fun TimeSelectDialogPreview() {
+    ADHDCompanionTheme {
+        Surface {
+            TimeSelectDialog(dialogTitle = "Select Time", calendar = Calendar.getInstance())
+        }
+    }
 }
 
 //

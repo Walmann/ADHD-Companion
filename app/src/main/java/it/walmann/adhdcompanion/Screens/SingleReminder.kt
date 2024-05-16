@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewFontScale
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.navigation.NavController
@@ -55,18 +56,8 @@ fun SingleReminderForm(
     modifier: Modifier = Modifier,
     navController: NavController = rememberNavController(),
 ) {
-//    val reminderToLoad = reminderLoad.single(reminderId = reminderID, context = context)
-//    val photoUri = reminderToLoad.reminderImage
-
     val currReminder = MainActivity.reminderDB.ReminderDao().getReminder(reminderID)
-//    var photoUri: Uri
-//    try {
-//        photoUri = currReminder.reminderImageFullPath.toUri()
-//    } catch (e: Exception) {
-//        print(e)
-//        photoUri = Uri.EMPTY
-//        print("")
-//    }
+
     Scaffold(
         topBar = { MyTopAppBar() },
 
@@ -74,9 +65,8 @@ fun SingleReminderForm(
 
         SingleReminderForm(
             context = context,
-//        photoUri = photoUri,
             reminder = currReminder,
-            modifier = modifier,
+            modifier = modifier.padding(innerPadding),
             navController = navController
         )
     }
@@ -100,8 +90,8 @@ fun SingleReminderForm(
      * Screen to show a single Reminder.
      */
 
+    val currentReminder = remember { mutableStateOf(reminder) }
 
-    val currentReminder = reminder
     val currPhotoUri = if (photoUri == Uri.EMPTY) {
         reminder.reminderImageFullPath.toUri()
     } else {
@@ -118,7 +108,7 @@ fun SingleReminderForm(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
     ) {
-
+        Text(text = formatTime(currentReminder.component1().reminderCalendar))
         Image(
             painter = rememberAsyncImagePainter(currPhotoUri),
             contentDescription = null,
@@ -135,24 +125,19 @@ fun SingleReminderForm(
                 .weight(10f)
 
         ) {
-            MyButtonCombinedTop(
+            MyButtonCombinedTop( // TODO Make this a "Set spesific time" module
                 onClick = {
                     openTimerDialog.value = !openDateAndTimerDialog.value
                 },
-                text = "${
-                    currentReminder.reminderCalendar.get(Calendar.HOUR_OF_DAY).toString()
-                        .padStart(2, '0')
-                }:${
-                    currentReminder.reminderCalendar.get(Calendar.MINUTE).toString()
-                        .padStart(2, '0')
-                }",
+//                text = "${currentReminder.reminderCalendar.get(Calendar.HOUR_OF_DAY).toString().padStart(2, '0')}:${currentReminder.reminderCalendar.get(Calendar.MINUTE).toString().padStart(2, '0')}",
+                text = formatTime(currentReminder.value.reminderCalendar),
                 textStyle = MaterialTheme.typography.displayLarge,
                 modifier = Modifier
                     .weight(10f)
                     .fillMaxWidth()
             )
             Spacer(modifier = Modifier.height(1.dp))
-            MyButtonCombinedBottom(
+            MyButtonCombinedBottom(// TODO Make this a "Set spesific date" module
                 onClick = {
                     openDateAndTimerDialog.value = !openDateAndTimerDialog.value
                 },
@@ -160,22 +145,13 @@ fun SingleReminderForm(
                     .weight(10f)
                     .fillMaxWidth(),
                 textStyle = MaterialTheme.typography.displayMedium,
-                text = "${
-                    currentReminder.reminderCalendar.get(Calendar.DATE).toString()
-                        .padStart(2, '0')
-                }.${
-                    currentReminder.reminderCalendar.get(Calendar.MONTH).toString()
-                        .padStart(2, '0')
-                }.${
-                    currentReminder.reminderCalendar.get(Calendar.YEAR).toString()
-                        .padStart(2, '0')
-                }"
+                text = formatDate(currentReminder.component1().reminderCalendar)
             )
             Spacer(modifier = Modifier.height(30.dp))
             myButtonDefault(
                 onClick = {
-                    currentReminder.reminderCalendar.add(Calendar.MINUTE, 10)
-                    saveReminder(context, newReminder = currentReminder, navController)
+                    currentReminder.value.reminderCalendar.add(Calendar.MINUTE, 10)
+                    saveReminder(context, newReminder = currentReminder.value, navController)
                 },
                 text = "⏱\uFE0F Remind me in 10 minutes",
                 textStyle = MaterialTheme.typography.headlineSmall
@@ -184,20 +160,20 @@ fun SingleReminderForm(
             Spacer(modifier = Modifier.height(1.dp))
             myButtonDefault(
                 onClick = {
-                    currentReminder.reminderCalendar.add(Calendar.SECOND, 10)
-                    saveReminder(context, newReminder = currentReminder, navController)
+                    currentReminder.value.reminderCalendar.add(Calendar.SECOND, 10)
+                    saveReminder(context, newReminder = currentReminder.value, navController)
                 },
                 text = "⏱️ Remind me in 10 seconds",
                 textStyle = MaterialTheme.typography.headlineSmall
             )
 
             Spacer(modifier = Modifier.height(1.dp))
-            myButtonDefault(
+            myButtonDefault( // TODO Make this a "Set timer in X minutes" module
                 onClick = {
-                    currentReminder.reminderCalendar.add(Calendar.SECOND, 20)
-                    saveReminder(context, newReminder = currentReminder, navController)
+                    currentReminder.value.reminderCalendar.add(Calendar.SECOND, 20)
+                    saveReminder(context, newReminder = currentReminder.value, navController)
                 },
-                text = "⏱️ Remind me in 20 seconds",
+                text = "⏱️ Remind me in ...",
                 textStyle = MaterialTheme.typography.headlineSmall
             )
             Spacer(modifier = Modifier.height(1.dp))
@@ -208,9 +184,9 @@ fun SingleReminderForm(
                 TimeSelectDialog(
                     // TODO Make this prettier
                     dialogTitle = "Select time until next reminder",
+                    calendar = currentReminder.value.reminderCalendar,
                     onConfirmRequest = {
-//                        currentReminder.reminderCalendar = it
-                        currentReminder.reminderCalendar = it
+                        currentReminder.component1().reminderCalendar = it
                         openTimerDialog.value = false
                         openDateAndTimerDialog.value = false
                     },
@@ -223,14 +199,16 @@ fun SingleReminderForm(
 
 
             if (openDateAndTimerDialog.value) {
-                DateSelectorDialog(onDismissRequest = {
-                    openTimerDialog.value = false
-                    openDateAndTimerDialog.value = false
-                }, onConfirmRequest = {
-                    currentReminder.reminderCalendar = it
-                    openTimerDialog.value = false
-                    openDateAndTimerDialog.value = false
-                }, calendar = currentReminder.reminderCalendar
+                DateSelectorDialog(
+                    onDismissRequest = {
+                        openTimerDialog.value = false
+                        openDateAndTimerDialog.value = false
+                    }, onConfirmRequest = {
+                        currentReminder.value.reminderCalendar = it
+                        openTimerDialog.value = false
+                        openDateAndTimerDialog.value = false
+                    },
+                    calendar = currentReminder.value.reminderCalendar
                 )
             }
 
@@ -249,8 +227,7 @@ fun SingleReminderForm(
                     onClick = {},
                 )
                 NavigationButtons(text = "Save", onClick = {
-                    saveReminder(context, newReminder = currentReminder, navController)
-//                    saveReminder(context, reminderCalendar, newReminder, navController)
+                    saveReminder(context, newReminder = currentReminder.value, navController)
                 })
             }
         }
@@ -262,12 +239,12 @@ fun NavigationButtons(
     modifier: Modifier = Modifier, text: String = "Text", onClick: () -> Unit = { }
 ) {
     Button(
-        onClick = onClick, modifier.height(50.dp)
+        onClick = onClick, modifier//.height(50.dp)
     ) {
-//        AutoResizeText(
         Text(
             text = text,
-            style = MaterialTheme.typography.labelMedium,
+//            style = MaterialTheme.typography.labelLarge,
+            modifier = modifier.padding(10.dp)
         )
     }
 }
@@ -275,22 +252,32 @@ fun NavigationButtons(
 
 private fun saveReminder(
     context: Context,
-//    reminderCalendar: Calendar,
-//    newReminder: myReminder,
     newReminder: reminder,
     navController: NavController
 ) {
-
-    val temp2 = Calendar.getInstance().timeInMillis
-    val temp3 = newReminder.reminderCalendar.timeInMillis
-
-
     reminderSave(context = context, reminderToSave = newReminder)
     navController.navigate(CupcakeScreen.Start.name)
 }
 
+private fun formatTime(reminderCalendar: Calendar): String {
+    val timeString = "${
+        reminderCalendar.get(Calendar.HOUR_OF_DAY).toString().padStart(2, '0')
+    }:${reminderCalendar.get(Calendar.MINUTE).toString().padStart(2, '0')}"
+    return timeString
+}
 
-//@PreviewFontScale
+private fun formatDate(reminderCalendar: Calendar): String {
+    val dateString = "${
+        reminderCalendar.get(Calendar.DATE).toString().padStart(2, '0')
+    }.${
+        reminderCalendar.get(Calendar.MONTH).toString().padStart(2, '0')
+    }.${
+        reminderCalendar.get(Calendar.YEAR).toString().padStart(2, '0')
+    }"
+    return dateString
+}
+
+@PreviewFontScale
 //@PreviewScreenSizes
 //@PreviewLightDark
 @Preview(device = "spec:id=reference_phone,shape=Normal,width=411,height=891,unit=dp,dpi=420")
