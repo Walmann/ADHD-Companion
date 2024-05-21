@@ -21,7 +21,6 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.core.content.ContextCompat
-//import androidx.core.content.ContextCompat.getSystemService
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -31,9 +30,7 @@ import androidx.navigation.navArgument
 import androidx.room.Room
 import it.walmann.adhdcompanion.Handlers.Reminder.ReminderDatabase
 import it.walmann.adhdcompanion.Handlers.Settings.initSettings
-//import it.walmann.adhdcompanion.MyObjects.ReminderNotification
 import it.walmann.adhdcompanion.MyObjects.createNotificationChannel
-//import it.walmann.adhdcompanion.MyObjects.newNotification
 import it.walmann.adhdcompanion.Screens.NewReminder
 import it.walmann.adhdcompanion.Screens.RemindersScreen
 import it.walmann.adhdcompanion.Screens.SingleReminderForm
@@ -48,16 +45,14 @@ enum class CupcakeScreen(@StringRes val title: Int) {
     NewReminder(title = R.string.NewReminder),
     ReminderDetails(title = R.string.screen_title_reminder_details)
 }
-// TODO FUTURE Check that all the reminders survive a reboot!
 
-
-// TODO BEFORE RELEASE
-// - Add Reminder Note availability
-// - Make the app prettier
-// - Make sure the reminder notifications actually shows after a long while.
-// - Create App icon
-// - Support all screen orientations
-// - Add google login for syncing reminders
+/* TODO BEFORE RELEASE
+ - Add Reminder Note availability
+ - Make the app prettier
+ - Support all screen orientations
+ - Add google login for syncing reminders
+ - Add "Delete reminder" option.
+ */
 
 
 class MainActivity : ComponentActivity() {

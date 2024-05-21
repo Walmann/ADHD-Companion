@@ -61,7 +61,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                         modifier = modifier
                             .fillMaxWidth()
                     ) {
-                        Text(text = "Hello from content!!") // TODO Create settings screen.
+                        Text(text = "Hello from content!!")
                     }
                 }
 

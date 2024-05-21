@@ -27,7 +27,7 @@ fun MyTopAppBar() {
         },
         navigationIcon = {
             Icon(Icons.Filled.Menu, "backIcon")
-//                    IconButton(onClick = { /*TODO Create side menu for Settings etc.*/ }) {
+//                    IconButton(onClick = { /*Create side menu for Settings etc.*/ }) {
 //                        Icon(Icons.Filled.Menu, "backIcon")
 //                    }
         },

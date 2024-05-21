@@ -1,28 +1,17 @@
 package it.walmann.adhdcompanion.Handlers.Settings
 
 import android.content.Context
-import android.provider.Settings.SettingNotFoundException
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.datastore.core.DataStore
-import androidx.datastore.dataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
-import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-//import androidx.datastore.core.DataStore
-import it.walmann.adhdcompanion.Handlers.FileSaveLoad.saveFileToInternalStorage
-import it.walmann.adhdcompanion.MyObjects.myReminder
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.combineTransform
 import kotlinx.coroutines.flow.map
-import java.io.FileInputStream
-import java.io.IOException
-import java.io.ObjectInputStream
 import java.util.Calendar
-import java.util.LinkedHashMap
 
 //import java.util.prefs.Preferences
 

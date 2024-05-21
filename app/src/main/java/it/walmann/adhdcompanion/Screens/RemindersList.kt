@@ -1,10 +1,7 @@
 package it.walmann.adhdcompanion.Screens
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.Matrix
-import android.os.Bundle
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -12,68 +9,34 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Card
-import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.datastore.preferences.core.stringPreferencesKey
-import androidx.navigation.NavArgs
 import androidx.navigation.NavController
-import androidx.navigation.Navigator
 import androidx.navigation.compose.rememberNavController
-import androidx.room.Room
-import androidx.room.Room.databaseBuilder
-import it.walmann.adhdcompanion.CommonUI.MyTopAppBar
 import it.walmann.adhdcompanion.CupcakeScreen
-import it.walmann.adhdcompanion.Handlers.Reminder.ReminderDatabase
-//import it.walmann.adhdcompanion.Handlers.Reminder.ReminderDatabase
-//import it.walmann.adhdcompanion.Handlers.Reminder.accessReminderDatabase
-import it.walmann.adhdcompanion.Handlers.Reminder.reminderLoad
-import it.walmann.adhdcompanion.Handlers.Settings.dataStore
-import it.walmann.adhdcompanion.Handlers.Settings.getReminderDatabaseLocation
 import it.walmann.adhdcompanion.MainActivity
-import it.walmann.adhdcompanion.MyObjects.DebugCreateManyReminders
-//import it.walmann.adhdcompanion.MyObjects.ReminderNotification
-//import it.walmann.adhdcompanion.MyObjects.createScheduledNotification
-import it.walmann.adhdcompanion.MyObjects.debugDeleteInternalStorage
-//import it.walmann.adhdcompanion.MyObjects.debugTestSQLdb
-//import it.walmann.adhdcompanion.MyObjects.myReminder
-//import it.walmann.adhdcompanion.MyObjects.newNotification
 import it.walmann.adhdcompanion.R
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
 import java.io.File
 import java.util.Calendar
-import kotlin.random.Random
 
 @Composable
 fun RemindersScreen(modifier: Modifier, navController: NavController, context: Context) {
@@ -114,18 +77,18 @@ fun RemindersScreen(modifier: Modifier, navController: NavController, context: C
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
 
-//            ElevatedButton(onClick = { debugDeleteInternalStorage(context) }) {
-//                Text(text = "DELETE INTERLAN STORAGE!!!") // TODO Fix text size
-//            }
 
 
             val reminderArr = MainActivity.reminderDB.ReminderDao().getAll()
 
-            // TODO Create title for this window.
+
 
             if (reminderArr.isEmpty()) {
                 CreateReminderInstructions(modifier = modifier)
             } else {
+                // TODO Create title for this window.
+
+                Text(text = "Reminders", style = MaterialTheme.typography.displayLarge)
 
                 reminderArr.forEach { element ->// (key, value) ->
                     val currReminder = element

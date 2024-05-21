@@ -125,7 +125,7 @@ fun SingleReminderForm(
                 .weight(10f)
 
         ) {
-            MyButtonCombinedTop( // TODO Make this a "Set spesific time" module
+            MyButtonCombinedTop( // TODO NEXT Make this a "Set spesific time" module
                 onClick = {
                     openTimerDialog.value = !openDateAndTimerDialog.value
                 },
