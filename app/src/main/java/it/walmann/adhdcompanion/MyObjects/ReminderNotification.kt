@@ -49,7 +49,8 @@ fun createNewNotification(
     content: String,
     priority: Int = NotificationCompat.PRIORITY_DEFAULT,
     notificationID: Int = kotlin.random.Random.nextInt(),
-    icon: Int = R.drawable.ic_launcher_foreground,
+//    icon: Int = R.drawable.ic_launcher_foreground,
+    icon: Int = R.mipmap.ic_launcher_foreground,
     time: Long = LocalTime.now().getLong(ChronoField.MILLI_OF_DAY)
 ) {
     val intent = Intent(context, MyNotification::class.java)

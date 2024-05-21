@@ -119,7 +119,7 @@ private fun TimeSelector(
             NumberPicker(
                 value = selectedHours,
                 onValueChange = onHourChange,
-                range = 0..100,
+                range = -100..100,
                 modifier = numberPickerModifier
             )
         }

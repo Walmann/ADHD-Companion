@@ -36,12 +36,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalInspectionMode
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.navigation.NavArgs
 import androidx.navigation.NavController
 import androidx.navigation.Navigator
+import androidx.navigation.compose.rememberNavController
 import androidx.room.Room
 import androidx.room.Room.databaseBuilder
 import it.walmann.adhdcompanion.CommonUI.MyTopAppBar
@@ -53,6 +57,7 @@ import it.walmann.adhdcompanion.Handlers.Reminder.reminderLoad
 import it.walmann.adhdcompanion.Handlers.Settings.dataStore
 import it.walmann.adhdcompanion.Handlers.Settings.getReminderDatabaseLocation
 import it.walmann.adhdcompanion.MainActivity
+import it.walmann.adhdcompanion.MyObjects.DebugCreateManyReminders
 //import it.walmann.adhdcompanion.MyObjects.ReminderNotification
 //import it.walmann.adhdcompanion.MyObjects.createScheduledNotification
 import it.walmann.adhdcompanion.MyObjects.debugDeleteInternalStorage
@@ -80,7 +85,7 @@ fun RemindersScreen(modifier: Modifier, navController: NavController, context: C
     // https://dribbble.com/shots/12078609-Circle-Hook-Fisher-man-app-Micro-interactions
 
     Scaffold(
-        topBar = { MyTopAppBar() },
+//        topBar = { MyTopAppBar() },
         floatingActionButton = {
             FloatingActionButton(
 //                containerColor = Color.Black,
@@ -109,24 +114,46 @@ fun RemindersScreen(modifier: Modifier, navController: NavController, context: C
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
 
-            ElevatedButton(onClick = { debugDeleteInternalStorage(context) }) {
-                Text(text = "DELETE INTERLAN STORAGE!!!") // TODO Fix text size
-            } 
+//            ElevatedButton(onClick = { debugDeleteInternalStorage(context) }) {
+//                Text(text = "DELETE INTERLAN STORAGE!!!") // TODO Fix text size
+//            }
+
+
             val reminderArr = MainActivity.reminderDB.ReminderDao().getAll()
 
-            reminderArr.forEach { element ->// (key, value) ->
-                val currReminder = element
-                val reminderTime = "${currReminder.reminderCalendar.get(Calendar.HOUR_OF_DAY).toString().padStart(2, '0')}:${currReminder.reminderCalendar.get(Calendar.MINUTE).toString().padStart(2, '0')}"
-                val reminderDate = "${currReminder.reminderCalendar.get(Calendar.DATE).toString().padStart(2, '0')}.${currReminder.reminderCalendar.get(Calendar.MONTH).toString().padStart(2, '0')}.${currReminder.reminderCalendar.get(Calendar.YEAR).toString().padStart(2, '0')}"
-                ReminderCard(
-                    reminderTime = reminderTime,
-                    reminderDate = reminderDate,
-                    reminderText = currReminder.reminderNote,
-                    reminderImage = currReminder.reminderImage.toString(),
-                    modifier = Modifier,
-                    context = context,
-                    onClick = {navController.navigate("${CupcakeScreen.ReminderDetails.name}/${currReminder.uid}")}
-                )
+            // TODO Create title for this window.
+
+            if (reminderArr.isEmpty()) {
+                CreateReminderInstructions(modifier = modifier)
+            } else {
+
+                reminderArr.forEach { element ->// (key, value) ->
+                    val currReminder = element
+                    val reminderTime = "${
+                        currReminder.reminderCalendar.get(Calendar.HOUR_OF_DAY).toString()
+                            .padStart(2, '0')
+                    }:${
+                        currReminder.reminderCalendar.get(Calendar.MINUTE).toString()
+                            .padStart(2, '0')
+                    }"
+                    val reminderDate = "${
+                        currReminder.reminderCalendar.get(Calendar.DATE).toString().padStart(2, '0')
+                    }.${
+                        currReminder.reminderCalendar.get(Calendar.MONTH).toString()
+                            .padStart(2, '0')
+                    }.${
+                        currReminder.reminderCalendar.get(Calendar.YEAR).toString().padStart(2, '0')
+                    }"
+                    ReminderCard(
+                        reminderTime = reminderTime,
+                        reminderDate = reminderDate,
+                        reminderText = currReminder.reminderNote,
+                        reminderImage = currReminder.reminderImage,
+                        modifier = Modifier,
+                        context = context,
+                        onClick = { navController.navigate("${CupcakeScreen.ReminderDetails.name}/${currReminder.uid}") }
+                    )
+                }
             }
         }
     }
@@ -147,16 +174,17 @@ fun ReminderCard(
         onClick = onClick,
         modifier = modifier
             .fillMaxWidth(0.9f)
-            .height(275.dp)
-            .padding(vertical = 10.dp)
+//            .height(275.dp)
+            .padding(vertical = 5.dp)
     ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+//            horizontalAlignment = Alignment.CenterHorizontally,
+//            verticalArrangement = Arrangement.Center,
             modifier = modifier
-//                .background(Color.Blue)
-//                .weight(1f)
                 .fillMaxSize()
+                .padding(vertical = 10.dp)
         ) {
 //            var reminderImage: Bitmap? = null
             val imgFile = File(context.filesDir, reminderImage)
@@ -166,13 +194,14 @@ fun ReminderCard(
             } else {
                 BitmapFactory.decodeResource(context.resources, R.drawable.bing)
             }
-            Row {
+            Row(modifier = modifier.weight(7f), horizontalArrangement = Arrangement.Center) {
                 Column( // Time and Date Info
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center,
                     modifier = modifier
-                        .width(200.dp)
-                        .height(200.dp)
+//                        .weight(7f)
+//                        .width(200.dp)
+//                        .height(200.dp)
 
 
                 ) {
@@ -186,31 +215,46 @@ fun ReminderCard(
                         text = reminderDate,
                         fontSize = 20.sp,
                     )
-
+                    if (reminderText != "") {
+                        Text(
+                            text = reminderText,
+                            fontSize = 20.sp,
+                            modifier = modifier
+                                .padding(
+                                    horizontal = 10.dp
+                                )
+                        )
+                    }
                 }
-                Image(
-                    bitmap = RemindImage.asImageBitmap(),
-                    modifier = modifier
-                        .rotate(90f)
-                        .height(200.dp)
-                        .padding(10.dp),
-                    contentScale = ContentScale.Fit,
-
-//                    painter = painterResource(id = R.drawable.bing),
-                    contentDescription = null
-                )
             }
-            Text(
-                text = reminderText,
-                fontSize = 20.sp,
+            Image(
+                bitmap = RemindImage.asImageBitmap(),
                 modifier = modifier
-                    .fillMaxWidth()
-                    .padding(
-                        horizontal = 10.dp
-                    )
+                    .weight(3f)
+                    .rotate(90f)
+//                        .height(200.dp)
+                    .padding(15.dp),
+                contentScale = ContentScale.FillWidth,
+                contentDescription = null
             )
         }
     }
 }
 
+@Composable
+fun CreateReminderInstructions(modifier: Modifier = Modifier) {
+    Column {
+        Text(text = "To start creating new reminders, press '+' in the lower right corner")
+    }
+}
 
+
+@Preview
+@Composable
+private fun RemindersScreenPreview() {
+    RemindersScreen(
+        modifier = Modifier,
+        navController = rememberNavController(),
+        context = LocalContext.current
+    )
+}

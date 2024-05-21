@@ -59,7 +59,7 @@ fun SingleReminderForm(
     val currReminder = MainActivity.reminderDB.ReminderDao().getReminder(reminderID)
 
     Scaffold(
-        topBar = { MyTopAppBar() },
+//        topBar = { MyTopAppBar() },
 
         ) { innerPadding ->
 
@@ -108,7 +108,7 @@ fun SingleReminderForm(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
     ) {
-        Text(text = formatTime(currentReminder.component1().reminderCalendar))
+//        Text(text = formatTime(currentReminder.component1().reminderCalendar))
         Image(
             painter = rememberAsyncImagePainter(currPhotoUri),
             contentDescription = null,
@@ -155,29 +155,45 @@ fun SingleReminderForm(
                 },
                 text = "⏱\uFE0F Remind me in 10 minutes",
                 textStyle = MaterialTheme.typography.headlineSmall
-            ) // TODO SETTINGS Make this configurable in settings
+            ) // TODO Make this remember what you choose last time. Add a Cog Icon where you can change this value
 
-            Spacer(modifier = Modifier.height(1.dp))
+            Spacer(modifier = Modifier.height(30.dp))
             myButtonDefault(
                 onClick = {
-                    currentReminder.value.reminderCalendar.add(Calendar.SECOND, 10)
-                    saveReminder(context, newReminder = currentReminder.value, navController)
+                    val repeats = 10
+                    repeat(repeats) {
+
+                        currentReminder.value.reminderCalendar.add(Calendar.MINUTE, repeats)
+                        currentReminder.value.uid = currentReminder.value.reminderCalendar.timeInMillis
+                        saveReminder(
+                            context, newReminder = currentReminder.value, navController
+                        )
+                    }
                 },
-                text = "⏱️ Remind me in 10 seconds",
+                text = "Create 10 copies",
                 textStyle = MaterialTheme.typography.headlineSmall
             )
 
-            Spacer(modifier = Modifier.height(1.dp))
-            myButtonDefault( // TODO Make this a "Set timer in X minutes" module
-                onClick = {
-                    currentReminder.value.reminderCalendar.add(Calendar.SECOND, 20)
-                    saveReminder(context, newReminder = currentReminder.value, navController)
-                },
-                text = "⏱️ Remind me in ...",
-                textStyle = MaterialTheme.typography.headlineSmall
-            )
-            Spacer(modifier = Modifier.height(1.dp))
+//            Spacer(modifier = Modifier.height(1.dp))
+//            myButtonDefault(
+//                onClick = {
+//                    currentReminder.value.reminderCalendar.add(Calendar.SECOND, 10)
+//                    saveReminder(context, newReminder = currentReminder.value, navController)
+//                },
+//                text = "⏱️ Remind me in 10 seconds",
+//                textStyle = MaterialTheme.typography.headlineSmall
+//            )
 
+//            Spacer(modifier = Modifier.height(1.dp))
+//            myButtonDefault( // TODO Make this a "Set timer in X minutes" module
+//                onClick = {
+//                    currentReminder.value.reminderCalendar.add(Calendar.SECOND, 20)
+//                    saveReminder(context, newReminder = currentReminder.value, navController)
+//                },
+//                text = "⏱️ Remind me in ...",
+//                textStyle = MaterialTheme.typography.headlineSmall
+//            )
+//            Spacer(modifier = Modifier.height(1.dp))
 
 
             if (openTimerDialog.value) {

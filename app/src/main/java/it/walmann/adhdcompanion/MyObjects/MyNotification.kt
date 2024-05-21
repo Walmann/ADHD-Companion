@@ -18,7 +18,8 @@ class MyNotification() : BroadcastReceiver() {
 
         // Build the notification using NotificationCompat.Builder
         val notification = NotificationCompat.Builder(context, "reminder")
-            .setSmallIcon(R.drawable.ic_launcher_foreground)
+//            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setSmallIcon(R.mipmap.ic_launcher_foreground)
             .setContentTitle(intent.getStringExtra("titleExtra")) // Set title from intent
             .setContentText(intent.getStringExtra("messageExtra")) // Set content text from intent
             .build()

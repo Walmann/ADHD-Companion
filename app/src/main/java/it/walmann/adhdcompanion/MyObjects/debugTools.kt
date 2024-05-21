@@ -1,7 +1,10 @@
 package it.walmann.adhdcompanion.MyObjects
 
 import android.content.Context
+import android.net.Uri
 import android.util.Log
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.room.ColumnInfo
 import androidx.room.Dao
 import androidx.room.Database
@@ -16,6 +19,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverter
 import androidx.room.TypeConverters
 import com.google.gson.Gson
+import it.walmann.adhdcompanion.Handlers.Reminder.reminderSave
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.descriptors.SerialDescriptor
@@ -34,5 +38,15 @@ fun debugDeleteInternalStorage(context: Context) {
             val f = File(dir, file)
             f.delete()
         }
+    }
+}
+
+
+
+fun DebugCreateManyReminders(context: Context, amount: Int){
+    repeat(amount){
+        val call = Calendar.getInstance()
+        val newReminder = reminder(uid = call.timeInMillis, reminderCalendar = call, reminderImage = Uri.EMPTY.toString(), reminderImageFullPath = Uri.EMPTY.toString())
+        reminderSave(context = context, reminderToSave = newReminder)
     }
 }
