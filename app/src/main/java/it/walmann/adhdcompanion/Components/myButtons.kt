@@ -1,40 +1,58 @@
 package it.walmann.adhdcompanion.Components
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewFontScale
 import androidx.compose.ui.unit.dp
-
-import java.util.Calendar
 
 private val buttonRoundness = 30.dp
 
 
 @Composable
-fun myButtonDefault(
+fun MyButton(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
-    text: String,
-    textStyle: TextStyle = MaterialTheme.typography.bodyMedium
+    text: String = "",
+    textStyle: TextStyle = MaterialTheme.typography.bodyMedium,
+    textModifier: Modifier = Modifier,
+    content: @Composable () -> Unit = {}
 ) {
-    Button(
-        onClick = onClick, shape = RoundedCornerShape(30.dp), modifier = modifier.fillMaxWidth()
+    TextButton(
+        onClick = onClick,
+        shape = RoundedCornerShape(30.dp),
+        colors = ButtonDefaults.textButtonColors(
+            containerColor = MaterialTheme.colorScheme.primary,
+            contentColor = MaterialTheme.colorScheme.onPrimary
+        ),
+        modifier = modifier//.fillMaxWidth()
     ) {
-
-        Text(
-            text = text, maxLines = 1,
-//            overflow = TextOverflow.Clip,
-            style = textStyle
-        )
+        if (text == "") {
+            content()
+        } else {
+            Text(
+                text = text, maxLines = 1,
+                modifier = textModifier,//.padding(10.dp),
+                style = textStyle
+            )
+        }
     }
 }
 
@@ -45,9 +63,13 @@ fun MyButtonCombinedTop(
     text: String,
     textStyle: TextStyle = MaterialTheme.typography.bodyMedium
 ) {
-    Button(
+    TextButton(
         onClick = onClick,
         shape = RoundedCornerShape(topStart = buttonRoundness, topEnd = buttonRoundness),
+        colors = ButtonDefaults.textButtonColors(
+            containerColor = MaterialTheme.colorScheme.primary,
+            contentColor = MaterialTheme.colorScheme.onPrimary
+        ),
         modifier = modifier
 //            .weight(10f)
             .fillMaxWidth()
@@ -55,7 +77,9 @@ fun MyButtonCombinedTop(
         Text(
             text = text,
             maxLines = 1,
-            style = textStyle
+            style = textStyle,
+//            color = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.onSurface),
+
         )
     }
 }
@@ -67,13 +91,117 @@ fun MyButtonCombinedBottom(
     text: String,
     textStyle: TextStyle = MaterialTheme.typography.bodyMedium
 ) {
-    Button(
+    TextButton(
         onClick = onClick,
+        colors = ButtonDefaults.textButtonColors(
+            containerColor = MaterialTheme.colorScheme.primary,
+            contentColor = MaterialTheme.colorScheme.onPrimary
+        ),
         shape = RoundedCornerShape(
             bottomStart = buttonRoundness, bottomEnd = buttonRoundness
-        ), modifier = modifier
+        ),
+        modifier = modifier
 //            .weight(10f)
             .fillMaxWidth()
+
+    ) {
+        Text(
+            text = text,
+            maxLines = 1,
+            style = textStyle
+
+        )
+    }
+}
+
+@Composable
+fun MyButtonCombinedHorizontal(
+    modifier: Modifier = Modifier,
+    divider_placement: Float = 8f,
+    divider_modifier: Modifier = Modifier,
+    textStyle: TextStyle = MaterialTheme.typography.bodyMedium,
+    left_onClick: () -> Unit,
+    left_modifier: Modifier = modifier,
+    left_text: String,
+    left_textStyle: TextStyle = TextStyle().merge(textStyle),
+    right_onClick: () -> Unit,
+    right_modifier: Modifier = modifier,
+    right_text: String,
+    right_textStyle: TextStyle = TextStyle().merge(textStyle)
+) {
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        MyButtonCombinedLeft(
+            modifier = modifier
+                .then(left_modifier)
+                .weight(divider_placement, fill = false),
+            onClick = left_onClick,
+            text = left_text,
+            textStyle = left_textStyle
+        )
+        Spacer(modifier = divider_modifier.width(1.dp))
+        MyButtonCombinedRight(
+            modifier = modifier
+                .then(right_modifier)
+                .weight(10f - divider_placement, fill = false),
+            onClick = right_onClick,
+            text = right_text,
+            textStyle = right_textStyle
+        )
+    }
+}
+
+@Composable
+fun MyButtonCombinedLeft(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+    text: String,
+    textStyle: TextStyle = MaterialTheme.typography.bodyMedium
+) {
+    TextButton(
+        onClick = onClick,
+        shape = RoundedCornerShape(topStart = buttonRoundness, bottomStart = buttonRoundness),
+        colors = ButtonDefaults.textButtonColors(
+            containerColor = MaterialTheme.colorScheme.primary,
+            contentColor = MaterialTheme.colorScheme.onPrimary
+        ),
+        modifier = modifier
+//            .weight(10f)
+            .fillMaxWidth()
+    ) {
+        Text(
+            text = text,
+//            maxLines = 1,
+            style = textStyle,
+//            color = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.onSurface),
+
+        )
+    }
+}
+
+@Composable
+fun MyButtonCombinedRight(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+    text: String,
+    textStyle: TextStyle = MaterialTheme.typography.bodyMedium
+) {
+    TextButton(
+        onClick = onClick,
+        colors = ButtonDefaults.textButtonColors(
+            containerColor = MaterialTheme.colorScheme.primary,
+            contentColor = MaterialTheme.colorScheme.onPrimary
+        ),
+        shape = RoundedCornerShape(
+            topEnd = buttonRoundness, bottomEnd = buttonRoundness
+        ),
+        modifier = modifier
+//            .weight(10f)
+            .fillMaxWidth()
+
 
     ) {
         Text(
@@ -86,11 +214,10 @@ fun MyButtonCombinedBottom(
 }
 
 @Preview
+@PreviewFontScale
 @Composable
 private fun MyButtonPreview() {
-    Column {
-
-
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
         MyButtonCombinedTop(
             onClick = {},
             text = "21:59",
@@ -108,11 +235,19 @@ private fun MyButtonPreview() {
             textStyle = MaterialTheme.typography.displayMedium,
             text = "16.04.2024"
         )
+//        Spacer(modifier = Modifier.height(30.dp))
+//        MyButton(
+//            onClick = {},
+//            text = "Remind me in 10 minutes",
+//            textStyle = MaterialTheme.typography.headlineSmall
+//        )
         Spacer(modifier = Modifier.height(30.dp))
-        myButtonDefault(
-            onClick = {},
-            text = "⏱\uFE0F Remind me in 10 minutes",
-            textStyle = MaterialTheme.typography.headlineSmall
+        MyButtonCombinedHorizontal(
+            modifier = Modifier,
+            left_onClick = {},
+            left_text = "Remind me in 10 minutes",
+            right_onClick = {},
+            right_text = "⚙️"
         )
     }
 }

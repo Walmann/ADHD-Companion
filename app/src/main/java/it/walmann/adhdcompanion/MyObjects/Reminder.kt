@@ -1,19 +1,11 @@
 package it.walmann.adhdcompanion.MyObjects
 
-import android.content.Context
 import android.net.Uri
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverter
 import androidx.room.TypeConverters
-import it.walmann.adhdcompanion.Handlers.Reminder.reminderLoad
-import kotlinx.serialization.Serializable
-import java.io.FileInputStream
-import java.io.FileOutputStream
-import java.io.IOException
-import java.io.ObjectInputStream
-import java.io.ObjectOutputStream
 import java.util.Calendar
 
 

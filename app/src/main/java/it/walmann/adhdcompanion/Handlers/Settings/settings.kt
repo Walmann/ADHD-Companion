@@ -2,7 +2,9 @@ package it.walmann.adhdcompanion.Handlers.Settings
 
 import android.content.Context
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.graphics.Color
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
@@ -33,13 +35,13 @@ val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "us
 
 
 suspend fun initSettings(context: Context) {
-    val reminderDbLoc = stringPreferencesKey("reminderDbLoc")
+//    val reminderDbLoc = stringPreferencesKey("reminderDbLoc")
     val quickReminderTime = intPreferencesKey("quickReminderTime")
     val quickReminderTimeUnit = intPreferencesKey("quickReminderTimeUnit")
 
 //    val dataStore: DataStore<Preferences> = context.createDataStore(name = "user_preferences")
     context.dataStore.edit { settings ->
-        settings[reminderDbLoc] = "reminder_db" //currTempLocation
+//        settings[reminderDbLoc] = "reminder_db" //currTempLocation
         settings[quickReminderTime] = 10 //currTempLocation
         settings[quickReminderTimeUnit] = Calendar.MINUTE //currTempLocation
     }
@@ -52,29 +54,40 @@ suspend fun initSettings(context: Context) {
 }
 
 
+//@Composable
+//fun getQuickReminderTime(context: Context): Int {
+//    val temp2: Flow<String> = context.dataStore.data.map { preferences ->
+//        preferences[stringPreferencesKey("quickReminderTime")] ?: ""
+//    }
+//    val temp3 = temp2.collectAsState(initial = "").value.toInt()
+//    return temp3
+//}
+//
+//@Composable
+//fun getQuickReminderTimeUnit(context: Context): Int {
+//    val temp2: Flow<String> = context.dataStore.data.map { preferences ->
+//        preferences[stringPreferencesKey("quickReminderTimeUnit")] ?: ""
+//    }
+//    val temp3 = temp2.collectAsState(initial = "").value.toInt()
+//    return temp3
+//}
 
-fun getReminderDatabaseLocation(context: Context): Flow<String> {
-    val temp2: Flow<String> = context.dataStore.data.map { preferences ->
-        preferences[stringPreferencesKey("reminderDbLoc")] ?: ""
+fun getAppSetting(context: Context, setting: String) {
+    context.dataStore.data.map { preferences ->
+        preferences[stringPreferencesKey(setting)] ?: ""
     }
-//    val temp3 = temp2.collectAsState(initial = "").value.toString()
-    return temp2
+}
+class AppSettings(context: Context, setting: String) {
+    companion object {
+        @Stable
+        val QuickReminderUnit = "quickReminderTimeUnit"
+
+        @Stable
+        val QuickReminderValue = "quickReminderTime"
+    }
 }
 
-@Composable
-fun getQuickReminderTime(context: Context): Int {
-    val temp2: Flow<String> = context.dataStore.data.map { preferences ->
-        preferences[stringPreferencesKey("quickReminderTime")] ?: ""
-    }
-    val temp3 = temp2.collectAsState(initial = "").value.toInt()
-    return temp3
-}
 
-@Composable
-fun getQuickReminderTimeUnit(context: Context): Int {
-    val temp2: Flow<String> = context.dataStore.data.map { preferences ->
-        preferences[stringPreferencesKey("quickReminderTimeUnit")] ?: ""
-    }
-    val temp3 = temp2.collectAsState(initial = "").value.toInt()
-    return temp3
-}
+
+
+
