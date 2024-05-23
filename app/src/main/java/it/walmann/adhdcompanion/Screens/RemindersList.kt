@@ -7,8 +7,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -33,8 +35,14 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import it.walmann.adhdcompanion.CupcakeScreen
+import it.walmann.adhdcompanion.Handlers.Settings.AppSettings
+import it.walmann.adhdcompanion.Handlers.Settings.getAppSetting
+//import it.walmann.adhdcompanion.Handlers.Settings.initSettings
 import it.walmann.adhdcompanion.MainActivity
 import it.walmann.adhdcompanion.R
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.io.File
 import java.util.Calendar
 
@@ -80,10 +88,15 @@ fun RemindersScreen(modifier: Modifier, navController: NavController, context: C
 
 
             val reminderArr = MainActivity.reminderDB.ReminderDao().getAll()
-
+            var tempText = ""
 
 
             if (reminderArr.isEmpty()) {
+                CoroutineScope(Dispatchers.Default).launch {
+                    tempText = getAppSetting(context, AppSettings.QuickReminderUnit).toString()
+                }
+                Text(text = tempText)
+                Spacer(modifier = Modifier.height(10.dp))
                 CreateReminderInstructions(modifier = modifier)
             } else {
                 // TODO Create title for this window.

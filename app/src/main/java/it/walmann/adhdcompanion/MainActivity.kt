@@ -21,6 +21,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.core.content.ContextCompat
+import androidx.datastore.preferences.core.Preferences
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -29,7 +30,8 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.room.Room
 import it.walmann.adhdcompanion.Handlers.Reminder.ReminderDatabase
-import it.walmann.adhdcompanion.Handlers.Settings.initSettings
+import it.walmann.adhdcompanion.Handlers.Settings.dataStore
+//import it.walmann.adhdcompanion.Handlers.Settings.initSettings
 import it.walmann.adhdcompanion.MyObjects.createNotificationChannel
 import it.walmann.adhdcompanion.Screens.NewReminder
 import it.walmann.adhdcompanion.Screens.RemindersScreen
@@ -37,6 +39,8 @@ import it.walmann.adhdcompanion.Screens.SingleReminderForm
 import it.walmann.adhdcompanion.ui.theme.ADHDCompanionTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 
@@ -53,6 +57,12 @@ enum class CupcakeScreen(@StringRes val title: Int) {
  - Add google login for syncing reminders
  - Add "Delete reminder" option.
  */
+
+
+suspend fun Context.readAllKeys(): Set<Preferences.Key<*>>? {
+    val keys = dataStore.data.map { it.asMap().keys }
+    return keys.firstOrNull()
+}
 
 
 class MainActivity : ComponentActivity() {
@@ -167,9 +177,10 @@ fun ADHDCompanionApp(
 
     createNotificationChannel(context = context)
 
-    CoroutineScope(Dispatchers.Default).launch {
-        initSettings(context = context)
-    }
+
+//    CoroutineScope(Dispatchers.Default).launch {
+//        initSettings(context = context)
+//    }
 
 //    CoroutineScope(Dispatchers.Default).launch {
 //        debugTestSQLdb(context)

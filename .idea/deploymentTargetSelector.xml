@@ -16,6 +16,9 @@
       <SelectionState runConfigName="QuickReminderTimerDialogPreview">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
+      <SelectionState runConfigName="QuickReminderTimerDialogPreview - Default">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
     </selectionStates>
   </component>
 </project>
