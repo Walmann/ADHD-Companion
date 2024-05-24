@@ -85,7 +85,7 @@ suspend fun getAppSetting(context: Context, setting: String): String? {
         mapOf("quickReminderTime" to "10", "quickReminderTimeUnit" to Calendar.MINUTE.toString())
 
      val temp = if (preferences[dataStoreKey] != null) {
-        preferences[dataStoreKey]
+        preferences[dataStoreKey].toString()
     } else {
         preferencesDefaults[dataStoreKey.toString()] // previous: null
     }
@@ -115,10 +115,6 @@ class AppSettings(context: Context, setting: String) {
 }
 
 suspend fun setAppSetting(context: Context, setting: String, value: Int) {
-
-//    val quickReminderTime = intPreferencesKey("quickReminderTime")
-//    val quickReminderTimeUnit = intPreferencesKey("quickReminderTimeUnit")
-
     val settingToSave = intPreferencesKey(setting)
 
     context.dataStore.edit { settings ->

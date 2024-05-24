@@ -1,15 +1,12 @@
 package it.walmann.adhdcompanion.Components
 
-import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -40,7 +37,6 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import java.util.Calendar
 
@@ -61,7 +57,7 @@ class TimeUnits() {
 fun QuickReminderTimerDialog(
     containerColor: Color = MaterialTheme.colorScheme.surfaceContainerHigh,
     modifier: Modifier = Modifier.fillMaxSize(0.8f),
-    onConfirm: () -> Unit = {}
+    onConfirm: (Int, Int) -> Unit
 ) {
 //    var expanded by remember { mutableStateOf(false) }
     val itemUnits = listOf(
@@ -71,7 +67,7 @@ fun QuickReminderTimerDialog(
         listOf("Years", Calendar.DAY_OF_YEAR)
     )
 
-    var selectedIndex by remember { mutableIntStateOf(0) }
+    var selectedUnit by remember { mutableIntStateOf(0) }
     var selectedAmount by remember { mutableIntStateOf(10) }
     Dialog(
         onDismissRequest = { /*TODO*/ },
@@ -112,13 +108,17 @@ fun QuickReminderTimerDialog(
 
                     MyDropdown(modifier = modifier.width(3.dp),
                         itemUnits,
-                        onSelectItem = { selectedIndex = it })
+                        onSelectItem = { selectedUnit = it })
 
                 }
 
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomEnd) {
                     TextButton(
-                        onClick = onConfirm
+                        onClick = {
+                            onConfirm(selectedUnit, selectedAmount)
+
+
+                        }
                     ) {
                         Text(text = "Save")
                     }
@@ -168,9 +168,14 @@ fun MyTextInputNumbersOnly(
 //        label = { Text(text = timeAmount.text) },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
         onValueChange = { it ->
-            if (it.text.isEmpty() || it.text.matches(pattern)) {
+//            if (it.text.isEmpty() || it.text.matches(pattern)) {
+            if (it.text.matches(pattern)) {
                 timeAmount = it
                 userValue(it.text.toInt())
+            }
+            else {
+                timeAmount = TextFieldValue("")
+                userValue(0)
             }
         })
 }
@@ -230,7 +235,7 @@ private fun MyDropdown(
 private fun QuickReminderTimerDialogPreview() {
 
     Surface {
-        QuickReminderTimerDialog()
+        QuickReminderTimerDialog(onConfirm = {it1, it2 -> })
     }
 
 

@@ -41,10 +41,12 @@ import it.walmann.adhdcompanion.Components.TimeWheelSelectDialog
 import it.walmann.adhdcompanion.Components.MyButton
 import it.walmann.adhdcompanion.Components.MyButtonCombinedHorizontal
 import it.walmann.adhdcompanion.Components.QuickReminderTimerDialog
+import it.walmann.adhdcompanion.Components.getTimeUnitFromInt
 import it.walmann.adhdcompanion.CupcakeScreen
 import it.walmann.adhdcompanion.Handlers.Reminder.reminderSave
 import it.walmann.adhdcompanion.Handlers.Settings.AppSettings
 import it.walmann.adhdcompanion.Handlers.Settings.getAppSetting
+import it.walmann.adhdcompanion.Handlers.Settings.setAppSetting
 import it.walmann.adhdcompanion.MainActivity
 import it.walmann.adhdcompanion.MyObjects.reminder
 import it.walmann.adhdcompanion.R
@@ -118,7 +120,10 @@ fun SingleReminderForm(
 
     val currTimeValue = remember { mutableStateOf("") }
     val currTimeUnit = remember { mutableStateOf("") }
-    LaunchedEffect(key1 = context) {
+
+
+//    LaunchedEffect(key1 = context) {
+    CoroutineScope(Dispatchers.Main).launch {
         currTimeValue.value = getAppSetting(context, AppSettings.QuickReminderValue).toString()
         currTimeUnit.value = getAppSetting(context, AppSettings.QuickReminderUnit).toString()
     }
@@ -130,7 +135,7 @@ fun SingleReminderForm(
         modifier = modifier
     ) {
 //        Text(text = formatTime(currentReminder.component1().reminderCalendar))
-//        Text(text = timePState.minute.toString())
+        Text(text = "Remind me in ${currTimeValue.value} ${getTimeUnitFromInt(currTimeUnit.value)}")
         Image(
             painter = rememberAsyncImagePainter(currPhotoUri),
             contentDescription = null,
@@ -176,39 +181,14 @@ fun SingleReminderForm(
                     currentReminder.value.reminderCalendar.add(Calendar.MINUTE, 10)
                     saveReminder(context, newReminder = currentReminder.value, navController)
                 },
-                left_text = "Remind me in ${currTimeValue.value} ${currTimeUnit.value}",
+                left_text = "Remind me in ${currTimeValue.value} ${getTimeUnitFromInt(currTimeUnit.value)}",
                 right_onClick = {
-                            openQuickSettings.value = !openQuickSettings.value
-//                        val currTimeValue = getAppSetting(context, AppSettings.QuickReminderValue)
-//                        val currTimeUnit = getAppSetting(context, AppSettings.QuickReminderUnit)
+
+                    openQuickSettings.value = !openQuickSettings.value
+
                 },
                 right_text = "⚙️"
             )
-//            MyButton(
-//                onClick = {
-//                    currentReminder.value.reminderCalendar.add(Calendar.MINUTE, 10)
-//                    saveReminder(context, newReminder = currentReminder.value, navController)
-//                },
-//                modifier = Modifier.fillMaxWidth(),
-//                text = "Remind me in 10 minutes",
-//                textModifier = Modifier.padding(10.dp),
-//                textStyle = MaterialTheme.typography.headlineSmall
-//            ) {
-//                Row {
-//
-//                    Text(
-//                        text = "Remind me in 10 minutes",
-//                        modifier = Modifier
-//                            .padding(10.dp)
-//                            .weight(9f),
-//                        style = MaterialTheme.typography.headlineSmall
-//                    )
-//                    IconButton(onClick = { /*TODO*/ }) {
-//
-//                    }
-//
-//                }
-//            } // TODO Make this remember what you choose last time. Add a Cog Icon where you can change this value
 
             Spacer(modifier = Modifier.height(30.dp))
             MyButton(
@@ -266,8 +246,28 @@ fun SingleReminderForm(
                 )
             }
             if (openQuickSettings.value) {
-                QuickReminderTimerDialog( onConfirm = {
-                    openQuickSettings.value = !openQuickSettings.value // TODO Make the button update when closing this window.
+                QuickReminderTimerDialog(onConfirm = { selectedUnit, selectedAmount ->
+                    CoroutineScope(Dispatchers.Main).launch {
+                        setAppSetting(
+                            context = context,
+                            AppSettings.QuickReminderUnit,
+                            value = selectedUnit
+                        )
+                        setAppSetting(
+                            context = context,
+                            AppSettings.QuickReminderValue,
+                            value = selectedAmount
+                        )
+                    }
+                    CoroutineScope(Dispatchers.Main).launch {
+                        currTimeValue.value =
+                            getAppSetting(context, AppSettings.QuickReminderValue).toString()
+                        currTimeUnit.value =
+                            getAppSetting(context, AppSettings.QuickReminderUnit).toString()
+                        openQuickSettings.value =
+                            !openQuickSettings.value // TODO Make the button update when closing this window.
+                    }
+
                 })
             }
 
@@ -284,13 +284,9 @@ fun SingleReminderForm(
                 MyButton(
                     text = "Cancel",
                     modifier = Modifier.fillMaxWidth(0.3f),
-//                    textModifier = Modifier.padding(10.dp),
                     onClick = {},
                 )
-//                NavigationButton(
-//                    text = "Cancel",
-//                    onClick = {},
-//                )
+
                 MyButton(
                     modifier = Modifier.fillMaxWidth(0.4f),
                     text = "Save",
@@ -305,33 +301,10 @@ fun SingleReminderForm(
                         )
                         saveReminder(context, newReminder = currentReminder.value, navController)
                     })
-//                NavigationButton(text = "Save", onClick = {
-//                    currentReminder.value.reminderCalendar.set(Calendar.MINUTE, timePState.minute)
-//                    currentReminder.value.reminderCalendar.set(
-//                        Calendar.HOUR_OF_DAY,
-//                        timePState.hour
-//                    )
-//                    saveReminder(context, newReminder = currentReminder.value, navController)
-//                })
             }
         }
     }
 }
-
-@Composable
-fun NavigationButton(
-    modifier: Modifier = Modifier, text: String = "Text", onClick: () -> Unit = { }
-) {
-    MyButton(
-        onClick = onClick,
-    ) {
-        Text(
-            text = text,
-            modifier = modifier.padding(10.dp)
-        )
-    }
-}
-
 
 private fun saveReminder(
     context: Context,
