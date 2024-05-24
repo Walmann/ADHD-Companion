@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import it.walmann.adhdcompanion.Components.ReminderCard
 import it.walmann.adhdcompanion.CupcakeScreen
 import it.walmann.adhdcompanion.Handlers.Settings.AppSettings
 import it.walmann.adhdcompanion.Handlers.Settings.getAppSetting
@@ -136,86 +137,6 @@ fun RemindersScreen(modifier: Modifier, navController: NavController, context: C
 }
 
 
-@Composable
-fun ReminderCard(
-    reminderTime: String,
-    reminderDate: String,
-    reminderText: String,
-    reminderImage: String,
-    context: Context,
-    modifier: Modifier = Modifier,
-    onClick: () -> Unit = {}
-) {
-    Card(
-        onClick = onClick,
-        modifier = modifier
-            .fillMaxWidth(0.9f)
-//            .height(275.dp)
-            .padding(vertical = 5.dp)
-    ) {
-        Row(
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically,
-//            horizontalAlignment = Alignment.CenterHorizontally,
-//            verticalArrangement = Arrangement.Center,
-            modifier = modifier
-                .fillMaxSize()
-                .padding(vertical = 10.dp)
-        ) {
-//            var reminderImage: Bitmap? = null
-            val imgFile = File(context.filesDir, reminderImage)
-
-            val RemindImage = if (imgFile.exists()) {
-                BitmapFactory.decodeFile(imgFile.absolutePath)
-            } else {
-                BitmapFactory.decodeResource(context.resources, R.drawable.bing)
-            }
-            Row(modifier = modifier.weight(7f), horizontalArrangement = Arrangement.Center) {
-                Column( // Time and Date Info
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center,
-                    modifier = modifier
-//                        .weight(7f)
-//                        .width(200.dp)
-//                        .height(200.dp)
-
-
-                ) {
-                    Text(
-//                        modifier = modifier.auto,
-                        text = reminderTime,
-                        fontSize = 50.sp,
-
-                        )
-                    Text(
-                        text = reminderDate,
-                        fontSize = 20.sp,
-                    )
-                    if (reminderText != "") {
-                        Text(
-                            text = reminderText,
-                            fontSize = 20.sp,
-                            modifier = modifier
-                                .padding(
-                                    horizontal = 10.dp
-                                )
-                        )
-                    }
-                }
-            }
-            Image(
-                bitmap = RemindImage.asImageBitmap(),
-                modifier = modifier
-                    .weight(3f)
-                    .rotate(90f)
-//                        .height(200.dp)
-                    .padding(15.dp),
-                contentScale = ContentScale.FillWidth,
-                contentDescription = null
-            )
-        }
-    }
-}
 
 @Composable
 fun CreateReminderInstructions(modifier: Modifier = Modifier) {
