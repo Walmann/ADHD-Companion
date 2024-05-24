@@ -10,7 +10,6 @@ fun reminderSave(context: Context, reminderToSave: reminder) {
     // Save reminder to file
     MainActivity.reminderDB.ReminderDao().insertAll(reminderToSave)
 
-
     // Create notification
     createNewNotification(
         context = context,

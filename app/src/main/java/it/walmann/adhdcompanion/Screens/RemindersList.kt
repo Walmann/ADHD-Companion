@@ -6,8 +6,10 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -86,18 +88,8 @@ fun RemindersScreen(modifier: Modifier, navController: NavController, context: C
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
 
-
-
             val reminderArr = MainActivity.reminderDB.ReminderDao().getAll()
-            var tempText = ""
-
-
             if (reminderArr.isEmpty()) {
-                CoroutineScope(Dispatchers.Default).launch {
-                    tempText = getAppSetting(context, AppSettings.QuickReminderUnit).toString()
-                }
-                Text(text = tempText)
-                Spacer(modifier = Modifier.height(10.dp))
                 CreateReminderInstructions(modifier = modifier)
             } else {
                 // TODO Create title for this window.
@@ -122,11 +114,7 @@ fun RemindersScreen(modifier: Modifier, navController: NavController, context: C
                         currReminder.reminderCalendar.get(Calendar.YEAR).toString().padStart(2, '0')
                     }"
                     ReminderCard(
-                        reminderTime = reminderTime,
-                        reminderDate = reminderDate,
-                        reminderText = currReminder.reminderNote,
-                        reminderImage = currReminder.reminderImage,
-                        modifier = Modifier,
+                        reminder = currReminder,
                         context = context,
                         onClick = { navController.navigate("${CupcakeScreen.ReminderDetails.name}/${currReminder.uid}") }
                     )
@@ -146,12 +134,12 @@ fun CreateReminderInstructions(modifier: Modifier = Modifier) {
 }
 
 
-@Preview
-@Composable
-private fun RemindersScreenPreview() {
-    RemindersScreen(
-        modifier = Modifier,
-        navController = rememberNavController(),
-        context = LocalContext.current
-    )
-}
+//@Preview
+//@Composable
+//private fun RemindersScreenPreview() {
+//    RemindersScreen(
+//        modifier = Modifier,
+//        navController = rememberNavController(),
+//        context = LocalContext.current
+//    )
+//}

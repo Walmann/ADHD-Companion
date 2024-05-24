@@ -21,8 +21,19 @@ data class reminder(
     @ColumnInfo(name = "reminderImage") val reminderImage: String,
     @ColumnInfo(name = "reminderImageFullPath") val reminderImageFullPath: String,
     @ColumnInfo(name = "reminderNote") val reminderNote: String = "",
-    )
-
+) {
+    companion object {
+        fun create(): reminder {
+            val cal = Calendar.getInstance()
+            return reminder(
+                uid = cal.timeInMillis,
+                reminderCalendar = cal,
+                reminderImage = "",
+                reminderImageFullPath = ""
+            )
+        }
+    }
+}
 
 
 @TypeConverters(CalendarConverter::class)
@@ -32,8 +43,6 @@ class myReminder(
     val reminderImage: Uri = Uri.EMPTY,
     val reminderNote: String = "You have a new reminder!",
 //    val reminderCreationCalendar: Calendar = Calendar.getInstance()
-
-
 )
 
 class CalendarConverter {
@@ -52,7 +61,8 @@ class CalendarConverter {
 
     @TypeConverter
     fun toString(reminder: myReminder): String {
-        val new = "${reminder.reminderKey},${reminder.reminderCalendar},${reminder.reminderImage},${reminder.reminderNote}"
+        val new =
+            "${reminder.reminderKey},${reminder.reminderCalendar},${reminder.reminderImage},${reminder.reminderNote}"
         return new
     }
 
