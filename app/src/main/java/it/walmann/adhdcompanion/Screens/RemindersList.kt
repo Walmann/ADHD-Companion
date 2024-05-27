@@ -90,13 +90,12 @@ fun RemindersScreen(modifier: Modifier, navController: NavController, context: C
 
             val reminderArr = MainActivity.reminderDB.ReminderDao().getAll()
             if (reminderArr.isEmpty()) {
-                CreateReminderInstructions(modifier = modifier)
+                CreateReminderInstructions(modifier = modifier.padding(20.dp))
             } else {
-                // TODO Create title for this window.
 
                 Text(text = "Reminders", style = MaterialTheme.typography.displayLarge)
 
-                reminderArr.forEach { element ->// (key, value) ->
+                reminderArr.sortedBy { it.uid }.reversed().forEach { element ->// (key, value) ->
                     val currReminder = element
                     val reminderTime = "${
                         currReminder.reminderCalendar.get(Calendar.HOUR_OF_DAY).toString()
@@ -128,7 +127,7 @@ fun RemindersScreen(modifier: Modifier, navController: NavController, context: C
 
 @Composable
 fun CreateReminderInstructions(modifier: Modifier = Modifier) {
-    Column {
+    Column(modifier = modifier) {
         Text(text = "To start creating new reminders, press '+' in the lower right corner")
     }
 }

@@ -1,7 +1,7 @@
 package it.walmann.adhdcompanion.Components
 
 import android.util.Log
-
+import java.util.Calendar
 
 
 fun getTimeUnitFromInt(value: Any): String {
@@ -18,7 +18,7 @@ fun getTimeUnitFromInt(value: Any): String {
         }
         is String -> {
             when (currValue) {
-                "" -> "Empty Time Unit"
+                "" -> "Unit"
                 "0" -> "Seconds"
                 "12" -> "Minutes"
                 "11" -> "Hours"

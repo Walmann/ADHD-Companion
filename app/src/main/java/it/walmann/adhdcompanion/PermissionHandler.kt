@@ -40,10 +40,7 @@ fun requestPermissionCamera(context: Context): Boolean {
 
 fun requestPermissionExactAlarm(context: Context, aManager: AlarmManager): Boolean {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-//        val temp = context.checkSelfPermission(android.Manifest.permission.SCHEDULE_EXACT_ALARM)
-//        val temp2 = PackageManager.PERMISSION_DENIED
         if (context.checkSelfPermission(android.Manifest.permission.SCHEDULE_EXACT_ALARM) == PackageManager.PERMISSION_DENIED) {
-            // TODO Make better. Need to tell the user why it needs the alarm permission, and check that it still has the permission.
             Log.e("PermissionHandler", "No ScheduleExactAlarms permission granted")
 
 

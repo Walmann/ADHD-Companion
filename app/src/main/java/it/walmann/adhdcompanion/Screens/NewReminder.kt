@@ -76,6 +76,7 @@ fun NewReminder(context: Context, modifier: Modifier, navController: NavControll
                     context = context,
                     photoUri = photoUri,
                     navController = navController,
+                    isBeingInitialized = true,
                     modifier = modifier.fillMaxSize()
                 )
             }

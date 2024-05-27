@@ -71,12 +71,16 @@ fun TimeWheelSelectDialog(
         ) {
             Column(
                 modifier = Modifier.padding(24.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+                
             ) {
                 Text(
                     modifier = Modifier
-                        .fillMaxSize()
-                        .padding(bottom = 20.dp),
+//                        .fillMaxSize()
+                        .fillMaxWidth()
+                        .padding(bottom = 10.dp)
+                    ,
                     text = title,
                     style = MaterialTheme.typography.labelMedium
                 )

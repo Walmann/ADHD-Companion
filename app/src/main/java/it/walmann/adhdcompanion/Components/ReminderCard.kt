@@ -42,6 +42,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
 import coil.compose.AsyncImage
+import coil.compose.rememberAsyncImagePainter
+import coil.compose.rememberImagePainter
 import coil.request.ImageRequest
 import it.walmann.adhdcompanion.Handlers.Settings.AppSettings
 import it.walmann.adhdcompanion.Handlers.Settings.getAppSetting
@@ -81,10 +83,15 @@ fun ReminderCard(
 
     val imgFile = File(context.filesDir, reminder.reminderImage)
 
+//    val RemindImage = if (imgFile.exists()) {
+//        BitmapFactory.decodeFile(imgFile.absolutePath)
+//    } else {
+//        BitmapFactory.decodeResource(context.resources, R.drawable.placeholder_reminderimage)
+//    }
     val RemindImage = if (imgFile.exists()) {
-        BitmapFactory.decodeFile(imgFile.absolutePath)
+        rememberAsyncImagePainter(imgFile)
     } else {
-        BitmapFactory.decodeResource(context.resources, R.drawable.placeholder_reminderimage)
+        rememberAsyncImagePainter(BitmapFactory.decodeResource(context.resources, R.drawable.placeholder_reminderimage))
     }
 
 
@@ -92,7 +99,7 @@ fun ReminderCard(
         onClick = onClick,
         modifier = modifier
             .fillMaxWidth()
-            .height(IntrinsicSize.Max)
+            .height(250.dp)
 //            .height(IntrinsicSize.Min)
 
 //            .width(IntrinsicSize.Min)
@@ -178,21 +185,12 @@ fun ReminderCard(
                     }
                 }
             }
-//            Image(
-//                bitmap = RemindImage.asImageBitmap(),
-//                modifier = modifier
-//                    .weight(5f)
-//                    .rotate(if (LocalInspectionMode.current) 0f else 90f)
-//                    .padding(15.dp),
-//                contentScale = ContentScale.Fit,
-//                contentDescription = null
-//            )
-            AsyncImage( // TODO NEXT Try to fix the auto rotation of images. I have no idea on why this happends. Check if there are any alternative imageViewers available.
-                model = ImageRequest.Builder(context).data(reminder.reminderImage).build(),
+            Image(
+                RemindImage,
                 modifier = modifier
                     .weight(5f)
 //                    .rotate(if (LocalInspectionMode.current) 0f else 90f)
-                    .padding(15.dp),
+                    .padding(10.dp),
                 contentScale = ContentScale.Fit,
                 contentDescription = null
             )
