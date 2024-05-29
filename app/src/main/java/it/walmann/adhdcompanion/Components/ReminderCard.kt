@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -71,6 +70,27 @@ fun ReminderCard(
             .height(250.dp)
             .padding(vertical = 5.dp)
     ) {
+        if (isEditable) {
+            Row(
+                horizontalArrangement = Arrangement.End,
+                modifier = Modifier.fillMaxWidth().padding(0.dp),
+            ) {
+
+                IconButton(
+                    modifier = modifier.padding(0.dp),
+                    onClick = {
+                        MainActivity.reminderDB.ReminderDao().delete(reminder)
+                        MainActivity.navigator.navigate(CupcakeScreen.Start.name)
+                    }
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Clear,
+                        contentDescription = "Delete reminder",
+                        modifier = modifier.padding(0.dp)
+                    )
+                }
+            }
+        }
         Row(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
@@ -90,7 +110,6 @@ fun ReminderCard(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-//                        modifier = modifier.auto,
                             text = calendarToTime(reminder.reminderCalendar),
                             fontSize = 50.sp,
                         )
@@ -141,36 +160,37 @@ fun ReminderCard(
                     }
                 }
             }
+//            Column(
+//                modifier = Modifier
+//                    .fillMaxHeight()
+//                    .padding(0.dp),
+//                horizontalAlignment = Alignment.End
+//            ) {
+//                if (isEditable) {
+//                    IconButton(
+//                        modifier = modifier.padding(0.dp),
+//                        onClick = {
+//                            MainActivity.reminderDB.ReminderDao().delete(reminder)
+//                            MainActivity.navigator.navigate(CupcakeScreen.Start.name)
+//                        }
+//                    ) {
+//                        Icon(
+//                            imageVector = Icons.Filled.Clear,
+//                            contentDescription = "Delete reminder",
+//                            modifier = modifier.padding(0.dp)
+//                        )
+//                    }
+//                }
             Image(
                 RemindImage,
                 modifier = modifier
                     .weight(5f)
 //                    .rotate(if (LocalInspectionMode.current) 0f else 90f)
-                    .padding(10.dp),
+                    .padding(horizontal = 10.dp),
                 contentScale = ContentScale.Fit,
                 contentDescription = null
             )
-            Row(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .padding(0.dp)
-            ) {
-                if (isEditable) {
-                    IconButton(
-                        modifier = modifier.padding(0.dp),
-                        onClick = {
-                            MainActivity.reminderDB.ReminderDao().delete(reminder)
-                            MainActivity.navigator.navigate(CupcakeScreen.Start.name)
-                        }
-                    ) {
-                        Icon(
-                            imageVector = Icons.Filled.Clear,
-                            contentDescription = "Delete reminder",
-                            modifier = modifier.padding(0.dp)
-                        )
-                    }
-                }
-            }
+//            }
         }
     }
 }
