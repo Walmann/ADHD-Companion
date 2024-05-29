@@ -19,7 +19,7 @@ data class reminder(
     @ColumnInfo(name = "reminderCalendar") var reminderCalendar: Calendar,
     @ColumnInfo(name = "reminderImage") val reminderImage: String,
     @ColumnInfo(name = "reminderImageFullPath") val reminderImageFullPath: String,
-    @ColumnInfo(name = "reminderNote") val reminderNote: String = "",
+    @ColumnInfo(name = "reminderNote") var reminderNote: String = "",
 ) {
     companion object {
         fun create(): reminder {

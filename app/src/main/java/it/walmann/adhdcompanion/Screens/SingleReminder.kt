@@ -91,7 +91,7 @@ fun SingleReminderForm(
      */
 
     val currentReminder = remember { mutableStateOf(reminder) }
-
+    val currentNote = remember { mutableStateOf("")    }
 
     val openTimerDialog = remember { mutableStateOf(false) }
     val openDateAndTimerDialog = remember { mutableStateOf(false) }
@@ -132,7 +132,8 @@ fun SingleReminderForm(
                 isEditable = true,
                 modifier = Modifier,
                 onEditTimeClick = { openTimerDialog.value = !openTimerDialog.value },
-                onEditDateClick = { openDateAndTimerDialog.value = !openDateAndTimerDialog.value }
+                onEditDateClick = { openDateAndTimerDialog.value = !openDateAndTimerDialog.value },
+                onNoteDataChange = { currentReminder.value.reminderNote = it }
             )
         }
         Column(
@@ -181,6 +182,8 @@ fun SingleReminderForm(
                     currentReminder.value.reminderCalendar.set(
                         Calendar.HOUR_OF_DAY, timePState.hour
                     )
+
+                    currentReminder.value.reminderNote = currentNote.value
                     saveReminder(context, newReminder = currentReminder.value, navController)
                 })
             }

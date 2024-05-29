@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Edit
@@ -17,7 +18,12 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -50,8 +56,9 @@ fun ReminderCard(
     onClick: () -> Unit = {},
     onEditTimeClick: () -> Unit = {},
     onEditDateClick: () -> Unit = {},
+    onNoteDataChange: (String) -> Unit = {}
 ) {
-
+    var reminderNoteValue by remember { mutableStateOf(reminder.reminderNote) }
     val imgFile = File(context.filesDir, reminder.reminderImage)
     val RemindImage = if (imgFile.exists()) {
         rememberAsyncImagePainter(imgFile)
@@ -70,10 +77,12 @@ fun ReminderCard(
             .height(250.dp)
             .padding(vertical = 5.dp)
     ) {
-        if (isEditable) {
+        if (isEditable) { // DELETE REMINDER
             Row(
                 horizontalArrangement = Arrangement.End,
-                modifier = Modifier.fillMaxWidth().padding(0.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(0.dp),
             ) {
 
                 IconButton(
@@ -99,58 +108,78 @@ fun ReminderCard(
         ) {
 
 
-            Row(modifier = modifier.weight(5f), horizontalArrangement = Arrangement.Center) {
-                Column( // Time and Date Info
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center,
-                    modifier = modifier
+//            Row(modifier = modifier.weight(5f), horizontalArrangement = Arrangement.Center) {
+            Column( // Time and Date Info
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+                modifier = modifier
+            ) {
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Row(
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = calendarToTime(reminder.reminderCalendar),
-                            fontSize = 50.sp,
-                        )
-                        if (isEditable) {
-                            IconButton(
-                                modifier = Modifier.height(IntrinsicSize.Max),
-                                onClick = onEditTimeClick
-                            ) {
-                                Icon(
-                                    Icons.Filled.Edit,
-                                    "Edit Time",
-                                    modifier.height(IntrinsicSize.Max)
-                                )
-                            }
+                    Text(
+                        text = calendarToTime(reminder.reminderCalendar),
+                        fontSize = 50.sp,
+                    )
+                    if (isEditable) {
+                        IconButton(
+                            modifier = Modifier.height(IntrinsicSize.Max),
+                            onClick = onEditTimeClick
+                        ) {
+                            Icon(
+                                Icons.Filled.Edit,
+                                "Edit Time",
+                                modifier.height(IntrinsicSize.Max)
+                            )
                         }
                     }
-                    Row(
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = calendarToDate(reminder.reminderCalendar),
-                            fontSize = 20.sp,
-                        )
-                        if (isEditable) {
-                            IconButton(
-                                modifier = Modifier.height(IntrinsicSize.Max),
-                                onClick = onEditDateClick
-                            ) {
-                                Icon(
-                                    Icons.Filled.Edit,
-                                    "Edit Time",
-                                    modifier.height(IntrinsicSize.Max)
-                                )
-                            }
+                }
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = calendarToDate(reminder.reminderCalendar),
+                        fontSize = 20.sp,
+                    )
+                    if (isEditable) {
+                        IconButton(
+                            modifier = Modifier.height(IntrinsicSize.Max),
+                            onClick = onEditDateClick
+                        ) {
+                            Icon(
+                                Icons.Filled.Edit,
+                                "Edit Date",
+                                modifier.height(IntrinsicSize.Max)
+                            )
                         }
                     }
+                }
 
-                    if (reminder.reminderNote != "") {
+                Row( // Reminder Note
+                    modifier = Modifier.widthIn(max = 150.dp),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    if (isEditable) {
+                        TextField(
+                            singleLine = true,
+                            value = reminderNoteValue,
+                            onValueChange = {
+                                reminderNoteValue = it
+                                onNoteDataChange(it)
+                                            },
+                            label = {
+                                Row {
+                                    Text("Reminder note  ")
+//                                    Icon(Icons.Filled.Edit, "")
+                                }
+                            }
+                        )
+                    } else {
                         Text(
-                            text = reminder.reminderNote,
+                            text = reminder.reminderNote, // TODO Make prettier. Max Characters etc.
                             fontSize = 20.sp,
                             modifier = modifier
                                 .padding(
@@ -159,7 +188,19 @@ fun ReminderCard(
                         )
                     }
                 }
+
+//                if (reminder.reminderNote != "") {
+//                    Text(
+//                        text = reminder.reminderNote,
+//                        fontSize = 20.sp,
+//                        modifier = modifier
+//                            .padding(
+//                                horizontal = 10.dp
+//                            )
+//                    )
+//                }
             }
+//            }
 //            Column(
 //                modifier = Modifier
 //                    .fillMaxHeight()
