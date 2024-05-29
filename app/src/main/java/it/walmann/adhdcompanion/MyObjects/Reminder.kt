@@ -16,7 +16,6 @@ data class reminder(
      * uid is usually a Calendar.timeInMillis
      */
     @PrimaryKey var uid: Long,
-//    @ColumnInfo(name = "reminderKey") val reminderKey: Long = Calendar.getInstance().timeInMillis,
     @ColumnInfo(name = "reminderCalendar") var reminderCalendar: Calendar,
     @ColumnInfo(name = "reminderImage") val reminderImage: String,
     @ColumnInfo(name = "reminderImageFullPath") val reminderImageFullPath: String,

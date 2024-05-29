@@ -48,7 +48,7 @@ fun NewReminder(
     }
 
     outputDirectory = getOutputDirectory()
-    var cameraExecutor: ExecutorService = Executors.newSingleThreadExecutor()
+    val cameraExecutor: ExecutorService = Executors.newSingleThreadExecutor()
 
     Scaffold(
 //        topBar = { MyTopAppBar() },

@@ -1,8 +1,5 @@
 package it.walmann.adhdcompanion.Components
 
-import android.util.Log
-import java.util.Calendar
-
 
 fun getTimeUnitFromInt(value: Any): String {
     var currValue = value

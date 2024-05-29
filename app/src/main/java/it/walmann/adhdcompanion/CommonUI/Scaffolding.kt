@@ -2,7 +2,6 @@ package it.walmann.adhdcompanion.CommonUI
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -27,18 +26,6 @@ fun MyTopAppBar() {
         },
         navigationIcon = {
             Icon(Icons.Filled.Menu, "backIcon")
-//                    IconButton(onClick = { /*Create side menu for Settings etc.*/ }) {
-//                        Icon(Icons.Filled.Menu, "backIcon")
-//                    }
         },
     )
-}
-
-@Composable
-fun MyBottomAppBar() {
-    BottomAppBar(
-        containerColor = Color.Black
-    ) {
-
-    }
 }

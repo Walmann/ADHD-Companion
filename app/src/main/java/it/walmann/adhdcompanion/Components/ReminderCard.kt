@@ -15,7 +15,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Card
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -42,15 +41,10 @@ import java.util.Calendar
 *  When in Reminder list, disable the editing. Do not show the pencil.
 * */
 
-@OptIn(ExperimentalMaterial3Api::class)
+
 @Composable
 fun ReminderCard(
     reminder: reminder,
-//    reminderTimeAndDate: Calendar,
-//    reminderTime: String,
-//    reminderDate: String,
-//    reminderText: String,
-//    reminderImage: String,
     context: Context,
     modifier: Modifier = Modifier,
     isEditable: Boolean = false,
@@ -60,12 +54,6 @@ fun ReminderCard(
 ) {
 
     val imgFile = File(context.filesDir, reminder.reminderImage)
-
-//    val RemindImage = if (imgFile.exists()) {
-//        BitmapFactory.decodeFile(imgFile.absolutePath)
-//    } else {
-//        BitmapFactory.decodeResource(context.resources, R.drawable.placeholder_reminderimage)
-//    }
     val RemindImage = if (imgFile.exists()) {
         rememberAsyncImagePainter(imgFile)
     } else {
@@ -76,28 +64,19 @@ fun ReminderCard(
             )
         )
     }
-
-
     Card(
         onClick = onClick,
         modifier = modifier
             .fillMaxWidth()
             .height(250.dp)
-//            .height(IntrinsicSize.Min)
-
-//            .width(IntrinsicSize.Min)
-//            .height(275.dp)
             .padding(vertical = 5.dp)
     ) {
         Row(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
-//            horizontalAlignment = Alignment.CenterHorizontally,
-//            verticalArrangement = Arrangement.Center,
             modifier = modifier
                 .padding(10.dp)
         ) {
-//            var reminderImage: Bitmap? = null
 
 
             Row(modifier = modifier.weight(5f), horizontalArrangement = Arrangement.Center) {
@@ -105,11 +84,6 @@ fun ReminderCard(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center,
                     modifier = modifier
-//                        .weight(7f)
-//                        .width(200.dp)
-//                        .height(200.dp)
-
-
                 ) {
                     Row(
                         horizontalArrangement = Arrangement.Center,
@@ -223,16 +197,9 @@ private fun calendarToDate(calendar: Calendar): String {
 @Preview
 @Composable
 private fun ReminderCardPreview() {
-//    ADHDCompanionTheme {
-//        Scaffold {
-//            Surface(modifier = Modifier.padding(it)) {
     ReminderCard(
         reminder = reminder.create(),
         context = LocalContext.current,
         isEditable = true
     )
 }
-
-//        }
-//    }
-//}

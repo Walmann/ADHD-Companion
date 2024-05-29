@@ -24,7 +24,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -40,24 +39,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import it.walmann.adhdcompanion.Handlers.Settings.AppSettings
-import it.walmann.adhdcompanion.Handlers.Settings.getAppSetting
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import java.util.Calendar
 
-
-class TimeUnits() {
-    companion object {
-        @Stable
-        val Second = listOf("Second", Calendar.SECOND)
-        val Minutes = listOf("Minutes", Calendar.MINUTE)
-        val Hours = listOf("Hours", Calendar.HOUR_OF_DAY)
-        val Days = listOf("Days", Calendar.DAY_OF_YEAR)
-
-    }
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -68,30 +51,18 @@ fun QuickReminderTimerDialog(
     onConfirm: (Int, Int) -> Unit,
     onDismiss: () -> Unit
 ) {
-//    var expanded by remember { mutableStateOf(false) }
     val itemUnits = listOf(
         listOf("Seconds", Calendar.SECOND),
         listOf("Minutes", Calendar.MINUTE),
         listOf("Hours", Calendar.HOUR_OF_DAY),
         listOf("Years", Calendar.DAY_OF_YEAR)
     )
-//    val currentQuickUnit = remember {mutableStateOf("")}
-//    val currentQuickAmount = remember {mutableStateOf("")}
-//
-//    CoroutineScope(Dispatchers.Main).launch {
-//        currentQuickUnit.value = getAppSetting(context, AppSettings.QuickReminderUnit).toString()
-//        currentQuickAmount.value = getAppSetting(context, AppSettings.QuickReminderValue).toString()
-//    }
-
 
     var selectedUnit by remember { mutableIntStateOf(0) }
     var selectedAmount by remember { mutableIntStateOf(10) }
     Dialog(
         onDismissRequest = onDismiss,
     )
-//        modifier = Modifier
-//        .fillMaxSize()
-//        .wrapContentSize(Alignment.TopStart))
     {
         Surface(
             shape = MaterialTheme.shapes.extraLarge,
@@ -124,7 +95,6 @@ fun QuickReminderTimerDialog(
                 DiagEntry(text = "Units") {
 
                     MyDropdown(modifier = modifier.width(3.dp),
-//                        currentUnit = currentQuickUnit.value,
                         itemUnits,
                         onSelectItem = { selectedUnit = it })
 
@@ -176,8 +146,6 @@ fun DiagEntry(
 @Composable
 fun MyTextInputNumbersOnly(
     modifier: Modifier = Modifier,
-//    userInput: Int,
-//    currentValue: String,
     userValue: (Int) -> Unit
 ) {
     val pattern = remember { Regex("^\\d+\$") }
@@ -200,7 +168,6 @@ fun MyTextInputNumbersOnly(
 @Composable
 private fun MyDropdown(
     modifier: Modifier = Modifier,
-//    currentUnit: String,
     itemUnits: List<List<Any>>,
     onSelectItem: (Int) -> Unit = {},
 ) {
@@ -214,12 +181,8 @@ private fun MyDropdown(
         mutableStateOf(itemUnits[0][0].toString())
     }
 
-    Box(
-//        modifier = modifier.fillMaxWidth()
-//            .padding(32.dp)
-    ) {
+    Box {
         ExposedDropdownMenuBox(
-//            modifier = Modifier.fillMaxSize(),
             expanded = expanded,
             onExpandedChange = {
                 expanded = !expanded
@@ -257,7 +220,6 @@ private fun MyDropdown(
 
 
 @Preview(name = "Default", widthDp = 500, heightDp = 1000)
-
 @Composable
 private fun QuickReminderTimerDialogPreview() {
 

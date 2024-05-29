@@ -39,7 +39,6 @@ import java.util.concurrent.Executor
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun CameraView(
-    // The camera is too big. Make it square. It also rotates?
     modifier: Modifier = Modifier,
     executor: Executor,
     onImageCaptured: (Uri) -> Unit = {},
@@ -57,18 +56,15 @@ fun CameraView(
         Column(
             verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = Alignment.CenterHorizontally,
-//            contentAlignment = Alignment.BottomCenter,
-//            modifier = Modifier.requiredHeightIn(min = 200.dp)
             modifier = modifier.fillMaxSize()
         ) {
-            CameraPreview( // CameraPreview extends beyond borders. Submitted bugreport.
+            CameraPreview(
                 // Campose: https://github.com/ujizin/Camposer
                 cameraState = cameraState,
                 camSelector = camSelector,
                 scaleType = ScaleType.FitStart,
                 modifier = Modifier
                     .padding(10.dp)
-//                    .fillMaxHeight()
                     .weight(7f)
 
                 ,
@@ -82,13 +78,11 @@ fun CameraView(
                     .weight(3f)
             ) {
                 CameraScreenButton(
-//                        modifier = Modifier.size(100.dp),
                     onClick = { camSelector = camSelector.inverse },
                     contentDescription = "Turn camera around",
                     icon = R.drawable.camera_rotate_bold,
                 )
                 CameraScreenButton(
-//                        modifier = Modifier.padding(bottom = 20.dp),
                     icon = R.drawable.arrow_right,
                     onClick = {
                         myTakePhoto(
@@ -122,14 +116,11 @@ fun CameraScreenButton(
         onClick = onClick,
         content = {
             Icon(
-//                imageVector = icon,
                 painter = painterResource(id = icon),
                 contentDescription = contentDescription,
                 tint = Color.White,
                 modifier = Modifier
                     .fillMaxSize()
-//                    .size(100.dp)
-//                    .padding(10.dp)
                     .border(0.dp, Color.Transparent)
             )
         }

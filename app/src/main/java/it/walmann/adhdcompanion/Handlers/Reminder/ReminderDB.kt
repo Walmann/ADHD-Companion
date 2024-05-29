@@ -1,29 +1,14 @@
 package it.walmann.adhdcompanion.Handlers.Reminder
 
-import android.content.Context
-import android.net.Uri
-import android.util.Log
-import androidx.room.ColumnInfo
 import androidx.room.Dao
 import androidx.room.Database
 import androidx.room.Delete
-import androidx.room.Entity
 import androidx.room.Insert
-import androidx.room.PrimaryKey
 import androidx.room.Query
-import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverter
 import androidx.room.TypeConverters
-import it.walmann.adhdcompanion.MyObjects.myReminder
 import it.walmann.adhdcompanion.MyObjects.reminder
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
-import java.io.FileInputStream
-import java.io.IOException
-import java.io.ObjectInputStream
 import java.util.Calendar
 
 
@@ -54,19 +39,19 @@ abstract class ReminderDatabase : RoomDatabase() {
 }
 
 class ReminderConverter {
-    @TypeConverter
-    fun toString(reminder: reminder): String {
-        val newCal = ""
-        return newCal
-    }
+//    @TypeConverter
+//    fun toString(reminder: reminder): String {
+//        val newCal = ""
+//        return newCal
+//    }
 
-    @TypeConverter
-    fun stringToReminder(value: String): reminder { // Check here if there is something wrong with Reminders
-        Log.d("StringToReminder", "stringToReminder: Current value: ${value}")
-
-        val newReminder = reminder(uid = 1234123123, reminderCalendar = Calendar.getInstance(), reminderImage = "Uri.EMPTY", reminderImageFullPath = "Uri.EMPTY")
-        return newReminder
-    }
+//    @TypeConverter
+//    fun stringToReminder(value: String): reminder { // Check here if there is something wrong with Reminders
+//        Log.d("StringToReminder", "stringToReminder: Current value: ${value}")
+//
+//        val newReminder = reminder(uid = 1234123123, reminderCalendar = Calendar.getInstance(), reminderImage = "Uri.EMPTY", reminderImageFullPath = "Uri.EMPTY")
+//        return newReminder
+//    }
 
     @TypeConverter
     fun calendarToLong(calendar: Calendar): Long {

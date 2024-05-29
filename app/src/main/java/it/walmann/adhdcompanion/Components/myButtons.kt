@@ -4,12 +4,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
@@ -42,14 +39,14 @@ fun MyButton(
             containerColor = MaterialTheme.colorScheme.primary,
             contentColor = MaterialTheme.colorScheme.onPrimary
         ),
-        modifier = modifier//.fillMaxWidth()
+        modifier = modifier
     ) {
         if (text == "") {
             content()
         } else {
             Text(
                 text = text, maxLines = 1,
-                modifier = textModifier,//.padding(10.dp),
+                modifier = textModifier,
                 style = textStyle
             )
         }
@@ -71,15 +68,12 @@ fun MyButtonCombinedTop(
             contentColor = MaterialTheme.colorScheme.onPrimary
         ),
         modifier = modifier
-//            .weight(10f)
             .fillMaxWidth()
     ) {
         Text(
             text = text,
             maxLines = 1,
             style = textStyle,
-//            color = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.onSurface),
-
         )
     }
 }
@@ -101,7 +95,6 @@ fun MyButtonCombinedBottom(
             bottomStart = buttonRoundness, bottomEnd = buttonRoundness
         ),
         modifier = modifier
-//            .weight(10f)
             .fillMaxWidth()
 
     ) {
@@ -169,15 +162,11 @@ fun MyButtonCombinedLeft(
             contentColor = MaterialTheme.colorScheme.onPrimary
         ),
         modifier = modifier
-//            .weight(10f)
             .fillMaxWidth()
     ) {
         Text(
             text = text,
-//            maxLines = 1,
             style = textStyle,
-//            color = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.onSurface),
-
         )
     }
 }
@@ -199,10 +188,7 @@ fun MyButtonCombinedRight(
             topEnd = buttonRoundness, bottomEnd = buttonRoundness
         ),
         modifier = modifier
-//            .weight(10f)
             .fillMaxWidth()
-
-
     ) {
         Text(
             text = text,
@@ -222,25 +208,13 @@ private fun MyButtonPreview() {
             onClick = {},
             text = "21:59",
             textStyle = MaterialTheme.typography.displayLarge,
-//        modifier = Modifier
-//            .weight(10f)
-//            .fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(1.dp))
         MyButtonCombinedBottom(
             onClick = {},
-//        modifier = Modifier
-//            .weight(10f)
-//            .fillMaxWidth(),
             textStyle = MaterialTheme.typography.displayMedium,
             text = "16.04.2024"
         )
-//        Spacer(modifier = Modifier.height(30.dp))
-//        MyButton(
-//            onClick = {},
-//            text = "Remind me in 10 minutes",
-//            textStyle = MaterialTheme.typography.headlineSmall
-//        )
         Spacer(modifier = Modifier.height(30.dp))
         MyButtonCombinedHorizontal(
             modifier = Modifier,
