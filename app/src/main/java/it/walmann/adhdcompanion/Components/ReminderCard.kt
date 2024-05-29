@@ -112,11 +112,10 @@ fun ReminderCard(
 //            horizontalAlignment = Alignment.CenterHorizontally,
 //            verticalArrangement = Arrangement.Center,
             modifier = modifier
-                .weight(1f, fill = false)
-//                .fillMaxSize()
-                .padding(vertical = 10.dp)
+                .padding(10.dp)
         ) {
 //            var reminderImage: Bitmap? = null
+
 
             Row(modifier = modifier.weight(5f), horizontalArrangement = Arrangement.Center) {
                 Column( // Time and Date Info
