@@ -47,10 +47,10 @@ enum class CupcakeScreen(@StringRes val title: Int) {
 }
 
 /* TODO BEFORE RELEASE
- - Add "Delete reminder" option.
  - Add Reminder Note functionality
  - Support all screen orientations
  - Add google login for syncing reminders
+    - Resize images to smaller size
  - Make the app prettier
  */
 
