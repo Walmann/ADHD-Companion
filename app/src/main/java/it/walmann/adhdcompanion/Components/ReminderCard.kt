@@ -194,8 +194,27 @@ fun ReminderCard(
                 contentScale = ContentScale.Fit,
                 contentDescription = null
             )
-
-
+            Row(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .padding(0.dp)
+            ) {
+                if (isEditable) {
+                    IconButton(
+                        modifier = modifier.padding(0.dp),
+                        onClick = {
+                            MainActivity.reminderDB.ReminderDao().delete(reminder)
+                            MainActivity.navigator.navigate(CupcakeScreen.Start.name)
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Clear,
+                            contentDescription = "Delete reminder",
+                            modifier = modifier.padding(0.dp)
+                        )
+                    }
+                }
+            }
         }
     }
 }
