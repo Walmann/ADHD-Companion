@@ -18,13 +18,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import it.walmann.adhdcompanion.CommonUI.MyTopAppBar
+import it.walmann.adhdcompanion.MainActivity
 import java.io.File
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 
 @Composable
-fun NewReminder(context: Context, modifier: Modifier, navController: NavController) {
+fun NewReminder(
+    context: Context,
+    modifier: Modifier,
+) {
     lateinit var outputDirectory: File
     var photoUri: Uri = Uri.EMPTY
     val shouldShowPhoto: MutableState<Boolean> = remember { mutableStateOf(false) }
@@ -75,7 +79,7 @@ fun NewReminder(context: Context, modifier: Modifier, navController: NavControll
                 SingleReminderForm(
                     context = context,
                     photoUri = photoUri,
-                    navController = navController,
+                    navController = MainActivity.navigator,
                     isBeingInitialized = true,
                     modifier = modifier.fillMaxSize()
                 )

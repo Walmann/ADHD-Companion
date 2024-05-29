@@ -71,6 +71,7 @@ class MainActivity : ComponentActivity() {
 
     companion object {
         lateinit var reminderDB: ReminderDatabase
+        lateinit var navigator: NavHostController
     }
 
 
@@ -177,6 +178,7 @@ fun ADHDCompanionApp(
 
     createNotificationChannel(context = context)
 
+    MainActivity.navigator = rememberNavController()
 
 //    CoroutineScope(Dispatchers.Default).launch {
 //        initSettings(context = context)
@@ -209,7 +211,7 @@ fun ADHDCompanionApp(
         print("")
     }
     NavHost(
-        navController = navController,
+        navController = MainActivity.navigator,
 //        startDestination = CupcakeScreen.NewReminder.name,
         startDestination = CupcakeScreen.Start.name,
         modifier = modifier
@@ -222,17 +224,13 @@ fun ADHDCompanionApp(
             RemindersScreen(
                 modifier = Modifier
                     .fillMaxSize(),
-//                    .verticalScroll(rememberScrollState())
-                navController,
                 context = context,
-//                reminderDB = reminderDB
 
             )
         }
         composable(route = CupcakeScreen.NewReminder.name) {
             NewReminder(
                 context = context,
-                navController = navController,
                 modifier = Modifier
                     .fillMaxSize()
 //                    .verticalScroll(rememberScrollState())
@@ -249,7 +247,6 @@ fun ADHDCompanionApp(
 
             SingleReminderForm(
                 context = context,
-                navController = navController,
                 reminderID = curReminder.toLong(),
                 modifier = Modifier
                     .fillMaxSize()

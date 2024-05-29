@@ -58,7 +58,6 @@ fun SingleReminderForm(
     reminderID: Long,
     context: Context,
     modifier: Modifier = Modifier,
-    navController: NavController = rememberNavController(),
 ) {
     val currReminder = MainActivity.reminderDB.ReminderDao().getReminder(reminderID)
 
@@ -71,7 +70,7 @@ fun SingleReminderForm(
             context = context,
             reminder = currReminder,
             modifier = modifier.padding(innerPadding),
-            navController = navController
+            navController = MainActivity.navigator
         )
     }
 }
@@ -170,7 +169,6 @@ fun SingleReminderForm(
                     right_text = "⚙️"
                 )
                 Spacer(modifier = Modifier.height(20.dp))
-                // TODO NEXT Add Delete Reminder Button!
             }
             Row(
                 modifier = Modifier

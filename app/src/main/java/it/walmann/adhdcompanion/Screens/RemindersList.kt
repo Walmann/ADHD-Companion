@@ -50,8 +50,10 @@ import java.io.File
 import java.util.Calendar
 
 @Composable
-fun RemindersScreen(modifier: Modifier, navController: NavController, context: Context) {
-//    val newReminder by remember { mutableStateOf(myReminder()) }
+fun RemindersScreen(
+    modifier: Modifier,
+    context: Context) {
+
 
     // TODO FUTURE I want to create a better looking app. Therefore the list needs a redesign.
     // Look at these links for inspiration:
@@ -115,14 +117,13 @@ fun RemindersScreen(modifier: Modifier, navController: NavController, context: C
                     ReminderCard(
                         reminder = currReminder,
                         context = context,
-                        onClick = { navController.navigate("${CupcakeScreen.ReminderDetails.name}/${currReminder.uid}") }
+                        onClick = { MainActivity.navigator.navigate("${CupcakeScreen.ReminderDetails.name}/${currReminder.uid}") }
                     )
                 }
             }
         }
     }
 }
-
 
 
 @Composable
