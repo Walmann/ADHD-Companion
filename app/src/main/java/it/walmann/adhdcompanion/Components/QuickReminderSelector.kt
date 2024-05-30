@@ -45,9 +45,9 @@ import java.util.Calendar
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun QuickReminderTimerDialog(
+    modifier: Modifier = Modifier,
     context: Context,
     containerColor: Color = MaterialTheme.colorScheme.surfaceContainerHigh,
-    modifier: Modifier = Modifier.fillMaxSize(0.8f),
     onConfirm: (Int, Int) -> Unit,
     onDismiss: () -> Unit
 ) {
@@ -62,12 +62,12 @@ fun QuickReminderTimerDialog(
     var selectedAmount by remember { mutableIntStateOf(10) }
     Dialog(
         onDismissRequest = onDismiss,
-    )
-    {
+    ) {
         Surface(
             shape = MaterialTheme.shapes.extraLarge,
             tonalElevation = 6.dp,
             modifier = Modifier
+                .fillMaxSize(0.8f)
                 .width(IntrinsicSize.Min)
                 .height(IntrinsicSize.Min)
                 .background(
@@ -83,7 +83,7 @@ fun QuickReminderTimerDialog(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Text(
-                    text = "Set quick reminder to ",
+                    text = "Set quick reminder settings ",
                     style = MaterialTheme.typography.headlineMedium
                 )
                 Spacer(modifier = Modifier.height(10.dp))

@@ -215,7 +215,7 @@ fun ADHDCompanionApp(
                     .fillMaxSize(),
                 context = context,
 
-            )
+                )
         }
         composable(route = CupcakeScreen.NewReminder.name) {
             NewReminder(
@@ -239,20 +239,9 @@ fun ADHDCompanionApp(
                 reminderID = curReminder.toLong(),
                 modifier = Modifier
                     .fillMaxSize()
-//                    .verticalScroll(rememberScrollState())
             )
         }
     }
 }
 
 
-//fun navigateWithCalender(calendar: Calendar, navController: NavController): Unit {
-//    // Sender Calendar-objektet til destinasjonsmålet "my_destination"
-//    navController.navigate("my_destination", NavArgs.Builder()
-//        .put("calendar", calendar)
-//        .build())
-//
-//// Henter Calendar-objektet fra NavArgs i destinasjonsmålet
-//    val calendarObject: Calendar? = navController.currentBackStackEntry?.arguments?.getParcelable("calendarObject")
-//
-//}

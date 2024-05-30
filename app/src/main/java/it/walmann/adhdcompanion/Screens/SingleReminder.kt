@@ -74,9 +74,9 @@ fun SingleReminderForm(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SingleReminderForm(
+    modifier: Modifier = Modifier,
     context: Context,
     photoUri: Uri = Uri.EMPTY,
-    modifier: Modifier = Modifier,
     navController: NavController,
     isBeingInitialized: Boolean = false,
     reminder: reminder = reminder(
