@@ -34,6 +34,7 @@ import it.walmann.adhdcompanion.MyObjects.createNotificationChannel
 import it.walmann.adhdcompanion.Screens.NewReminder
 import it.walmann.adhdcompanion.Screens.RemindersScreen
 import it.walmann.adhdcompanion.Screens.SingleReminderForm
+import it.walmann.adhdcompanion.Screens.settingsScreen
 import it.walmann.adhdcompanion.ui.theme.ADHDCompanionTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -43,7 +44,8 @@ import kotlinx.coroutines.launch
 enum class CupcakeScreen(@StringRes val title: Int) {
     Start(title = R.string.app_name),
     NewReminder(title = R.string.NewReminder),
-    ReminderDetails(title = R.string.screen_title_reminder_details)
+    ReminderDetails(title = R.string.screen_title_reminder_details),
+    SettingsScreen(title = R.string.settings_screen),
 }
 
 /* TODO
@@ -228,7 +230,6 @@ fun ADHDCompanionApp(
                 context = context,
                 modifier = Modifier
                     .fillMaxSize()
-//                    .verticalScroll(rememberScrollState())
             )
         }
         composable(
@@ -246,6 +247,9 @@ fun ADHDCompanionApp(
                 modifier = Modifier
                     .fillMaxSize()
             )
+            composable(route = CupcakeScreen.SettingsScreen.name) {
+                settingsScreen()
+            }
         }
     }
 }
