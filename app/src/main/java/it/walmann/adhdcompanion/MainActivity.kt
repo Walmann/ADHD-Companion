@@ -46,14 +46,20 @@ enum class CupcakeScreen(@StringRes val title: Int) {
     ReminderDetails(title = R.string.screen_title_reminder_details)
 }
 
-/* TODO BEFORE RELEASE
- - Add Reminder Note functionality
+/* TODO
+ - Make Monochrome Icon
  - Support all screen orientations
  - Add google login for syncing reminders
     - Resize images to smaller size
  - Make the app prettier
  */
-
+/*BUGS:
+* - Check that the Calendar date is actually set.
+*   - I Think this one works now. Check more later.
+* - When writing a note, the text arrow is staying active
+* - On tablet, the camera is off center
+* - Check Camera position when doing a second reminder
+* */
 
 class MainActivity : ComponentActivity() {
     private lateinit var PACKAGE_NAME: String
