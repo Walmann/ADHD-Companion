@@ -38,7 +38,8 @@ fun DateSelectorDialog(
         confirmButton = {
             Button(onClick = {
                 val cal2 = Calendar.getInstance()
-                cal2.setTimeInMillis(datePickState.selectedDateMillis!!)
+                val selectedDate = datePickState.selectedDateMillis ?: cal2.timeInMillis
+                cal2.setTimeInMillis(selectedDate)
 
                 calendar.set(Calendar.YEAR, cal2.get(Calendar.YEAR))
                 calendar.set(Calendar.MONTH, cal2.get(Calendar.MONTH))
