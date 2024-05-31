@@ -55,7 +55,8 @@ fun QuickReminderTimerDialog(
         listOf("Seconds", Calendar.SECOND),
         listOf("Minutes", Calendar.MINUTE),
         listOf("Hours", Calendar.HOUR_OF_DAY),
-        listOf("Years", Calendar.DAY_OF_YEAR)
+        listOf("Days", Calendar.DAY_OF_YEAR),
+        listOf("Years", Calendar.YEAR)
     )
 
     var selectedUnit by remember { mutableIntStateOf(0) }
