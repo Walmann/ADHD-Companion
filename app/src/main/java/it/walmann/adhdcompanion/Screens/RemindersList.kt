@@ -19,15 +19,20 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalInspectionMode
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import it.walmann.adhdcompanion.Components.ReminderCard
 import it.walmann.adhdcompanion.CupcakeScreen
 import it.walmann.adhdcompanion.MainActivity
+import it.walmann.adhdcompanion.MyObjects.debugGetDebugReminders
 
 @Composable
 fun RemindersScreen(
     modifier: Modifier,
-    context: Context) {
+    context: Context
+) {
 
 
     // TODO FUTURE I want to create a better looking app. Therefore the list needs a redesign.
@@ -61,22 +66,35 @@ fun RemindersScreen(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
+//            Column(
+//                horizontalAlignment = Alignment.End,
+//                modifier = Modifier.fillMaxWidth()
+//            ) {
+//                IconButton(
+//                    onClick = { MainActivity.navigator.navigate(CupcakeScreen.SettingsScreen.name) }
+//                ) {
+//                    Icon(Icons.Filled.Settings, "Configure Settings")
+//                }
+//            }
 
-            val reminderArr = MainActivity.reminderDB.ReminderDao().getAll()
+            val reminderArr = if (LocalInspectionMode.current) {
+                debugGetDebugReminders(10)
+            } else MainActivity.reminderDB.ReminderDao().getAll()
             if (reminderArr.isEmpty()) {
                 CreateReminderInstructions(modifier = modifier.padding(20.dp))
             } else {
 
                 Text(text = "Reminders", style = MaterialTheme.typography.displayLarge)
 
-                reminderArr.sortedBy { it.uid }.reversed().forEach { currReminder ->// (key, value) ->
+                reminderArr.sortedBy { it.uid }.reversed()
+                    .forEach { currReminder ->// (key, value) ->
 
-                    ReminderCard(
-                        reminder = currReminder,
-                        context = context,
-                        onClick = { MainActivity.navigator.navigate("${CupcakeScreen.ReminderDetails.name}/${currReminder.uid}") }
-                    )
-                }
+                        ReminderCard(
+                            reminder = currReminder,
+                            context = context,
+                            onClick = { MainActivity.navigator.navigate("${CupcakeScreen.ReminderDetails.name}/${currReminder.uid}") }
+                        )
+                    }
             }
         }
     }
@@ -91,12 +109,11 @@ fun CreateReminderInstructions(modifier: Modifier = Modifier) {
 }
 
 
-//@Preview
-//@Composable
-//private fun RemindersScreenPreview() {
-//    RemindersScreen(
-//        modifier = Modifier,
-//        navController = rememberNavController(),
-//        context = LocalContext.current
-//    )
-//}
+@Preview
+@Composable
+private fun RemindersScreenPreview() {
+    RemindersScreen(
+        modifier = Modifier,
+        context = LocalContext.current
+    )
+}
