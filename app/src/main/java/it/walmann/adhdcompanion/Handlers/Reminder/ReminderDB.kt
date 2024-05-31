@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Database
 import androidx.room.Delete
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverter
@@ -23,7 +24,7 @@ interface ReminderDao {
     @Query("SELECT * FROM reminder WHERE uid IN (:uid)")
     fun getReminder(uid: Long): reminder
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(vararg reminders: reminder)
 
     @Delete
