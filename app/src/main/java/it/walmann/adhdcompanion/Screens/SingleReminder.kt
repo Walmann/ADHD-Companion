@@ -91,7 +91,7 @@ fun SingleReminderForm(
      */
 
     val currentReminder = remember { mutableStateOf(reminder) }
-    val currentNote = remember { mutableStateOf("")    }
+    val currentNote = remember { mutableStateOf("") }
 
     val openTimerDialog = remember { mutableStateOf(false) }
     val openDateAndTimerDialog = remember { mutableStateOf(false) }
@@ -205,12 +205,7 @@ fun SingleReminderForm(
                         }, text = "Save"
                     )
                 },
-                dismissButton = {
-                    openTimerDialog.value = false
-                    openDateAndTimerDialog.value = false
-                },
-
-                ) {
+            ) {
                 TimePicker(state = timePState)
             }
         }
