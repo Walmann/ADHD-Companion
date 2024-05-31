@@ -1,6 +1,5 @@
 package it.walmann.adhdcompanion.Components
 
-import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -12,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -32,7 +30,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
@@ -46,7 +43,6 @@ import java.util.Calendar
 @Composable
 fun QuickReminderTimerDialog(
     modifier: Modifier = Modifier,
-    context: Context,
     containerColor: Color = MaterialTheme.colorScheme.surfaceContainerHigh,
     onConfirm: (Int, Int) -> Unit,
     onDismiss: () -> Unit
@@ -67,9 +63,8 @@ fun QuickReminderTimerDialog(
         Surface(
             shape = MaterialTheme.shapes.extraLarge,
             tonalElevation = 6.dp,
-            modifier = Modifier
-                .fillMaxSize(0.8f)
-                .width(IntrinsicSize.Min)
+            modifier = modifier
+                .fillMaxWidth(0.8f)
                 .height(IntrinsicSize.Min)
                 .background(
                     shape = MaterialTheme.shapes.extraLarge,
@@ -77,8 +72,6 @@ fun QuickReminderTimerDialog(
                 ),
             color = containerColor
         ) {
-
-
             Column(
                 modifier = Modifier.padding(15.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -94,11 +87,9 @@ fun QuickReminderTimerDialog(
                 }
                 Spacer(modifier = Modifier.height(5.dp))
                 DiagEntry(text = "Units") {
-
-                    MyDropdown(modifier = modifier.width(3.dp),
-                        itemUnits,
+                    MyDropdown(
+                        itemUnits = itemUnits,
                         onSelectItem = { selectedUnit = it })
-
                 }
 
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomEnd) {
@@ -134,7 +125,6 @@ fun DiagEntry(
             text = text,
             style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier
-//            .fillMaxHeight()
                 .weight(5f)
         )
         Box(modifier = modifier.weight(5f, fill = false)) {
@@ -152,7 +142,9 @@ fun MyTextInputNumbersOnly(
     val pattern = remember { Regex("^\\d+\$") }
 
     var timeAmount by remember { mutableStateOf(TextFieldValue("10")) }
-    TextField(value = timeAmount,
+    TextField(
+        modifier = modifier,
+        value = timeAmount,
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
         onValueChange = { it ->
             if (it.text.matches(pattern)) {
@@ -182,7 +174,7 @@ private fun MyDropdown(
         mutableStateOf(itemUnits[0][0].toString())
     }
 
-    Box {
+    Box(modifier = modifier) {
         ExposedDropdownMenuBox(
             expanded = expanded,
             onExpandedChange = {
@@ -228,7 +220,7 @@ private fun QuickReminderTimerDialogPreview() {
         QuickReminderTimerDialog(
             onConfirm = { it1, it2 -> },
             onDismiss = {},
-            context = LocalContext.current
+//            context = LocalContext.current
         )
     }
 
