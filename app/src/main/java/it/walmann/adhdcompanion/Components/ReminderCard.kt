@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Edit
@@ -26,8 +28,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -58,6 +67,12 @@ fun ReminderCard(
     onEditDateClick: () -> Unit = {},
     onNoteDataChange: (String) -> Unit = {}
 ) {
+
+    val focusRequester = remember { FocusRequester() }
+    val focusManager = LocalFocusManager.current
+    val keyboardController = LocalSoftwareKeyboardController.current
+
+
     var reminderNoteValue by remember { mutableStateOf(reminder.reminderNote) }
     val imgFile = File(context.filesDir, reminder.reminderImage)
     val RemindImage = if (imgFile.exists()) {
@@ -163,7 +178,22 @@ fun ReminderCard(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     if (isEditable) {
+
                         TextField(
+                            keyboardOptions = KeyboardOptions(
+                                capitalization = KeyboardCapitalization.Sentences,
+                                imeAction = ImeAction.Done),
+                            keyboardActions = KeyboardActions(onDone = {focusManager.clearFocus()}),
+                            modifier = modifier
+                                .focusRequester(focusRequester)
+                                .onFocusEvent { event ->
+                                    if (event.isFocused) {
+                                        // ...
+                                    } else {
+                                        focusManager.clearFocus()
+                                    }
+                                },
+
                             singleLine = true,
                             value = reminderNoteValue,
                             onValueChange = {

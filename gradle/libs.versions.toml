@@ -30,6 +30,8 @@ gson = "2.11.0"
 datastoreCoreAndroid = "1.1.1"
 datastorePreferences = "1.1.1"
 datastore = "1.1.1"
+constraintlayoutCompose = "1.1.0-alpha13"
+constraintlayoutVersion = "2.2.0-alpha13"
 
 [libraries]
 androidx-camera-camera2 = { module = "androidx.camera:camera-camera2", version.ref = "cameraCore" }
@@ -74,6 +76,8 @@ gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
 androidx-datastore-core-android = { group = "androidx.datastore", name = "datastore-core-android", version.ref = "datastoreCoreAndroid" }
 androidx-datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastorePreferences" }
 androidx-datastore = { group = "androidx.datastore", name = "datastore", version.ref = "datastore" }
+androidx-constraintlayout-compose = { group = "androidx.constraintlayout", name = "constraintlayout-compose", version.ref = "constraintlayoutCompose" }
+constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayoutVersion" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

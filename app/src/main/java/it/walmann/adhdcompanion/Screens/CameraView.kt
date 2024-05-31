@@ -18,16 +18,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.Dimension
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.ujizin.camposer.CameraPreview
 import com.ujizin.camposer.state.CamSelector
 import com.ujizin.camposer.state.CameraState
 import com.ujizin.camposer.state.ImageCaptureResult
-import com.ujizin.camposer.state.ScaleType
 import com.ujizin.camposer.state.rememberCamSelector
 import com.ujizin.camposer.state.rememberCameraState
 import it.walmann.adhdcompanion.R
@@ -36,7 +37,7 @@ import java.io.File
 import java.util.concurrent.Executor
 
 
-@OptIn(ExperimentalPermissionsApi::class)
+@OptIn(ExperimentalPermissionsApi::class, ExperimentalComposeUiApi::class)
 @Composable
 fun CameraView(
     modifier: Modifier = Modifier,
@@ -58,24 +59,28 @@ fun CameraView(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = modifier.fillMaxSize()
         ) {
-            CameraPreview(
-                // Campose: https://github.com/ujizin/Camposer
-                cameraState = cameraState,
-                camSelector = camSelector,
-                scaleType = ScaleType.FitStart,
-                modifier = Modifier
-                    .padding(10.dp)
-                    .weight(7f)
-
-                ,
-            )
-
+            Column() {
+                androidx.constraintlayout.compose.ConstraintLayout(modifier = Modifier.weight(7f)) {
+                    val (camera) = createRefs()
+                    CameraPreview(
+                        // Campose: https://github.com/ujizin/Camposer
+                        cameraState = cameraState,
+                        camSelector = camSelector,
+                        modifier = Modifier
+                            .constrainAs(camera) {
+                                top.linkTo(parent.top, margin = 10.dp)
+                                bottom.linkTo(parent.bottom)
+                                height = Dimension. // TODO NEXT Trying to fix the Camera preview that shows up all wonky.
+                            }
+                    )
+                }
+            }
             Row(
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
-                    .fillMaxWidth()
                     .weight(3f)
+                    .fillMaxWidth()
             ) {
                 CameraScreenButton(
                     onClick = { camSelector = camSelector.inverse },
@@ -94,12 +99,54 @@ fun CameraView(
                     }
                 )
             }
-
         }
-//            }
     } else {
         Text(text = "Please give Camera Access")
     }
+//        Column(
+//            verticalArrangement = Arrangement.SpaceBetween,
+//            horizontalAlignment = Alignment.CenterHorizontally,
+////            modifier = modifier.fillMaxSize()
+//        ) {
+//
+//            CameraPreview(
+//                    // Campose: https://github.com/ujizin/Camposer
+//                    cameraState = cameraState,
+//                    camSelector = camSelector,
+////                scaleType = ScaleType.FillCenter,
+//                    modifier = Modifier
+//                        .padding(10.dp)
+//                        .fillMaxHeight(0.5f)
+////                        .weight(7f),
+//                )
+//
+//                Row(
+//                    horizontalArrangement = Arrangement.SpaceEvenly,
+//                    verticalAlignment = Alignment.CenterVertically,
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+////                        .weight(3f)
+//                ) {
+//                    CameraScreenButton(
+//                        onClick = { camSelector = camSelector.inverse },
+//                        contentDescription = "Turn camera around",
+//                        icon = R.drawable.camera_rotate_bold,
+//                    )
+//                    CameraScreenButton(
+//                        icon = R.drawable.arrow_right,
+//                        onClick = {
+//                            myTakePhoto(
+//                                cameraState = cameraState,
+//                                context = context,
+//                                onImageCaptured = onImageCaptured,
+//                            )
+//
+//                        }
+//                    )
+//                }
+
+//        }
+//            }
 }
 
 @Composable
