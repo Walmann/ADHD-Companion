@@ -50,7 +50,7 @@ fun RemindersScreen(
                 content = {
                     Icon(
                         Icons.Filled.Add,
-                        contentDescription = null,
+                        contentDescription = "Create new reminder",
                     )
                 }
             )
