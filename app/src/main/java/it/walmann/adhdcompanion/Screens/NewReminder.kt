@@ -49,8 +49,6 @@ fun NewReminder(
     val cameraExecutor: ExecutorService = Executors.newSingleThreadExecutor()
 
     Scaffold(
-//        topBar = { MyTopAppBar() },
-//
         ) { innerPadding ->
         Column(
             modifier = modifier
@@ -64,12 +62,12 @@ fun NewReminder(
                 CameraView(
                     context = context,
                     modifier = Modifier,
-                    outputDirectory = outputDirectory,
-                    executor = cameraExecutor,
+//                    outputDirectory = outputDirectory,
+//                    executor = cameraExecutor,
                     onImageCaptured = ::handleImageCapture,
-                    onError = {
-                        Log.e("kilo", "View error:", it)
-                    },
+//                    onError = {
+//                        Log.e("kilo", "View error:", it)
+//                    },
                     )
             }
 

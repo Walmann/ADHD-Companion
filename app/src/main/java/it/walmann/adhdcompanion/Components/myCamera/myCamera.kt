@@ -1,5 +1,7 @@
 package it.walmann.adhdcompanion.Components.myCamera
 
+//import it.walmann.adhdcompanion.Screens.CameraScreenButton
+//import it.walmann.adhdcompanion.Screens.createNewFile
 import android.content.Context
 import android.net.Uri
 import android.util.Log
@@ -10,27 +12,33 @@ import androidx.camera.core.Preview
 import androidx.camera.core.resolutionselector.ResolutionSelector
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import com.google.common.util.concurrent.ListenableFuture
 import it.walmann.adhdcompanion.R
-import it.walmann.adhdcompanion.Screens.CameraScreenButton
-import it.walmann.adhdcompanion.Screens.createNewFile
 import java.io.File
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -197,3 +205,33 @@ private fun buildCameraSelector(cameraLens: Int): CameraSelector {
         .requireLensFacing(cameraLens)
         .build()
 }
+
+
+@Composable
+fun CameraScreenButton(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+    icon: Int = R.drawable.camera_bold,
+    contentDescription: String = ""
+) {
+    IconButton(
+        modifier = modifier
+            .padding(bottom = 20.dp)
+            .size(100.dp),
+        onClick = onClick,
+        content = {
+            Icon(
+                painter = painterResource(id = icon),
+                contentDescription = contentDescription,
+                tint = Color.White,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .border(0.dp, Color.Transparent)
+            )
+        }
+    )
+}
+
+fun Context.createNewFile() = File( // TODO Clean up this page. It should be organized better.
+    filesDir, "${System.currentTimeMillis()}.jpg"
+).apply { createNewFile() }
