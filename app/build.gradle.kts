@@ -56,7 +56,6 @@ android {
 dependencies {
     implementation(libs.accompanist.permissions)
     implementation(libs.camposer)
-    implementation(libs.camera.view)
     implementation(libs.simple.icons)
     implementation(libs.font.awesome)
     implementation(libs.coil.compose)

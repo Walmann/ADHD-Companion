@@ -56,7 +56,7 @@ fun NewReminder(
             modifier = modifier
                 .padding(innerPadding)
 //                .background(Color(0xff8d6e63))
-                .padding(10.dp)
+                .padding(20.dp)
                 .height(IntrinsicSize.Max)
                 .width(IntrinsicSize.Max)
         ) {
