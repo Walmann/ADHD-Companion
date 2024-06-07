@@ -66,6 +66,7 @@ dependencies {
     implementation(libs.androidx.datastore)
     implementation(libs.androidx.constraintlayout.compose)
     implementation(libs.constraintlayout)
+    implementation(libs.androidx.adaptive.android)
     coreLibraryDesugaring(libs.desugar.jdk.libs)
 
 

@@ -1,8 +1,8 @@
 package it.walmann.adhdcompanion.Components.myCamera
 
-//import it.walmann.adhdcompanion.Screens.CameraScreenButton
-//import it.walmann.adhdcompanion.Screens.createNewFile
+
 import android.content.Context
+import android.graphics.Rect
 import android.net.Uri
 import android.util.Log
 import androidx.camera.core.CameraSelector
@@ -21,8 +21,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.mutableStateOf
@@ -37,10 +39,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
+import androidx.window.core.layout.WindowWidthSizeClass
 import com.google.common.util.concurrent.ListenableFuture
 import it.walmann.adhdcompanion.R
 import java.io.File
-import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 @Composable
@@ -50,61 +52,93 @@ fun MyCameraPreview(
     outputFile: File,
     onImageCaptured: (Uri) -> Unit
 ) {
+    val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
 
-    val outputFileOptions =
-        ImageCapture.OutputFileOptions.Builder(context.createNewFile())
-            .build()
+    val outputFileOptions = ImageCapture.OutputFileOptions.Builder(context.createNewFile()).build()
 
     val imageCapture = buildImageCapture()
     val lensFacing = remember { mutableStateOf(CameraSelector.LENS_FACING_BACK) }
 
-    Column(modifier = modifier.fillMaxSize()) {
-//        CameraPreview()
-        Box(modifier = Modifier.weight(7f)) {
-            Log.d("MyCameraPreview", "Creating Camera preview.")
-            myCam(imageCapture = imageCapture, lensFacing = lensFacing.value)
-        }
-        Row(
-            horizontalArrangement = Arrangement.SpaceEvenly,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .weight(3f)
-                .fillMaxWidth()
-        ) {
-            CameraScreenButton(
-                onClick = {
-                    lensFacing.value = if (CameraSelector.LENS_FACING_FRONT == lensFacing.value)
-                        CameraSelector.LENS_FACING_BACK
-                    else
-                        CameraSelector.LENS_FACING_FRONT
-                },
-                contentDescription = "Turn camera around",
-                icon = R.drawable.camera_rotate_bold,
-            )
-            CameraScreenButton(
-                icon = R.drawable.arrow_right,
-                onClick = {
-                    imageCapture.takePicture(
-                        outputFileOptions,
-                        Executors.newSingleThreadExecutor(),
-                        object : ImageCapture.OnImageSavedCallback {
-                            override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
-                                Log.d("CamTest3", "Saved image!")
-                                onImageCaptured(outputFileResults.savedUri ?: "".toUri())
-                            }
+    val previewViewSize = remember {
+        mutableStateOf<Rect>(Rect())
+    }
 
-                            override fun onError(exception: ImageCaptureException) {
-                                Log.d("CamTest3", "Error when taking picture! ${exception}")
-                            }
-                        }
-                    )
+
+    val rotateCamera = {
+        lensFacing.value =
+            if (CameraSelector.LENS_FACING_FRONT == lensFacing.value) CameraSelector.LENS_FACING_BACK
+            else CameraSelector.LENS_FACING_FRONT
+    }
+
+    val takeImage = {
+        imageCapture.takePicture(outputFileOptions,
+            Executors.newSingleThreadExecutor(),
+            object : ImageCapture.OnImageSavedCallback {
+                override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
+                    Log.d("CamTest3", "Saved image!")
+
+                    onImageCaptured(outputFileResults.savedUri ?: "".toUri())
+
                 }
+
+                override fun onError(exception: ImageCaptureException) {
+                    Log.d("CamTest3", "Error when taking picture! ${exception}")
+                }
+            })
+
+    }
+    if (windowSizeClass.windowWidthSizeClass == WindowWidthSizeClass.EXPANDED) {
+        Row(modifier = modifier.fillMaxSize(), verticalAlignment = Alignment.Bottom) {
+            myCam(
+                modifier = Modifier.weight(7f),
+                imageCapture = imageCapture,
+                lensFacing = lensFacing.value,
+            )
+            ButtonSection(
+                modifier = Modifier
+                    .weight(3f)
+                ,
+                onRotateCameraClick = rotateCamera,
+                onTakeImage = takeImage
+            )
+        }
+    } else {
+        Column(modifier = modifier.fillMaxSize()) {
+            myCam(
+                modifier = Modifier.weight(7f),
+                imageCapture = imageCapture,
+                lensFacing = lensFacing.value,
+            )
+            ButtonSection(
+                modifier = Modifier.weight(3f),
+                onRotateCameraClick = rotateCamera,
+                onTakeImage = takeImage
             )
         }
     }
 
+
 }
 
+@Composable
+fun ButtonSection(
+    modifier: Modifier = Modifier, onRotateCameraClick: () -> (Unit), onTakeImage: () -> (Unit)
+) {
+    Row(
+        horizontalArrangement = Arrangement.SpaceEvenly,
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = modifier.fillMaxWidth()
+    ) {
+        CameraScreenButton(
+            onClick = onRotateCameraClick,
+            contentDescription = "Turn camera around",
+            icon = R.drawable.camera_rotate_bold,
+        )
+        CameraScreenButton(
+            icon = R.drawable.arrow_right, onClick = onTakeImage
+        )
+    }
+}
 
 @Composable
 private fun myCam(
@@ -121,45 +155,43 @@ private fun myCam(
             cameraProvider?.unbindAll()
         }
     }
-
-    AndroidView(
-        modifier = modifier.fillMaxSize(),
-        factory = { androidViewContext -> initPreviewView(androidViewContext) },
-        update = { previewView: PreviewView ->
-            val cameraSelector: CameraSelector =
-                buildCameraSelector(lensFacing)
-            val cameraExecutor: ExecutorService = Executors.newSingleThreadExecutor()
-            val cameraProviderFuture: ListenableFuture<ProcessCameraProvider> =
-                ProcessCameraProvider.getInstance(context)
+    Box(modifier = modifier.wrapContentSize()) {
+        AndroidView(modifier = Modifier.fillMaxSize(),
+            factory = { androidViewContext -> initPreviewView(androidViewContext) },
+            update = { previewView: PreviewView ->
+                val cameraSelector: CameraSelector = buildCameraSelector(lensFacing)
+//                val cameraExecutor: ExecutorService = Executors.newSingleThreadExecutor()
+                val cameraProviderFuture: ListenableFuture<ProcessCameraProvider> =
+                    ProcessCameraProvider.getInstance(context)
 
 
-            cameraProviderFuture.addListener({
-                cameraProvider = cameraProviderFuture.get()
+                cameraProviderFuture.addListener({
+                    cameraProvider = cameraProviderFuture.get()
 
-                val preview = buildPreview().also {
-                    it.setSurfaceProvider(previewView.surfaceProvider)
-                }
-                try {
-                    cameraProvider?.let {
-                        it.unbindAll() //Make sure we only use 1 usecase related to camera
-
-                        val camera = it.bindToLifecycle(
-                            lifecycleOwner, cameraSelector, preview, imageCapture
-                        )
+                    val preview = buildPreview().also {
+                        it.setSurfaceProvider(previewView.surfaceProvider)
                     }
-                } catch (e: Exception) {
-                    Log.d("CameraPreview", "CameraPreview: ${e.localizedMessage}")
-                }
-            }, ContextCompat.getMainExecutor(context))
-        }
-    )
+                    try {
+                        cameraProvider?.let {
+                            it.unbindAll() //Make sure we only use 1 usecase related to camera
 
+                            val camera = it.bindToLifecycle(
+                                lifecycleOwner, cameraSelector, preview, imageCapture
+                            )
+                        }
+                    } catch (e: Exception) {
+                        Log.d("CameraPreview", "CameraPreview: ${e.localizedMessage}")
+                    }
+                }, ContextCompat.getMainExecutor(context))
+            })
 
+    }
 }
 
 private fun initPreviewView(androidViewContext: Context): PreviewView {
     val previewView = PreviewView(androidViewContext).apply {
         this.clipToOutline = true
+        this.scaleType = PreviewView.ScaleType.FIT_CENTER
         implementationMode = PreviewView.ImplementationMode.COMPATIBLE
     }
     return previewView
@@ -189,21 +221,15 @@ private fun getResolutionSelector(): ResolutionSelector {
 //}
 
 private fun buildPreview(): Preview {
-    return Preview.Builder()
-        .setResolutionSelector(getResolutionSelector())
-        .build()
+    return Preview.Builder().setResolutionSelector(getResolutionSelector()).build()
 }
 
 private fun buildImageCapture(): ImageCapture {
-    return ImageCapture.Builder()
-        .setResolutionSelector(getResolutionSelector())
-        .build()
+    return ImageCapture.Builder().setResolutionSelector(getResolutionSelector()).build()
 }
 
 private fun buildCameraSelector(cameraLens: Int): CameraSelector {
-    return CameraSelector.Builder()
-        .requireLensFacing(cameraLens)
-        .build()
+    return CameraSelector.Builder().requireLensFacing(cameraLens).build()
 }
 
 
@@ -214,10 +240,9 @@ fun CameraScreenButton(
     icon: Int = R.drawable.camera_bold,
     contentDescription: String = ""
 ) {
-    IconButton(
-        modifier = modifier
-            .padding(bottom = 20.dp)
-            .size(100.dp),
+    IconButton(modifier = modifier
+        .padding(bottom = 20.dp)
+        .size(100.dp),
         onClick = onClick,
         content = {
             Icon(
@@ -228,10 +253,12 @@ fun CameraScreenButton(
                     .fillMaxSize()
                     .border(0.dp, Color.Transparent)
             )
-        }
-    )
+        })
 }
+
 
 fun Context.createNewFile() = File( // TODO Clean up this page. It should be organized better.
     filesDir, "${System.currentTimeMillis()}.jpg"
 ).apply { createNewFile() }
+
+
