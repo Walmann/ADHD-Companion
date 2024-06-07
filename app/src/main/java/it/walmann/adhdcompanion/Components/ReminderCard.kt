@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -34,6 +35,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
@@ -84,6 +86,7 @@ fun ReminderCard(
     Card(
         onClick = onClick,
         modifier = modifier
+            .widthIn(max = 500.dp)
             .fillMaxWidth()
             .height(250.dp)
             .padding(vertical = 5.dp)
@@ -112,9 +115,10 @@ fun ReminderCard(
             }
         }
         Row(
-            horizontalArrangement = Arrangement.Center,
+            horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically,
             modifier = modifier
+                .fillMaxSize()
                 .padding(10.dp)
         ) {
 
@@ -203,50 +207,17 @@ fun ReminderCard(
                         )
                     }
                 }
-
-//                if (reminder.reminderNote != "") {
-//                    Text(
-//                        text = reminder.reminderNote,
-//                        fontSize = 20.sp,
-//                        modifier = modifier
-//                            .padding(
-//                                horizontal = 10.dp
-//                            )
-//                    )
-//                }
             }
-//            }
-//            Column(
-//                modifier = Modifier
-//                    .fillMaxHeight()
-//                    .padding(0.dp),
-//                horizontalAlignment = Alignment.End
-//            ) {
-//                if (isEditable) {
-//                    IconButton(
-//                        modifier = modifier.padding(0.dp),
-//                        onClick = {
-//                            MainActivity.reminderDB.ReminderDao().delete(reminder)
-//                            MainActivity.navigator.navigate(CupcakeScreen.Start.name)
-//                        }
-//                    ) {
-//                        Icon(
-//                            imageVector = Icons.Filled.Clear,
-//                            contentDescription = "Delete reminder",
-//                            modifier = modifier.padding(0.dp)
-//                        )
-//                    }
-//                }
+
             Image(
-                RemindImage,
+                painter = RemindImage,
                 modifier = modifier
-                    .weight(5f)
-//                    .rotate(if (LocalInspectionMode.current) 0f else 90f)
+//                    .weight(5f)
                     .padding(horizontal = 10.dp),
                 contentScale = ContentScale.Fit,
                 contentDescription = null
             )
-//            }
+
         }
     }
 }
@@ -271,6 +242,7 @@ private fun calendarToDate(calendar: Calendar): String {
 
 
 @Preview
+@PreviewScreenSizes
 @Composable
 private fun ReminderCardPreview() {
     ReminderCard(

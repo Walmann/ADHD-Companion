@@ -34,7 +34,6 @@
 
             android:name=".MainActivity"
             android:exported="true"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.ADHDCompanion">
             <!-- TODO Make app support all orientations -->
 <!--            android:label="@string/app_name"-->

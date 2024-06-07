@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import it.walmann.adhdcompanion.Components.ReminderCard
 import it.walmann.adhdcompanion.CupcakeScreen
@@ -66,17 +67,6 @@ fun RemindersScreen(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-//            Column(
-//                horizontalAlignment = Alignment.End,
-//                modifier = Modifier.fillMaxWidth()
-//            ) {
-//                IconButton(
-//                    onClick = { MainActivity.navigator.navigate(CupcakeScreen.SettingsScreen.name) }
-//                ) {
-//                    Icon(Icons.Filled.Settings, "Configure Settings")
-//                }
-//            }
-
             val reminderArr = if (LocalInspectionMode.current) {
                 debugGetDebugReminders(10)
             } else MainActivity.reminderDB.ReminderDao().getAll()
@@ -110,6 +100,7 @@ fun CreateReminderInstructions(modifier: Modifier = Modifier) {
 
 
 @Preview
+@PreviewScreenSizes
 @Composable
 private fun RemindersScreenPreview() {
     RemindersScreen(
