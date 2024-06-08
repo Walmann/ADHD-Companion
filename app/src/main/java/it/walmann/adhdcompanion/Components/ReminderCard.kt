@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
@@ -104,7 +105,7 @@ fun ReminderCard(
                     }
                 ) {
                     Icon(
-                        imageVector = Icons.Filled.Clear,
+                        imageVector = Icons.Filled.Delete,
                         contentDescription = "Delete reminder",
                         modifier = modifier.padding(0.dp)
                     )
