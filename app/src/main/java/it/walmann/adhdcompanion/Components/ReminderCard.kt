@@ -42,6 +42,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import it.walmann.adhdcompanion.CupcakeScreen
 import it.walmann.adhdcompanion.MainActivity
+import it.walmann.adhdcompanion.MyObjects.deleteNotification
 import it.walmann.adhdcompanion.MyObjects.reminder
 import it.walmann.adhdcompanion.R
 import java.io.File
@@ -103,6 +104,7 @@ fun ReminderCard(
                     modifier = modifier.padding(0.dp),
                     onClick = {
                         MainActivity.reminderDB.ReminderDao().delete(reminder)
+                        deleteNotification(context = context, reminder = reminder)
                         MainActivity.navigator.navigate(CupcakeScreen.ReminderList.name)
                     }
                 ) {

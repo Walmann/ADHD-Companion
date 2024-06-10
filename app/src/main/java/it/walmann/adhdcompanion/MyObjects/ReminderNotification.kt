@@ -14,28 +14,38 @@ import it.walmann.adhdcompanion.R
 import java.util.Date
 
 
-fun createNewNotification(
-    context: Context,
-    title: String,
-    reminder: reminder,
-    icon: Int = R.mipmap.ic_launcher_foreground,
-
-) {
+private fun getNewReminderIntent(context: Context, title: String = "ADHD Reminder!", reminder: reminder, notificationID: Int): Intent {
     val intent = Intent(context, MyNotification::class.java)
 
-    val notificationID = reminder.uid.toInt()
     // Add title and message as extras to the intent
     intent.putExtra("titleExtra", title)
     intent.putExtra("messageExtra", reminder.reminderNote)
     intent.putExtra("notificationID", notificationID)
     intent.putExtra("reminderUID", reminder.uid.toString())
 
-    val pendingIntent = PendingIntent.getBroadcast(
+    return intent
+}
+
+private fun getNewReminderPendingIntent(context: Context, title: String, reminder: reminder, notificationID: Int, intent: Intent): PendingIntent {
+    return PendingIntent.getBroadcast(
         context,
         notificationID,
         intent,
         PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
     )
+
+}
+
+fun createNewNotification(
+    context: Context,
+    title: String,
+    reminder: reminder,
+    icon: Int = R.mipmap.ic_launcher_foreground,
+
+    ) {
+    val notificationID = reminder.uid.toInt()
+    val intent = getNewReminderIntent(context, title, reminder, notificationID)
+    val pendingIntent = getNewReminderPendingIntent(context, title, reminder, notificationID, intent)
 
     // Get the Alarm Service
     val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
@@ -89,3 +99,27 @@ private fun showAlert(time: Long, title: String, message: String, context: Conte
         .setPositiveButton("Okay") { _, _ -> }
         .show()
 }
+
+
+fun deleteNotification(
+    context: Context,
+    title: String = "ADHD Reminder!",
+    reminder: reminder,
+    ) {
+        val notificationID = reminder.uid.toInt()
+        val intent = getNewReminderIntent(context, title, reminder, notificationID)
+        val pendingIntent = getNewReminderPendingIntent(context, title, reminder, notificationID, intent)
+
+        // Get the Alarm Service
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+
+        try {
+            // Try to delete the notification from the future.
+            alarmManager.cancel(
+                pendingIntent,
+            )
+        } catch (e: SecurityException) {
+            Log.e("ExactAlarm", "Error with Alarm Permission!")
+        }
+
+    }
