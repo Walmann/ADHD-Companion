@@ -13,7 +13,7 @@ android {
         applicationId = "it.walmann.adhdcompanion"
         minSdk = 27
         targetSdk = 34
-        versionCode = 1003
+        versionCode = 1030
         versionName = "1.0.3"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -66,6 +66,7 @@ dependencies {
     implementation(libs.androidx.datastore)
     implementation(libs.androidx.constraintlayout.compose)
     implementation(libs.constraintlayout)
+    implementation(libs.androidx.adaptive.android)
     coreLibraryDesugaring(libs.desugar.jdk.libs)
 
 
