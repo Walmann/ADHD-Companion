@@ -1,3 +1,4 @@
+##This project is under development!
 The code for ADHD Companion.
 
 Not available to the android store yet. 
