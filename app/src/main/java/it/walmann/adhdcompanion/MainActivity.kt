@@ -33,8 +33,8 @@ import it.walmann.adhdcompanion.Handlers.Reminder.ReminderDatabase
 import it.walmann.adhdcompanion.MyObjects.createNotificationChannel
 import it.walmann.adhdcompanion.Screens.NewReminder
 import it.walmann.adhdcompanion.Screens.RemindersScreen
+import it.walmann.adhdcompanion.Screens.SettingsScreen
 import it.walmann.adhdcompanion.Screens.SingleReminderForm
-import it.walmann.adhdcompanion.Screens.settingsScreen
 import it.walmann.adhdcompanion.ui.theme.ADHDCompanionTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -50,18 +50,10 @@ enum class CupcakeScreen(@StringRes val title: Int) {
 
 /* TODO
  - Make Monochrome Icon
- - Support all screen orientations
  - Add google login for syncing reminders
     - Resize images to smaller size
  - Make the app prettier
  */
-/*BUGS:
-* - Check that the Calendar date is actually set.
-*   - I Think this one works now. Check more later.
-* - When writing a note, the text arrow is staying active
-* - On tablet, the camera is off center
-* - Check Camera position when doing a second reminder
-* */
 
 class MainActivity : ComponentActivity() {
     private lateinit var PACKAGE_NAME: String
@@ -247,9 +239,9 @@ fun ADHDCompanionApp(
                 modifier = Modifier
                     .fillMaxSize()
             )
-            composable(route = CupcakeScreen.SettingsScreen.name) {
-                settingsScreen()
-            }
+        }
+        composable(route = CupcakeScreen.SettingsScreen.name) {
+            SettingsScreen()
         }
     }
 }

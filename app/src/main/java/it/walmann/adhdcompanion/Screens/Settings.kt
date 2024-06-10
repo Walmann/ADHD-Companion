@@ -7,7 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
-fun settingsScreen(modifier: Modifier = Modifier) {
+fun SettingsScreen(modifier: Modifier = Modifier) {
     Column(modifier = modifier.fillMaxSize()) {
         /*
            - Backup status
@@ -22,6 +22,6 @@ fun settingsScreen(modifier: Modifier = Modifier) {
 
 @Preview
 @Composable
-private fun settingScreenPreview() {
-    settingsScreen()
+private fun SettingScreenPreview() {
+    SettingsScreen()
 }

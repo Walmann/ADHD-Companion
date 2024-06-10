@@ -27,6 +27,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -57,7 +58,7 @@ fun MyCameraPreview(
     val outputFileOptions = ImageCapture.OutputFileOptions.Builder(context.createNewFile()).build()
 
     val imageCapture = buildImageCapture()
-    val lensFacing = remember { mutableStateOf(CameraSelector.LENS_FACING_BACK) }
+    val lensFacing = remember { mutableIntStateOf(CameraSelector.LENS_FACING_BACK) }
 
     val previewViewSize = remember {
         mutableStateOf<Rect>(Rect())
@@ -89,7 +90,7 @@ fun MyCameraPreview(
     }
     if (windowSizeClass.windowWidthSizeClass == WindowWidthSizeClass.EXPANDED) {
         Row(modifier = modifier.fillMaxSize(), verticalAlignment = Alignment.Bottom) {
-            myCam(
+            MyCam(
                 modifier = Modifier.weight(7f),
                 imageCapture = imageCapture,
                 lensFacing = lensFacing.value,
@@ -104,7 +105,7 @@ fun MyCameraPreview(
         }
     } else {
         Column(modifier = modifier.fillMaxSize()) {
-            myCam(
+            MyCam(
                 modifier = Modifier.weight(7f),
                 imageCapture = imageCapture,
                 lensFacing = lensFacing.value,
@@ -141,7 +142,7 @@ fun ButtonSection(
 }
 
 @Composable
-private fun myCam(
+private fun MyCam(
     modifier: Modifier = Modifier,
     imageCapture: ImageCapture,
     lensFacing: Int,
