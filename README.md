@@ -1,5 +1,5 @@
 The code for ADHD Companion.
 
-Resources used: 
-- Camera capture: https://github.com/ujizin/Camposer
-- Icons: https://fontawesome.com
+Not available to the android store yet. 
+
+To join the Beta, send me a DM here on GitHub :) 
