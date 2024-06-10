@@ -183,7 +183,7 @@ fun SingleReminderForm(
                         Calendar.HOUR_OF_DAY, timePState.hour
                     )
 
-                    currentReminder.value.reminderNote = currentNote.value
+//                    currentReminder.value.reminderNote = currentNote.value
                     saveReminder(context, newReminder = currentReminder.value, navController)
                 })
             }

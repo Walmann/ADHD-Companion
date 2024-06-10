@@ -3,6 +3,7 @@ package it.walmann.adhdcompanion.Components
 import android.content.Context
 import android.graphics.BitmapFactory
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
@@ -98,7 +100,6 @@ fun ReminderCard(
                     .fillMaxWidth()
                     .padding(0.dp),
             ) {
-
                 IconButton(
                     modifier = modifier.padding(0.dp),
                     onClick = {
@@ -107,7 +108,7 @@ fun ReminderCard(
                     }
                 ) {
                     Icon(
-                        imageVector = Icons.Filled.Clear,
+                        imageVector = Icons.Filled.Delete,
                         contentDescription = "Delete reminder",
                         modifier = modifier.padding(0.dp)
                     )
@@ -131,28 +132,36 @@ fun ReminderCard(
             ) {
                 Row(
                     horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = when (isEditable) {
+                        true -> Modifier.clickable { onEditTimeClick() }
+                        false -> Modifier
+                    }
                 ) {
                     Text(
                         text = calendarToTime(reminder.reminderCalendar),
                         fontSize = 50.sp,
                     )
                     if (isEditable) {
-                        IconButton(
-                            modifier = Modifier.height(IntrinsicSize.Max),
-                            onClick = onEditTimeClick
-                        ) {
-                            Icon(
-                                Icons.Filled.Edit,
-                                "Edit Time",
-                                modifier.height(IntrinsicSize.Max)
-                            )
-                        }
+//                        IconButton(
+//                            modifier = Modifier.height(IntrinsicSize.Max),
+//                            onClick = onEditTimeClick
+//                        ) {
+                        Icon(
+                            Icons.Filled.Edit,
+                            "Edit Time",
+                            modifier.height(IntrinsicSize.Max)
+                        )
                     }
+//                    }
                 }
                 Row(
                     horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = when (isEditable) {
+                        true -> Modifier.clickable { onEditDateClick() }
+                        false -> Modifier
+                    }
                 ) {
                     Text(
                         text = calendarToDate(reminder.reminderCalendar),
@@ -178,7 +187,6 @@ fun ReminderCard(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     if (isEditable) {
-
                         TextField(
                             keyboardOptions = KeyboardOptions(
                                 capitalization = KeyboardCapitalization.Sentences,
