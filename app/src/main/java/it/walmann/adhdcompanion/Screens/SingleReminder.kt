@@ -255,7 +255,7 @@ private fun saveReminder(
     context: Context, newReminder: reminder, navController: NavController
 ) {
     reminderSave(context = context, reminderToSave = newReminder)
-    navController.navigate(CupcakeScreen.Start.name)
+    navController.navigate(CupcakeScreen.ReminderList.name)
 }
 
 

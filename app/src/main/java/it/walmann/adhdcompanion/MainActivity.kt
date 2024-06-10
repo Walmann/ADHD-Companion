@@ -10,6 +10,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
@@ -31,6 +32,7 @@ import androidx.navigation.navArgument
 import androidx.room.Room
 import it.walmann.adhdcompanion.Handlers.Reminder.ReminderDatabase
 import it.walmann.adhdcompanion.MyObjects.createNotificationChannel
+import it.walmann.adhdcompanion.Screens.BlankStartpage
 import it.walmann.adhdcompanion.Screens.NewReminder
 import it.walmann.adhdcompanion.Screens.RemindersScreen
 import it.walmann.adhdcompanion.Screens.SettingsScreen
@@ -43,6 +45,7 @@ import kotlinx.coroutines.launch
 
 enum class CupcakeScreen(@StringRes val title: Int) {
     Start(title = R.string.app_name),
+    ReminderList(title = R.string.remindersScreenTitle),
     NewReminder(title = R.string.NewReminder),
     ReminderDetails(title = R.string.screen_title_reminder_details),
     SettingsScreen(title = R.string.settings_screen),
@@ -147,7 +150,11 @@ class MainActivity : ComponentActivity() {
         setContent {
             ADHDCompanionTheme {
 //                window.navigationBarColor(@ColorInt )
-                ADHDCompanionApp(modifier = Modifier, context = this)
+                ADHDCompanionApp(
+                    modifier = Modifier,
+                    context = this,
+                    reminderUID = intent.getStringExtra("reminderUID")
+                )
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                     CheckNotificationPermission()
                 }
@@ -162,7 +169,8 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun ADHDCompanionApp(
     modifier: Modifier,
-    context: Context
+    context: Context,
+    reminderUID: String?
 ) {
 
     createNotificationChannel(context = context)
@@ -210,12 +218,14 @@ fun ADHDCompanionApp(
     ) {
 
         composable(route = CupcakeScreen.Start.name) {
+            BlankStartpage(reminderUID = reminderUID)
+        }
+        composable(route = CupcakeScreen.ReminderList.name) {
             RemindersScreen(
                 modifier = Modifier
                     .fillMaxSize(),
                 context = context,
-
-                )
+            )
         }
         composable(route = CupcakeScreen.NewReminder.name) {
             NewReminder(
@@ -232,7 +242,6 @@ fun ADHDCompanionApp(
             )
         ) {
             val curReminder = it.arguments?.getString("calendarId") ?: ""
-
             SingleReminderForm(
                 context = context,
                 reminderID = curReminder.toLong(),

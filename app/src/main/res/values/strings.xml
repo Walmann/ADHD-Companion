@@ -6,4 +6,5 @@
     <string name="NewReminder">New Reminder</string>
     <string name="screen_title_reminder_details">Reminder Details</string>
     <string name="settings_screen">Settings Screen</string>
+    <string name="remindersScreenTitle">Reminders</string>
 </resources>

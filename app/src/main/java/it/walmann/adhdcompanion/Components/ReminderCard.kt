@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Card
@@ -104,7 +103,7 @@ fun ReminderCard(
                     modifier = modifier.padding(0.dp),
                     onClick = {
                         MainActivity.reminderDB.ReminderDao().delete(reminder)
-                        MainActivity.navigator.navigate(CupcakeScreen.Start.name)
+                        MainActivity.navigator.navigate(CupcakeScreen.ReminderList.name)
                     }
                 ) {
                     Icon(

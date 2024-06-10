@@ -10,29 +10,25 @@ import android.content.Context
 import android.content.Context.NOTIFICATION_SERVICE
 import android.content.Intent
 import android.util.Log
-import androidx.core.app.NotificationCompat
 import it.walmann.adhdcompanion.R
-import java.time.LocalTime
-import java.time.temporal.ChronoField
 import java.util.Date
 
 
 fun createNewNotification(
     context: Context,
     title: String,
-    content: String,
-    priority: Int = NotificationCompat.PRIORITY_DEFAULT,
-//    notificationID: Int = kotlin.random.Random.nextInt(),
-    notificationID: Int,
+    reminder: reminder,
     icon: Int = R.mipmap.ic_launcher_foreground,
-    time: Long = LocalTime.now().getLong(ChronoField.MILLI_OF_DAY)
+
 ) {
     val intent = Intent(context, MyNotification::class.java)
 
+    val notificationID = reminder.uid.toInt()
     // Add title and message as extras to the intent
     intent.putExtra("titleExtra", title)
-    intent.putExtra("messageExtra", content)
+    intent.putExtra("messageExtra", reminder.reminderNote)
     intent.putExtra("notificationID", notificationID)
+    intent.putExtra("reminderUID", reminder.uid.toString())
 
     val pendingIntent = PendingIntent.getBroadcast(
         context,
@@ -50,7 +46,7 @@ fun createNewNotification(
         // Try to create the Alarm for notification.
         alarmManager.setExactAndAllowWhileIdle(
             AlarmManager.RTC_WAKEUP,
-            time,
+            reminder.reminderCalendar.timeInMillis,
             pendingIntent
         )
     } catch (e: SecurityException) {
