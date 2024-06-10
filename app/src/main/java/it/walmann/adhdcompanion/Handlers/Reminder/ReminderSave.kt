@@ -15,6 +15,7 @@ fun reminderSave(context: Context, reminderToSave: reminder) {
         context = context,
         title = "ADHD Reminder!",
         content = reminderToSave.reminderNote,
-        time = reminderToSave.reminderCalendar.timeInMillis
+        time = reminderToSave.reminderCalendar.timeInMillis,
+        notificationID = reminderToSave.uid.toInt()
     )
 }

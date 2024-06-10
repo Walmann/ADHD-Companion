@@ -22,7 +22,8 @@ fun createNewNotification(
     title: String,
     content: String,
     priority: Int = NotificationCompat.PRIORITY_DEFAULT,
-    notificationID: Int = kotlin.random.Random.nextInt(),
+//    notificationID: Int = kotlin.random.Random.nextInt(),
+    notificationID: Int,
     icon: Int = R.mipmap.ic_launcher_foreground,
     time: Long = LocalTime.now().getLong(ChronoField.MILLI_OF_DAY)
 ) {
