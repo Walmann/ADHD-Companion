@@ -153,7 +153,7 @@ class MainActivity : ComponentActivity() {
                 ADHDCompanionApp(
                     modifier = Modifier,
                     context = this,
-                    reminderUID = intent.getStringExtra("reminderUID")
+                    recivedIntent = intent
                 )
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                     CheckNotificationPermission()
@@ -170,7 +170,7 @@ class MainActivity : ComponentActivity() {
 fun ADHDCompanionApp(
     modifier: Modifier,
     context: Context,
-    reminderUID: String?
+    recivedIntent: Intent
 ) {
 
     createNotificationChannel(context = context)
@@ -218,7 +218,10 @@ fun ADHDCompanionApp(
     ) {
 
         composable(route = CupcakeScreen.Start.name) {
-            BlankStartpage(reminderUID = reminderUID)
+            BlankStartpage(
+                reminderUID = recivedIntent.getStringExtra("reminderUID"),
+                createNewReminder = recivedIntent.getBooleanExtra("createNewReminder", false)
+            )
         }
         composable(route = CupcakeScreen.ReminderList.name) {
             RemindersScreen(

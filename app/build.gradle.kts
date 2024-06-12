@@ -35,6 +35,7 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
         isCoreLibraryDesugaringEnabled = true
+
     }
     kotlinOptions {
         jvmTarget = "1.8"
@@ -67,6 +68,8 @@ dependencies {
     implementation(libs.androidx.constraintlayout.compose)
     implementation(libs.constraintlayout)
     implementation(libs.androidx.adaptive.android)
+    implementation(libs.androidx.glance.appwidget)
+    implementation(libs.androidx.glance.material3)
     coreLibraryDesugaring(libs.desugar.jdk.libs)
 
 

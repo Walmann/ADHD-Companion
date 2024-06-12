@@ -33,6 +33,8 @@ datastore = "1.1.1"
 constraintlayoutCompose = "1.1.0-alpha13"
 constraintlayoutVersion = "2.2.0-alpha13"
 adaptiveAndroid = "1.0.0-beta02"
+glanceAppwidget = "1.1.0-rc01"
+glanceMaterial3 = "1.1.0-rc01"
 
 [libraries]
 androidx-camera-camera2 = { module = "androidx.camera:camera-camera2", version.ref = "cameraCore" }
@@ -80,6 +82,8 @@ androidx-datastore = { group = "androidx.datastore", name = "datastore", version
 androidx-constraintlayout-compose = { group = "androidx.constraintlayout", name = "constraintlayout-compose", version.ref = "constraintlayoutCompose" }
 constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayoutVersion" }
 androidx-adaptive-android = { group = "androidx.compose.material3.adaptive", name = "adaptive-android", version.ref = "adaptiveAndroid" }
+androidx-glance-appwidget = { group = "androidx.glance", name = "glance-appwidget", version.ref = "glanceAppwidget" }
+androidx-glance-material3 = { group = "androidx.glance", name = "glance-material3", version.ref = "glanceMaterial3" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
