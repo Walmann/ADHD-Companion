@@ -13,8 +13,8 @@ android {
         applicationId = "it.walmann.adhdcompanion"
         minSdk = 27
         targetSdk = 34
-        versionCode = 1030
-        versionName = "1.0.3"
+        versionCode = 1041
+        versionName = "1.0.4.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -29,6 +29,19 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+        }
+        getByName("debug") {
+            applicationIdSuffix = ".debug"
+        }
+        create("alphaInternalTesting") {
+            versionNameSuffix = "alpha"
+            applicationIdSuffix = ".alpha"
+            resValue("string", "app_name", "ADHD Companion Alpha")
+        }
+        create("betaClosedTesting") {
+            versionNameSuffix = "beta"
+            applicationIdSuffix = ".beta"
+            resValue("string", "app_name", "ADHD Companion Beta")
         }
     }
     compileOptions {
