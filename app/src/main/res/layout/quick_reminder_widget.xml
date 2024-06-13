@@ -3,7 +3,7 @@
     style="@style/Widget.ADHDCompanion.AppWidget.Container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:backgroundTint="#474747"
+    android:backgroundTint="@color/ic_launcher_background"
     android:theme="@style/Theme.ADHDCompanion.AppWidgetContainer">
 
     <ImageButton
@@ -11,8 +11,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_centerInParent="true"
-        android:backgroundTint="#00FFFFFF"
-        android:scaleType="fitCenter"
+        android:backgroundTint="@color/ic_launcher_background"
         android:contentDescription="Add new ADHD reminder"
+        android:scaleType="fitCenter"
         app:srcCompat="@drawable/ic_launcher_foreground" />
 </RelativeLayout>

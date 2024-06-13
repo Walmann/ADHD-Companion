@@ -20,8 +20,8 @@
         android:theme="@style/Theme.ADHDCompanion"
         tools:targetApi="31">
         <receiver
-            android:name=".QuickReminderWidget"
-            android:exported="false">
+            android:name=".QuickReminderWidgetReceiver"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>

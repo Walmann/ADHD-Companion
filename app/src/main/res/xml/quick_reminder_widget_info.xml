@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
-    android:description="@string/app_widget_description"
-    android:initialKeyguardLayout="@layout/quick_reminder_widget"
-    android:initialLayout="@layout/quick_reminder_widget"
-    android:minWidth="40dp"
-    android:minHeight="40dp"
-    android:previewImage="@drawable/example_appwidget_preview"
-    android:previewLayout="@layout/quick_reminder_widget"
-    android:resizeMode="horizontal|vertical"
-    android:targetCellWidth="1"
-    android:targetCellHeight="1"
-    android:updatePeriodMillis="86400000"
-    android:widgetCategory="home_screen" />
+    android:initialLayout="@layout/glance_default_loading_layout">
+</appwidget-provider>
+<!--<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--    android:targetCellWidth="2"-->
+<!--    android:targetCellHeight="2"-->
+<!--    android:description="@string/app_widget_description"-->
+<!--    android:minWidth="40dp"-->
+<!--    android:minHeight="40dp"-->
+<!--    android:widgetCategory="home_screen"-->
+<!--    android:resizeMode="horizontal|vertical"-->
+<!--    android:initialKeyguardLayout="@layout/quick_reminder_widget"-->
+<!--    android:previewLayout="@layout/quick_reminder_widget"-->
+<!--    android:updatePeriodMillis="86400000"-->
+<!--    android:previewImage="@drawable/example_appwidget_preview"-->
