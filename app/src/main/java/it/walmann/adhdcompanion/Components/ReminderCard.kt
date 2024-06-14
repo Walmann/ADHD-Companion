@@ -242,11 +242,12 @@ private fun calendarToTime(calendar: Calendar): String {
 }
 
 private fun calendarToDate(calendar: Calendar): String {
-    return "${
-        calendar.get(Calendar.DATE).toString().padStart(2, '0')
-    }.${calendar.get(Calendar.MONTH).toString().padStart(2, '0')}.${
-        calendar.get(Calendar.YEAR).toString().padStart(2, '0')
-    }"
+    val fixedMonth = calendar.get(Calendar.MONTH) + 1
+
+    val date = calendar.get(Calendar.DATE).toString().padStart(2, '0')
+    val month = fixedMonth.toString().padStart(2, '0')
+    val year = calendar.get(Calendar.YEAR).toString().padStart(2, '0')
+    return "${date}.${month}.${year}"
 }
 
 
