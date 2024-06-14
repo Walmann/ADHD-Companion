@@ -29,11 +29,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
@@ -67,11 +64,6 @@ fun ReminderCard(
     onEditDateClick: () -> Unit = {},
     onNoteDataChange: (String) -> Unit = {}
 ) {
-
-    val focusRequester = remember { FocusRequester() }
-    val focusManager = LocalFocusManager.current
-    val keyboardController = LocalSoftwareKeyboardController.current
-
 
     var reminderNoteValue by remember { mutableStateOf(reminder.reminderNote) }
     val imgFile = File(context.filesDir, reminder.reminderImage)
@@ -251,13 +243,27 @@ private fun calendarToDate(calendar: Calendar): String {
 }
 
 
-@Preview
+@Preview(showBackground = true, showSystemUi = true, backgroundColor = 0xFFFF5722)
 @PreviewScreenSizes
 @Composable
 private fun ReminderCardPreview() {
-    ReminderCard(
-        reminder = reminder.create(),
-        context = LocalContext.current,
-        isEditable = true
-    )
+    Column {
+
+        val cal1 = reminder.create()
+        cal1.reminderCalendar.add(Calendar.MINUTE, 5)
+
+        ReminderCard(
+            reminder = cal1,
+            context = LocalContext.current,
+            isEditable = true
+        )
+
+        val cal2 = reminder.create()
+        cal2.reminderCalendar.add(Calendar.MINUTE, -5)
+        ReminderCard(
+            reminder = cal2,
+            context = LocalContext.current,
+            isEditable = true
+        )
+    }
 }
