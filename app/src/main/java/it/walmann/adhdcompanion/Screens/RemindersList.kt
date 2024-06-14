@@ -19,15 +19,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import it.walmann.adhdcompanion.Components.ReminderCard
 import it.walmann.adhdcompanion.CupcakeScreen
 import it.walmann.adhdcompanion.MainActivity
 import it.walmann.adhdcompanion.MyObjects.debugGetDebugReminders
+import java.util.Calendar
 
 @Composable
 fun RemindersScreen(
@@ -67,19 +68,28 @@ fun RemindersScreen(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
+            val currentDateTime = Calendar.getInstance().timeInMillis
+
             val reminderArr = if (LocalInspectionMode.current) {
                 debugGetDebugReminders(10)
             } else MainActivity.reminderDB.ReminderDao().getAll()
             if (reminderArr.isEmpty()) {
                 CreateReminderInstructions(modifier = modifier.padding(20.dp))
             } else {
-
                 Text(text = "Reminders", style = MaterialTheme.typography.displayLarge)
 
                 reminderArr.sortedBy { it.uid }.reversed()
                     .forEach { currReminder ->// (key, value) ->
+                        val isExpired =
+                            if (currentDateTime >= currReminder.reminderCalendar.timeInMillis) {
+                                true
+                            } else {
+                                false
+                            }
+
 
                         ReminderCard(
+                            modifier = Modifier.alpha(if (isExpired) 0.7f else 1f),
                             reminder = currReminder,
                             context = context,
                             onClick = { MainActivity.navigator.navigate("${CupcakeScreen.ReminderDetails.name}/${currReminder.uid}") }
@@ -99,8 +109,10 @@ fun CreateReminderInstructions(modifier: Modifier = Modifier) {
 }
 
 
+//@Preview
+//@PreviewScreenSizes
 @Preview
-@PreviewScreenSizes
+@Preview(device = "spec:parent=pixel_5,orientation=landscape")
 @Composable
 private fun RemindersScreenPreview() {
     RemindersScreen(
