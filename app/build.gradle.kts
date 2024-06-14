@@ -35,12 +35,10 @@ android {
         }
         create("alphaInternalTesting") {
             versionNameSuffix = "alpha"
-            applicationIdSuffix = ".alpha"
             resValue("string", "app_name", "ADHD Companion Alpha")
         }
         create("betaClosedTesting") {
             versionNameSuffix = "beta"
-            applicationIdSuffix = ".beta"
             resValue("string", "app_name", "ADHD Companion Beta")
         }
     }
