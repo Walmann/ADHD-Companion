@@ -13,8 +13,8 @@ android {
         applicationId = "it.walmann.adhdcompanion"
         minSdk = 27
         targetSdk = 34
-        versionCode = 1041
-        versionName = "1.0.4.1"
+        versionCode = 1045
+        versionName = "1.0.4.5"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
