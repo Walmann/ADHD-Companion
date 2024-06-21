@@ -93,7 +93,7 @@ fun SingleReminderForm(
      */
 
     val currentReminder = remember { mutableStateOf(reminder) }
-    val currentNote = remember { mutableStateOf("") }
+//    val currentNote = remember { mutableStateOf("") }
 
     val openTimerDialog = remember { mutableStateOf(false) }
     val openDateAndTimerDialog = remember { mutableStateOf(false) }
