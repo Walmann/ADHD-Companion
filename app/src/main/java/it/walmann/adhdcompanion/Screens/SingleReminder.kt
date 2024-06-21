@@ -154,6 +154,7 @@ fun SingleReminderForm(
                     reminder = currentReminder.value,
                     context = context,
                     isEditable = true,
+                    isNoteScrollable = true,
                     modifier = Modifier,
                     onEditTimeClick = { openTimerDialog.value = !openTimerDialog.value },
                     onEditDateClick = {

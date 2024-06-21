@@ -91,6 +91,7 @@ fun RemindersScreen(
                         ReminderCard(
                             modifier = Modifier.alpha(if (isExpired) 0.7f else 1f),
                             reminder = currReminder,
+                            isNoteScrollable = false,
                             context = context,
                             onClick = { MainActivity.navigator.navigate("${CupcakeScreen.ReminderDetails.name}/${currReminder.uid}") }
                         )

@@ -11,9 +11,12 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
@@ -42,6 +45,7 @@ import it.walmann.adhdcompanion.MainActivity
 import it.walmann.adhdcompanion.MyObjects.deleteNotification
 import it.walmann.adhdcompanion.MyObjects.reminder
 import it.walmann.adhdcompanion.R
+import it.walmann.adhdcompanion.conditional
 import java.io.File
 import java.util.Calendar
 
@@ -59,6 +63,7 @@ fun ReminderCard(
     context: Context,
     modifier: Modifier = Modifier,
     isEditable: Boolean = false,
+    isNoteScrollable: Boolean = false,
     onClick: () -> Unit = {},
     onEditTimeClick: () -> Unit = {},
     onEditDateClick: () -> Unit = {},
@@ -82,7 +87,8 @@ fun ReminderCard(
         modifier = modifier
             .widthIn(max = 500.dp)
             .fillMaxWidth()
-            .height(250.dp)
+            .height(IntrinsicSize.Max)
+//            .heightIn(min = 250.dp)
             .padding(vertical = 5.dp)
     ) {
         if (isEditable) { // DELETE REMINDER
@@ -108,117 +114,130 @@ fun ReminderCard(
                 }
             }
         }
-        Row(
-            horizontalArrangement = Arrangement.SpaceEvenly,
-            verticalAlignment = Alignment.CenterVertically,
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
             modifier = modifier
                 .fillMaxSize()
-                .padding(10.dp)
         ) {
-
-
-//            Row(modifier = modifier.weight(5f), horizontalArrangement = Arrangement.Center) {
-            Column( // Time and Date Info
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center,
+            Row(
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                verticalAlignment = Alignment.CenterVertically,
                 modifier = modifier
+                    .height(IntrinsicSize.Min)
+                    .fillMaxWidth()
+//                    .fillMaxSize()
+//                    .weight(9f)
+                    .padding(10.dp)
             ) {
-                Row(
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = when (isEditable) {
-                        true -> Modifier.clickable { onEditTimeClick() }
-                        false -> Modifier
-                    }
+                //            Row(modifier = modifier.weight(5f), horizontalArrangement = Arrangement.Center) {
+                Column( // Time and Date Info
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
+                    modifier = modifier
                 ) {
-                    Text(
-                        text = calendarToTime(reminder.reminderCalendar),
-                        fontSize = 50.sp,
-                    )
-                    if (isEditable) {
-//                        IconButton(
-//                            modifier = Modifier.height(IntrinsicSize.Max),
-//                            onClick = onEditTimeClick
-//                        ) {
-                        Icon(
-                            Icons.Filled.Edit,
-                            "Edit Time",
-                            modifier.height(IntrinsicSize.Max)
+                    Row(
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = when (isEditable) {
+                            true -> Modifier.clickable { onEditTimeClick() }
+                            false -> Modifier
+                        }
+                    ) {
+                        Text(
+                            text = calendarToTime(reminder.reminderCalendar),
+                            fontSize = 50.sp,
                         )
-                    }
-//                    }
-                }
-                Row(
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = when (isEditable) {
-                        true -> Modifier.clickable { onEditDateClick() }
-                        false -> Modifier
-                    }
-                ) {
-                    Text(
-                        text = calendarToDate(reminder.reminderCalendar),
-                        fontSize = 20.sp,
-                    )
-                    if (isEditable) {
-                        IconButton(
-                            modifier = Modifier.height(IntrinsicSize.Max),
-                            onClick = onEditDateClick
-                        ) {
+                        if (isEditable) {
+                            //                        IconButton(
+                            //                            modifier = Modifier.height(IntrinsicSize.Max),
+                            //                            onClick = onEditTimeClick
+                            //                        ) {
                             Icon(
                                 Icons.Filled.Edit,
-                                "Edit Date",
+                                "Edit Time",
                                 modifier.height(IntrinsicSize.Max)
                             )
                         }
+                        //                    }
                     }
-                }
-
-                Row( // Reminder Note
-                    modifier = Modifier.widthIn(max = 150.dp),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    if (isEditable) {
-                        TextField(
-                            keyboardOptions = KeyboardOptions(
-                                capitalization = KeyboardCapitalization.Sentences,
-                            ),
-                            modifier = modifier,
-                            singleLine = true,
-                            value = reminderNoteValue,
-                            onValueChange = {
-                                reminderNoteValue = it
-                                onNoteDataChange(it)
-                            },
-                            label = {
-                                Row {
-                                    Text("Reminder note  ")
-                                }
-                            }
-                        )
-                    } else {
+                    Row(
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = when (isEditable) {
+                            true -> Modifier.clickable { onEditDateClick() }
+                            false -> Modifier
+                        }
+                    ) {
                         Text(
-                            text = reminder.reminderNote, // TODO Make prettier. Max Characters etc.
+                            text = calendarToDate(reminder.reminderCalendar),
                             fontSize = 20.sp,
-                            modifier = modifier
-                                .padding(
-                                    horizontal = 10.dp
-                                )
                         )
+                        if (isEditable) {
+                            IconButton(
+                                modifier = Modifier.height(IntrinsicSize.Max),
+                                onClick = onEditDateClick
+                            ) {
+                                Icon(
+                                    Icons.Filled.Edit,
+                                    "Edit Date",
+                                    modifier.height(IntrinsicSize.Max)
+                                )
+                            }
+                        }
                     }
+
+
                 }
+
+                Image(
+                    painter = RemindImage,
+                    modifier = modifier
+                        //                    .weight(5f)
+                        .padding(horizontal = 10.dp),
+                    contentScale = ContentScale.Fit,
+                    contentDescription = null
+                )
+
             }
+            Row( // Reminder Note
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(IntrinsicSize.Min)
+//                    .weight(1f)
+                ,
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                val scrollOffset by remember { mutableStateOf(0) }
+                TextField(
+                    keyboardOptions = KeyboardOptions(
+                        capitalization = KeyboardCapitalization.Sentences,
+                    ),
+                    maxLines = if (isNoteScrollable) Int.MAX_VALUE else 2,
+                    modifier = modifier
+                        .fillMaxWidth()
+                        .verticalScroll(
+                            enabled = isNoteScrollable,
+                            state = rememberScrollState(scrollOffset)
+                        )
+                        .conditional(isNoteScrollable, {
+                            height(IntrinsicSize.Min)
 
-            Image(
-                painter = RemindImage,
-                modifier = modifier
-//                    .weight(5f)
-                    .padding(horizontal = 10.dp),
-                contentScale = ContentScale.Fit,
-                contentDescription = null
-            )
-
+                        }, { heightIn(min = 20.dp) }),
+                    singleLine = false,
+                    value = reminderNoteValue,
+                    readOnly = (if (isEditable) false else true),
+                    onValueChange = {
+                        reminderNoteValue = it
+                        onNoteDataChange(it)
+                    },
+                    placeholder = {
+                        val placeholderText = if (isEditable) "Reminder note" else ""
+                        Text(text = placeholderText)
+                    }
+                )
+            }
         }
     }
 }
@@ -247,6 +266,9 @@ private fun calendarToDate(calendar: Calendar): String {
 @PreviewScreenSizes
 @Composable
 private fun ReminderCardPreview() {
+    val longText =
+        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
+    val shortText = "Lorem Ipsum is simply dummy text of the printing and typesetting industry."
     Column {
 
         val cal1 = reminder.create()
@@ -256,6 +278,16 @@ private fun ReminderCardPreview() {
             reminder = cal1,
             context = LocalContext.current,
             isEditable = true
+        )
+        val cal3 = reminder.create()
+        cal3.reminderNote = longText + longText
+
+        cal3.reminderCalendar.add(Calendar.MINUTE, -5)
+        ReminderCard(
+            reminder = cal3,
+            context = LocalContext.current,
+            isEditable = false,
+            isNoteScrollable = true
         )
 
         val cal2 = reminder.create()
