@@ -7,6 +7,7 @@ fun getTimeUnitFromInt(value: Any): String {
         is Int -> {
             when (currValue) {
                 0 -> "Seconds"
+                13 -> "Seconds"
                 12 -> "Minutes"
                 11 -> "Hours"
                 6 -> "Years"
@@ -17,6 +18,7 @@ fun getTimeUnitFromInt(value: Any): String {
             when (currValue) {
                 "" -> "Unit"
                 "0" -> "Seconds"
+                "13" -> "Seconds"
                 "12" -> "Minutes"
                 "11" -> "Hours"
                 "6" -> "Years"
