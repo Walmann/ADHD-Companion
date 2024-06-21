@@ -18,6 +18,7 @@ import androidx.compose.material3.TimePicker
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -76,6 +77,7 @@ fun SingleReminderForm(
 fun SingleReminderForm(
     modifier: Modifier = Modifier,
     context: Context,
+    isQuickReminder: Boolean = false,
     photoUri: Uri = Uri.EMPTY,
     navController: NavController,
     isBeingInitialized: Boolean = false,
@@ -106,155 +108,198 @@ fun SingleReminderForm(
     val currTimeValue = remember { mutableStateOf("") }
     val currTimeUnit = remember { mutableStateOf("") }
 
-
+    val areSettingsReady = remember { mutableStateOf(false) }
     LaunchedEffect(key1 = context) {
         CoroutineScope(Dispatchers.Main).launch {
             currTimeValue.value = getAppSetting(context, AppSettings.QuickReminderValue).toString()
             currTimeUnit.value = getAppSetting(context, AppSettings.QuickReminderUnit).toString()
+
         }
     }
-    Column(
-        modifier = modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
 
-        Column(
-            modifier = Modifier
-                .weight(8f)
-                .padding(15.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            ReminderCard(
-                reminder = currentReminder.value,
-                context = context,
-                isEditable = true,
-                modifier = Modifier,
-                onEditTimeClick = { openTimerDialog.value = !openTimerDialog.value },
-                onEditDateClick = { openDateAndTimerDialog.value = !openDateAndTimerDialog.value },
-                onNoteDataChange = { currentReminder.value.reminderNote = it }
-            )
+
+
+    if (isQuickReminder) {
+        Column {
+            while (currTimeUnit.value != "" && currTimeValue.value != "") {
+                areSettingsReady.value = true
+                break
+            }
+            if (areSettingsReady.value) {
+                createQuickReminder(
+                    context = context,
+                    currentReminder = currentReminder,
+                    navController = navController,
+                    currTimeValue = currTimeValue,
+                    currTimeUnit = currTimeUnit
+                )
+
+            }
         }
+    } else {
         Column(
+            modifier = modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = modifier
-                .fillMaxWidth()
-                .weight(3f)
-                .padding(vertical = 10.dp),
         ) {
-            if (isBeingInitialized) {
-                MyButtonCombinedHorizontal(
-                    modifier = Modifier.fillMaxWidth(0.9f),
-                    left_onClick = {
-                        val newCal = Calendar.getInstance()
-                        newCal.add(
-                            currTimeUnit.value.toInt(),
-                            currTimeValue.value.toInt()
-                        )
-                        currentReminder.value.reminderCalendar = newCal
 
-                        saveReminder(context, newReminder = currentReminder.value, navController)
-                    },
-                    left_text = "Remind me in ${currTimeValue.value} ${
-                        getTimeUnitFromInt(
-                            currTimeUnit.value
-                        )
-                    }",
-                    right_onClick = {
-                        openQuickSettings.value = !openQuickSettings.value
-                    },
-                    right_text = "⚙️"
-                )
-                Spacer(modifier = Modifier.height(20.dp))
-            }
-            Row(
+            Column(
                 modifier = Modifier
+                    .weight(8f)
+                    .padding(15.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                ReminderCard(
+                    reminder = currentReminder.value,
+                    context = context,
+                    isEditable = true,
+                    modifier = Modifier,
+                    onEditTimeClick = { openTimerDialog.value = !openTimerDialog.value },
+                    onEditDateClick = {
+                        openDateAndTimerDialog.value = !openDateAndTimerDialog.value
+                    },
+                    onNoteDataChange = { currentReminder.value.reminderNote = it }
+                )
+            }
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = modifier
                     .fillMaxWidth()
-                    .height(IntrinsicSize.Max),
-                verticalAlignment = Alignment.Bottom,
-                horizontalArrangement = Arrangement.SpaceAround,
-
-                ) {
-
-                MyButton(modifier = Modifier.fillMaxWidth(0.4f), text = "Save", onClick = {
-                    currentReminder.value.reminderCalendar.set(
-                        Calendar.MINUTE, timePState.minute
+                    .weight(3f)
+                    .padding(vertical = 10.dp),
+            ) {
+                if (isBeingInitialized) {
+                    MyButtonCombinedHorizontal(
+                        modifier = Modifier.fillMaxWidth(0.9f),
+                        left_onClick = {
+                            createQuickReminder(
+                                context = context,
+                                currentReminder = currentReminder,
+                                navController = navController,
+                                currTimeValue = currTimeValue,
+                                currTimeUnit = currTimeUnit
+                            )
+                        },
+                        left_text = "Remind me in ${currTimeValue.value} ${
+                            getTimeUnitFromInt(
+                                currTimeUnit.value
+                            )
+                        }",
+                        right_onClick = {
+                            openQuickSettings.value = !openQuickSettings.value
+                        },
+                        right_text = "⚙️"
                     )
-                    currentReminder.value.reminderCalendar.set(
-                        Calendar.HOUR_OF_DAY, timePState.hour
-                    )
+                    Spacer(modifier = Modifier.height(20.dp))
+                }
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(IntrinsicSize.Max),
+                    verticalAlignment = Alignment.Bottom,
+                    horizontalArrangement = Arrangement.SpaceAround,
+
+                    ) {
+
+                    MyButton(modifier = Modifier.fillMaxWidth(0.4f), text = "Save", onClick = {
+                        currentReminder.value.reminderCalendar.set(
+                            Calendar.MINUTE, timePState.minute
+                        )
+                        currentReminder.value.reminderCalendar.set(
+                            Calendar.HOUR_OF_DAY, timePState.hour
+                        )
 
 //                    currentReminder.value.reminderNote = currentNote.value
-                    saveReminder(context, newReminder = currentReminder.value, navController)
-                })
+                        saveReminder(context, newReminder = currentReminder.value, navController)
+                    })
+                }
             }
-        }
 
 
 
-        if (openTimerDialog.value) {
-            TimeWheelSelectDialog(
-                onDismissRequest = {
+            if (openTimerDialog.value) {
+                TimeWheelSelectDialog(
+                    onDismissRequest = {
+                        openTimerDialog.value = false
+                        openDateAndTimerDialog.value = false
+                    },
+                    confirmButton = {
+                        MyButton(
+                            onClick = {
+                                openTimerDialog.value = false
+                                openDateAndTimerDialog.value = false
+                            }, text = "Save"
+                        )
+                    },
+                ) {
+                    TimePicker(state = timePState)
+                }
+            }
+
+
+            if (openDateAndTimerDialog.value) {
+                DateSelectorDialog(onDismissRequest = {
                     openTimerDialog.value = false
                     openDateAndTimerDialog.value = false
-                },
-                confirmButton = {
-                    MyButton(
-                        onClick = {
-                            openTimerDialog.value = false
-                            openDateAndTimerDialog.value = false
-                        }, text = "Save"
-                    )
-                },
-            ) {
-                TimePicker(state = timePState)
+                }, onConfirmRequest = {
+                    currentReminder.value.reminderCalendar = it
+                    openTimerDialog.value = false
+                    openDateAndTimerDialog.value = false
+                }, calendar = currentReminder.value.reminderCalendar
+                )
             }
-        }
-
-
-        if (openDateAndTimerDialog.value) {
-            DateSelectorDialog(onDismissRequest = {
-                openTimerDialog.value = false
-                openDateAndTimerDialog.value = false
-            }, onConfirmRequest = {
-                currentReminder.value.reminderCalendar = it
-                openTimerDialog.value = false
-                openDateAndTimerDialog.value = false
-            }, calendar = currentReminder.value.reminderCalendar
-            )
-        }
-        if (openQuickSettings.value) {
-            QuickReminderTimerDialog(
-                onConfirm = { selectedUnit, selectedAmount ->
-                    CoroutineScope(Dispatchers.Main).launch {
-                        setAppSetting(
-                            context = context,
-                            AppSettings.QuickReminderUnit,
-                            value = selectedUnit
-                        )
-                        setAppSetting(
-                            context = context,
-                            AppSettings.QuickReminderValue,
-                            value = selectedAmount
-                        )
-                        currTimeValue.value =
-                            getAppSetting(context, AppSettings.QuickReminderValue).toString()
-                        currTimeUnit.value =
-                            getAppSetting(context, AppSettings.QuickReminderUnit).toString()
-                        openQuickSettings.value = !openQuickSettings.value
-                    }
-                },
-                onDismiss = { openQuickSettings.value = !openQuickSettings.value },
+            if (openQuickSettings.value) {
+                QuickReminderTimerDialog(
+                    onConfirm = { selectedUnit, selectedAmount ->
+                        CoroutineScope(Dispatchers.Main).launch {
+                            setAppSetting(
+                                context = context,
+                                AppSettings.QuickReminderUnit,
+                                value = selectedUnit
+                            )
+                            setAppSetting(
+                                context = context,
+                                AppSettings.QuickReminderValue,
+                                value = selectedAmount
+                            )
+                            currTimeValue.value =
+                                getAppSetting(context, AppSettings.QuickReminderValue).toString()
+                            currTimeUnit.value =
+                                getAppSetting(context, AppSettings.QuickReminderUnit).toString()
+                            openQuickSettings.value = !openQuickSettings.value
+                        }
+                    },
+                    onDismiss = { openQuickSettings.value = !openQuickSettings.value },
 //                context = context
-            )
+                )
+            }
+
+
         }
-
-
     }
 }
 
+
+private fun createQuickReminder(
+    currentReminder: MutableState<reminder>,
+    context: Context,
+    navController: NavController,
+    currTimeUnit: MutableState<String>,
+    currTimeValue: MutableState<String>
+) {
+
+    val newCal = Calendar.getInstance()
+    newCal.add(
+        currTimeUnit.value.toInt(),
+        currTimeValue.value.toInt()
+    )
+    currentReminder.value.reminderCalendar = newCal
+
+    saveReminder(context, newReminder = currentReminder.value, navController)
+
+}
 
 private fun saveReminder(
     context: Context, newReminder: reminder, navController: NavController

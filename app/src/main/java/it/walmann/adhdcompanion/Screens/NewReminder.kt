@@ -31,12 +31,19 @@ fun NewReminder(
     var photoUri: Uri = Uri.EMPTY
     val shouldShowPhoto: MutableState<Boolean> = remember { mutableStateOf(false) }
     val shouldShowCamera: MutableState<Boolean> = remember { mutableStateOf(true) }
-
+    val isQuickReminder = remember {mutableStateOf(false)}
 
     fun handleImageCapture(uri: Uri) {
         Log.i("kilo", "Image captured: $uri")
         shouldShowCamera.value = false
         photoUri = uri
+        shouldShowPhoto.value = true
+    }
+    fun handleQuickImageCapture(uri: Uri) {
+        Log.i("kilo", "Image captured: $uri")
+        shouldShowCamera.value = false
+        photoUri = uri
+        isQuickReminder.value = true
         shouldShowPhoto.value = true
     }
 
@@ -65,6 +72,7 @@ fun NewReminder(
 //                    outputDirectory = outputDirectory,
 //                    executor = cameraExecutor,
                     onImageCaptured = ::handleImageCapture,
+                    onQuickImageCaptured = ::handleQuickImageCapture
 //                    onError = {
 //                        Log.e("kilo", "View error:", it)
 //                    },
@@ -77,7 +85,8 @@ fun NewReminder(
                     photoUri = photoUri,
                     navController = MainActivity.navigator,
                     isBeingInitialized = true,
-                    modifier = modifier.fillMaxSize()
+                    modifier = modifier.fillMaxSize(),
+                    isQuickReminder = isQuickReminder.value
                 )
             }
         }

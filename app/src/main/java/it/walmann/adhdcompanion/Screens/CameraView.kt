@@ -21,6 +21,7 @@ fun CameraView(
     modifier: Modifier = Modifier,
 //    executor: Executor,
     onImageCaptured: (Uri) -> Unit = {},
+    onQuickImageCaptured: (Uri) -> Unit = {},
 //    onError: (ImageCaptureException) -> Unit = {},
     context: Context,
 //    outputDirectory: File,
@@ -40,7 +41,8 @@ fun CameraView(
                     onImageCaptured = onImageCaptured,
                     outputFile = File(
                         Calendar.getInstance().timeInMillis.toString()
-                    )
+                    ),
+                    onQuickImageCaptured = onQuickImageCaptured
                 )
             }
         }

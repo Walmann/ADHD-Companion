@@ -27,12 +27,14 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
@@ -51,7 +53,8 @@ fun MyCameraPreview(
     modifier: Modifier = Modifier,
     context: Context,
     outputFile: File,
-    onImageCaptured: (Uri) -> Unit
+    onImageCaptured: (Uri) -> Unit,
+    onQuickImageCaptured: (Uri) -> Unit,
 ) {
     val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
 
@@ -64,6 +67,7 @@ fun MyCameraPreview(
         mutableStateOf<Rect>(Rect())
     }
 
+    val isQuickImageCapture = remember { mutableStateOf(false) }
 
     val rotateCamera = {
         lensFacing.value =
@@ -78,16 +82,19 @@ fun MyCameraPreview(
                 override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
                     Log.d("CamTest3", "Saved image!")
 
-                    onImageCaptured(outputFileResults.savedUri ?: "".toUri())
-
+                    if (isQuickImageCapture.value) {
+                        onQuickImageCaptured(outputFileResults.savedUri ?: "".toUri())
+                    } else {
+                        onImageCaptured(outputFileResults.savedUri ?: "".toUri())
+                    }
                 }
 
                 override fun onError(exception: ImageCaptureException) {
                     Log.d("CamTest3", "Error when taking picture! ${exception}")
                 }
             })
-
     }
+
     if (windowSizeClass.windowWidthSizeClass == WindowWidthSizeClass.EXPANDED) {
         Row(modifier = modifier.fillMaxSize(), verticalAlignment = Alignment.Bottom) {
             MyCam(
@@ -97,10 +104,10 @@ fun MyCameraPreview(
             )
             ButtonSection(
                 modifier = Modifier
-                    .weight(3f)
-                ,
+                    .weight(3f),
                 onRotateCameraClick = rotateCamera,
-                onTakeImage = takeImage
+                onTakeImage = takeImage,
+                onQuickImageCaptured = takeImage
             )
         }
     } else {
@@ -113,7 +120,9 @@ fun MyCameraPreview(
             ButtonSection(
                 modifier = Modifier.weight(3f),
                 onRotateCameraClick = rotateCamera,
-                onTakeImage = takeImage
+                onTakeImage = takeImage,
+                onQuickImageCaptured = takeImage,
+                isQuickImageCapture = isQuickImageCapture
             )
         }
     }
@@ -123,7 +132,11 @@ fun MyCameraPreview(
 
 @Composable
 fun ButtonSection(
-    modifier: Modifier = Modifier, onRotateCameraClick: () -> (Unit), onTakeImage: () -> (Unit)
+    modifier: Modifier = Modifier,
+    onRotateCameraClick: () -> (Unit),
+    onTakeImage: () -> (Unit),
+    onQuickImageCaptured: () -> (Unit),
+    isQuickImageCapture: MutableState<Boolean> = mutableStateOf(false)
 ) {
     Row(
         horizontalArrangement = Arrangement.SpaceEvenly,
@@ -135,9 +148,21 @@ fun ButtonSection(
             contentDescription = "Turn camera around",
             icon = R.drawable.camera_rotate_bold,
         )
-        CameraScreenButton(
-            icon = R.drawable.arrow_right, onClick = onTakeImage
-        )
+        Column(
+            modifier = Modifier
+        ) {
+
+            CameraScreenButton(
+                icon = R.drawable.arrow_right, onClick = onTakeImage
+            )
+            CameraScreenButton(
+                icon = R.drawable.stopwatch_quick, onClick = {
+                    isQuickImageCapture.value = true
+                    Log.d("CameraQuickReminder Button", "Clicked button!")
+                    onQuickImageCaptured()
+                }
+            )
+        }
     }
 }
 
@@ -243,7 +268,8 @@ fun CameraScreenButton(
 ) {
     IconButton(modifier = modifier
         .padding(bottom = 20.dp)
-        .size(100.dp),
+        .size(100.dp)
+        .border(0.dp, Color.Transparent, shape = RectangleShape),
         onClick = onClick,
         content = {
             Icon(
@@ -252,7 +278,9 @@ fun CameraScreenButton(
                 tint = Color.White,
                 modifier = Modifier
                     .fillMaxSize()
-                    .border(0.dp, Color.Transparent)
+                    .border(0.dp, Color.Transparent, shape = RectangleShape)
+
+
             )
         })
 }
