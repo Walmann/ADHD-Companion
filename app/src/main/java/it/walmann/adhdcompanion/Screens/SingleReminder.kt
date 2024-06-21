@@ -148,10 +148,13 @@ fun SingleReminderForm(
                 MyButtonCombinedHorizontal(
                     modifier = Modifier.fillMaxWidth(0.9f),
                     left_onClick = {
-                        currentReminder.value.reminderCalendar.add(
+                        val newCal = Calendar.getInstance()
+                        newCal.add(
                             currTimeUnit.value.toInt(),
                             currTimeValue.value.toInt()
                         )
+                        currentReminder.value.reminderCalendar = newCal
+
                         saveReminder(context, newReminder = currentReminder.value, navController)
                     },
                     left_text = "Remind me in ${currTimeValue.value} ${
@@ -227,7 +230,9 @@ fun SingleReminderForm(
                 onConfirm = { selectedUnit, selectedAmount ->
                     CoroutineScope(Dispatchers.Main).launch {
                         setAppSetting(
-                            context = context, AppSettings.QuickReminderUnit, value = selectedUnit
+                            context = context,
+                            AppSettings.QuickReminderUnit,
+                            value = selectedUnit
                         )
                         setAppSetting(
                             context = context,
