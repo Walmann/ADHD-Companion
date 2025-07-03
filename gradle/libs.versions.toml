@@ -1,40 +1,40 @@
 [versions]
-agp = "8.5.0"
-cameraCore = "1.3.3"
-desugar_jdk_libs = "2.0.4"
-kotlin = "1.9.0"
-coreKtx = "1.13.1"
+agp = "8.11.0"
+cameraCore = "1.4.2"
+desugar_jdk_libs = "2.1.5"
+kotlin = "2.2.0"
+coreKtx = "1.16.0"
 junit = "4.13.2"
-junitVersion = "1.1.5"
-espressoCore = "3.5.1"
-lifecycleRuntimeKtx = "2.8.0"
-activityCompose = "1.9.0"
-composeBom = "2024.05.00"
+junitVersion = "1.2.1"
+espressoCore = "3.6.1"
+lifecycleRuntimeKtx = "2.9.1"
+activityCompose = "1.10.1"
+composeBom = "2025.06.01"
 material = "1.12.0"
-appcompat = "1.6.1"
-constraintlayout = "2.1.4"
-navigationFragmentKtx = "2.7.7"
-navigationUiKtx = "2.7.7"
-navigationCompose = "2.7.7"
+appcompat = "1.7.0"
+constraintlayout = "2.2.1"
+navigationFragmentKtx = "2.9.0"
+navigationUiKtx = "2.9.0"
+navigationCompose = "2.9.0"
 numberpicker = "1.0.3"
-roomKtx = "2.6.1"
-roomPaging = "2.6.1"
-accompanistPermissions = "0.35.0-alpha"
-camposer = "0.4.0"
+roomKtx = "2.7.2"
+roomPaging = "2.7.2"
+accompanistPermissions = "0.37.3"
+camposer = "0.4.4"
 cameraView = "2.0.6"
-simpleIcons = "1.1.0"
-fontAwesome = "1.1.0"
-coilCompose = "2.6.0"
-kotlinxSerializationJson = "1.6.3"
-gson = "2.11.0"
-datastoreCoreAndroid = "1.1.1"
-datastorePreferences = "1.1.1"
+simpleIcons = "1.1.1"
+fontAwesome = "1.1.1"
+coilCompose = "2.7.0"
+kotlinxSerializationJson = "2.0.0"
+gson = "2.13.1"
+datastoreCoreAndroid = "1.1.7"
+datastorePreferences = "1.1.7"
 datastore = "1.1.1"
-constraintlayoutCompose = "1.1.0-alpha13"
-constraintlayoutVersion = "2.2.0-alpha13"
-adaptiveAndroid = "1.0.0-beta02"
-glanceAppwidget = "1.1.0-rc01"
-glanceMaterial3 = "1.1.0-rc01"
+constraintlayoutCompose = "1.1.1"
+constraintlayoutVersion = "2.2.1"
+adaptiveAndroid = "1.1.0"
+glanceAppwidget = "1.1.1"
+glanceMaterial3 = "1.1.1"
 
 [libraries]
 androidx-camera-camera2 = { module = "androidx.camera:camera-camera2", version.ref = "cameraCore" }
@@ -74,11 +74,11 @@ numberpicker = { module = "com.chargemap.compose:numberpicker", version.ref = "n
 simple-icons = { group = "br.com.devsrsouza.compose.icons", name = "simple-icons", version.ref = "simpleIcons" }
 font-awesome = { group = "br.com.devsrsouza.compose.icons", name = "font-awesome", version.ref = "fontAwesome" }
 coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coilCompose" }
-kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
+kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version = "1.9.0" }
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
 androidx-datastore-core-android = { group = "androidx.datastore", name = "datastore-core-android", version.ref = "datastoreCoreAndroid" }
 androidx-datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastorePreferences" }
-androidx-datastore = { group = "androidx.datastore", name = "datastore", version.ref = "datastore" }
+androidx-datastore = { group = "androidx.datastore", name = "datastore", version = "1.1.7" }
 androidx-constraintlayout-compose = { group = "androidx.constraintlayout", name = "constraintlayout-compose", version.ref = "constraintlayoutCompose" }
 constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayoutVersion" }
 androidx-adaptive-android = { group = "androidx.compose.material3.adaptive", name = "adaptive-android", version.ref = "adaptiveAndroid" }
@@ -88,4 +88,5 @@ androidx-glance-material3 = { group = "androidx.glance", name = "glance-material
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 jetbrainsKotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlinCompose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 

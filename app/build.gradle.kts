@@ -1,20 +1,21 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
-    kotlin("plugin.serialization") version "1.9.22"
+    kotlin("plugin.serialization") version "2.2.0"
     id("kotlin-kapt")
+    alias(libs.plugins.kotlinCompose)
 }
 
 android {
     namespace = "it.walmann.adhdcompanion"
-    compileSdk = 34
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "it.walmann.adhdcompanion"
         minSdk = 27
-        targetSdk = 34
-        versionCode = 1045
-        versionName = "1.0.4.5"
+        targetSdk = 36
+        versionCode = 1050
+        versionName = "1.0.5.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -56,7 +57,7 @@ android {
         viewBinding = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
+        kotlinCompilerExtensionVersion = "1.5.10"
     }
     packaging {
         resources {
