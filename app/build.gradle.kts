@@ -12,9 +12,9 @@ android {
     defaultConfig {
         applicationId = "it.walmann.adhdcompanion"
         minSdk = 27
-        targetSdk = 34
-        versionCode = 1046
-        versionName = "1.0.4.6"
+        targetSdk = 35
+        versionCode = 1047
+        versionName = "1.0.4.7"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
